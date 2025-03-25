@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multiply or divide by 10, 100, or 1,000</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+  </style>
+</head>
+<body>
+  <h1>Multiply or divide by 10, 100, or 1,000</h1>
+  <ul class="instructions">
+    <li>Move the digits to the left to multiply, or to the right to divide.</li><li>Each 0 means one place to move.</li>
+    <li>Type your answer in the box.</li>
+    <li>✅ means it's correct, ❌ means try again.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer");
+      const feedback = input.nextElementSibling;
+      if (parseFloat(input.value) === parseFloat(expected)) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+      } else {
+        feedback.textContent = "❌ Wrong";
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+      });
+    }
+
+    function generateQuestion(index, showWorking) {
+      
+const base = [10, 100, 1000][Math.floor(Math.random() * 3)];
+const value = +(Math.random() * 100).toFixed(2);
+const multiply = Math.random() > 0.5;
+const result = multiply ? value * base : value / base;
+const symbol = multiply ? '×' : '÷';
+let html = `<div class='question'><label>Q${index + 1}: ${value} ${symbol} ${base} = <input type='text' data-answer='${result.toFixed(2)}' oninput='checkAnswer(this)'><span class='feedback'></span></label>`;
+if (showWorking) {
+  html += `<div class='working'>${value} ${symbol} ${base} = ${result.toFixed(2)}</div>`;
+}
+html += `</div>`;
+return html;
+
+    }
+
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let setHtml = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div>`;
+      for (let q = 0; q < 10; q++) {
+        setHtml += generateQuestion(q, setIndex === 0);
+      }
+      setHtml += `</div>`;
+      setsContainer.innerHTML += setHtml;
+    }
+  </script>
+</body>
+</html>
