@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missing Number Addition & Subtraction Practice</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fef9f0;
+    }
+    h1 {
+      color: #9a5800;
+      text-align: center;
+    }
+    ul.instructions {
+      margin-bottom: 20px;
+    }
+    .question {
+      background: #ffffff;
+      border-left: 8px solid #9a5800;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    .question input {
+      padding: 5px;
+      font-size: 1em;
+      width: 100px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+    }
+    .question input.correct {
+      border-color: #28a745;
+    }
+    .feedback {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 1.2em;
+    }
+    .working {
+      color: #555;
+      font-style: italic;
+      margin-top: 8px;
+    }
+    .progress {
+      background: #fff;
+      border: 2px solid #9a5800;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    .progress-bar {
+      background-color: #9a5800;
+      height: 20px;
+      width: 0%;
+      border-radius: 8px;
+    }
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: #9a5800;
+    }
+  </style>
+</head>
+<body>
+  <h1>Missing Number Addition & Subtraction</h1>
+  <ul class="instructions">
+    <li><strong>Look at the number sentence</strong> and figure out what number is missing.</li>
+    <li><strong>Use the opposite operation</strong> to find the missing number.</li>
+    <li><strong>Type your answer</strong> in the box and look out for the green tick!</li>
+  </ul>
+
+  <div class="progress">
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="progress-text" id="progress-text">0 of 100 correct</div>
+  </div>
+  <div id="questions"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+
+  <script>
+    let correctCount = 0;
+    const totalQuestions = 100;
+    const answeredCorrectly = new Set();
+
+    function updateProgress() {
+      const progress = (correctCount / totalQuestions) * 100;
+      document.getElementById("progress-bar").style.width = progress + "%";
+      document.getElementById("progress-text").textContent = `${correctCount} of ${totalQuestions} correct`;
+      localStorage.setItem("add_sub_progress", JSON.stringify({ correctCount, answered: Array.from(answeredCorrectly) }));
+    }
+
+    function loadProgress() {
+      const saved = localStorage.getItem("add_sub_progress");
+      if (saved) {
+        const data = JSON.parse(saved);
+        correctCount = data.correctCount || 0;
+        data.answered.forEach(index => answeredCorrectly.add(index));
+      }
+    }
+
+    function generateAddSubQuestion(index) {
+      const a = Math.floor(Math.random() * 900 + 100);
+      const b = Math.floor(Math.random() * 900 + 100);
+      const op = Math.random() > 0.5 ? "+" : "-";
+      let questionText, answer, working;
+
+      if (op === "+") {
+        const total = a + b;
+        const missing = ["left", "right", "result"][Math.floor(Math.random() * 3)];
+        if (missing === "left") {
+          questionText = `? + ${b} = ${total}`;
+          answer = total - b;
+          working = `${total} - ${b} = ${answer}`;
+        } else if (missing === "right") {
+          questionText = `${a} + ? = ${total}`;
+          answer = total - a;
+          working = `${total} - ${a} = ${answer}`;
+        } else {
+          questionText = `${a} + ${b} = ?`;
+          answer = total;
+          working = `${a} + ${b} = ${answer}`;
+        }
+      } else {
+        const total = a - b;
+        const missing = ["left", "right", "result"][Math.floor(Math.random() * 3)];
+        if (missing === "left") {
+          questionText = `? - ${b} = ${total}`;
+          answer = total + b;
+          working = `${total} + ${b} = ${answer}`;
+        } else if (missing === "right") {
+          questionText = `${a} - ? = ${total}`;
+          answer = a - total;
+          working = `${a} - ${total} = ${answer}`;
+        } else {
+          questionText = `${a} - ${b} = ?`;
+          answer = total;
+          working = `${a} - ${b} = ${answer}`;
+        }
+      }
+
+      const showWorking = index < 50 ? `<div class="working">${working}</div>` : "";
+
+      return `
+        <div class="question">
+          <label>Q${index + 1}: ${questionText} 
+            <input type="text" data-answer="${answer}" oninput="checkAnswer(this, ${index})">
+            <span class="feedback"></span>
+          </label>
+          ${showWorking}
+        </div>
+      `;
+    }
+
+    function checkAnswer(input, index) {
+      const userAnswer = input.value.trim();
+      const correct = input.getAttribute("data-answer").trim();
+      const feedback = input.nextElementSibling;
+      const correctSound = document.getElementById("correct-sound");
+
+      if (userAnswer === correct) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        if (!answeredCorrectly.has(index)) {
+          answeredCorrectly.add(index);
+          correctCount++;
+        }
+      } else {
+        feedback.textContent = "❌ Wrong";
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        if (answeredCorrectly.has(index)) {
+          answeredCorrectly.delete(index);
+          correctCount--;
+        }
+      }
+      updateProgress();
+    }
+
+    const container = document.getElementById("questions");
+    loadProgress();
+    for (let i = 0; i < totalQuestions; i++) {
+      container.innerHTML += generateAddSubQuestion(i);
+    }
+    updateProgress();
+  </script>
+</body>
+</html>
