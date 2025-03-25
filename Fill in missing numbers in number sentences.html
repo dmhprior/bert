@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Missing Number Addition & Subtraction</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fef9f0;
+    }
+    h1 {
+      color: #b85c00;
+      text-align: center;
+    }
+    .instructions {
+      margin-bottom: 20px;
+    }
+    .set {
+      margin-bottom: 40px;
+    }
+    .question {
+      background: #ffffff;
+      border-left: 8px solid #b85c00;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    input {
+      font-size: 1em;
+      padding: 5px;
+      width: 100px;
+    }
+    .feedback {
+      margin-left: 10px;
+      font-size: 1.2em;
+    }
+    .working {
+      font-style: italic;
+      font-size: 0.9em;
+      color: #444;
+      margin-top: 5px;
+    }
+    .progress {
+      height: 20px;
+      background: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #b85c00;
+    }
+  </style>
+</head>
+<body>
+  <h1>Missing Number Addition & Subtraction</h1>
+  <div class="instructions">
+    <ul>
+      <li>Work out what number is missing.</li>
+      <li>Use the opposite operation to help you.</li>
+      <li>Type your answer in the box.</li>
+      <li>✅ means correct, ❌ means try again!</li>
+    </ul>
+  </div>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function generateMissingQuestion(index, showWorking) {
+      const a = Math.floor(Math.random() * 900 + 100);
+      const b = Math.floor(Math.random() * 900 + 100);
+      const op = Math.random() > 0.5 ? "+" : "-";
+      let question, answer, working;
+
+      if (op === "+") {
+        const total = a + b;
+        const type = ["left", "right", "result"][Math.floor(Math.random() * 3)];
+        if (type === "left") {
+          question = `? + ${b} = ${total}`;
+          answer = total - b;
+          working = `${total} - ${b} = ${answer}`;
+        } else if (type === "right") {
+          question = `${a} + ? = ${total}`;
+          answer = total - a;
+          working = `${total} - ${a} = ${answer}`;
+        } else {
+          question = `${a} + ${b} = ?`;
+          answer = total;
+          working = `${a} + ${b} = ${answer}`;
+        }
+      } else {
+        const total = a - b;
+        const type = ["left", "right", "result"][Math.floor(Math.random() * 3)];
+        if (type === "left") {
+          question = `? - ${b} = ${total}`;
+          answer = total + b;
+          working = `${total} + ${b} = ${answer}`;
+        } else if (type === "right") {
+          question = `${a} - ? = ${total}`;
+          answer = a - total;
+          working = `${a} - ${total} = ${answer}`;
+        } else {
+          question = `${a} - ${b} = ?`;
+          answer = total;
+          working = `${a} - ${b} = ${answer}`;
+        }
+      }
+
+      let html = `<div class="question">
+        <label>Q${index + 1}: ${question} 
+          <input type="text" data-answer="${answer}" oninput="checkAnswer(this)">
+          <span class="feedback"></span>
+        </label>`;
+      if (showWorking) {
+        html += `<div class="working">${working}</div>`;
+      }
+      html += `</div>`;
+      return html;
+    }
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer");
+      const feedback = input.nextElementSibling;
+      if (parseFloat(input.value) === parseFloat(expected)) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+      } else {
+        feedback.textContent = "❌ Wrong";
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+      });
+    }
+
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class="set">
+        <h2>Set ${setIndex + 1}</h2>
+        <div class="progress"><div class="progress-bar"></div></div>`;
+      for (let q = 0; q < 10; q++) {
+        html += generateMissingQuestion(q, setIndex === 0);
+      }
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+</body>
+</html>
