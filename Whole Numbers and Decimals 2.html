@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add or Subtract Whole Numbers and Decimals</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f0f9ff;
+    }
+    h1 {
+      color: #004080;
+      text-align: center;
+    }
+    .instructions {
+      margin-bottom: 20px;
+    }
+    .set {
+      margin-bottom: 40px;
+    }
+    .question {
+      background: #ffffff;
+      border-left: 8px solid #0074cc;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    input {
+      font-size: 1em;
+      padding: 5px;
+      width: 100px;
+    }
+    .feedback {
+      margin-left: 10px;
+      font-size: 1.2em;
+    }
+    .working {
+      font-style: italic;
+      font-size: 0.9em;
+      color: #444;
+      margin-top: 5px;
+    }
+    .progress {
+      height: 20px;
+      background: #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #0074cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Add or Subtract Whole Numbers and Decimals</h1>
+  <div class="instructions">
+    <ul>
+      <li><strong>Look at the numbers carefully.</strong></li>
+      <li><strong>Line up the digits</strong> — especially the decimal points!</li>
+      <li><strong>Start adding or subtracting</strong> from the right-hand side.</li>
+      <li><strong>Write your answer</strong> in the box.</li>
+      <li>You'll see a ✅ if it's right, or ❌ if it's wrong.</li>
+    </ul>
+  </div>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function generateQuestion(index, showWorking) {
+      const isDecimal = Math.random() > 0.5;
+      const a = isDecimal ? +(Math.random() * 100).toFixed(2) : Math.floor(Math.random() * 900 + 100);
+      const b = isDecimal ? +(Math.random() * 100).toFixed(2) : Math.floor(Math.random() * 900 + 100);
+      const op = Math.random() > 0.5 ? "+" : "-";
+      const answer = +(op === "+" ? a + b : a - b).toFixed(2);
+
+      let questionHTML = `
+        <div class="question">
+          <label>Q${index + 1}: ${a} ${op} ${b} = 
+            <input type="text" data-answer="${answer}" oninput="checkAnswer(this)">
+            <span class="feedback"></span>
+          </label>
+      `;
+      if (showWorking) {
+        const working = op === "+" ? `${a} + ${b} = ${answer}` : `${a} - ${b} = ${answer}`;
+        questionHTML += `<div class="working">${working}</div>`;
+      }
+      questionHTML += `</div>`;
+      return questionHTML;
+    }
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer");
+      const feedback = input.nextElementSibling;
+      if (parseFloat(input.value).toFixed(2) === parseFloat(expected).toFixed(2)) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+      } else {
+        feedback.textContent = "❌ Wrong";
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+      });
+    }
+
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class="set">
+        <h2>Set ${setIndex + 1}</h2>
+        <div class="progress"><div class="progress-bar"></div></div>`;
+      for (let q = 0; q < 10; q++) {
+        html += generateQuestion(q, setIndex === 0);
+      }
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+</body>
+</html>
