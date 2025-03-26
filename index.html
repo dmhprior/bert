@@ -8,21 +8,29 @@
             line-height: 1.6;
             margin: 0;
             padding: 20px;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
+            background-color: #f9f9f9;
         }
         header {
             background: #ff0000;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             border-radius: 5px;
             color: white;
+        }
+        h1 {
+            font-size: 48px;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
         footer {
             text-align: center;
             margin-top: 40px;
             color: #777;
+            padding: 20px;
+            border-top: 1px solid #ddd;
         }
         img {
             display: block;
@@ -30,7 +38,35 @@
             max-width: 100%;
             height: auto;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .button-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .button-list li {
+            margin-bottom: 12px;
+        }
+        .game-button {
+            display: block;
+            background-color: #003366;
+            color: white;
+            padding: 12px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+        .game-button:hover {
+            background-color: #004c99;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            border-bottom: 2px solid #ff0000;
+            padding-bottom: 10px;
+            margin-top: 30px;
         }
     </style>
 </head>
@@ -42,22 +78,22 @@
     <main>
         <img src="bert-image.jpg" alt="Bert Prior" width="300">
         
-        <h2>Maths - Arithmetic</h2>
-        <ul>
-            <li><a href="https://dmhprior.github.io/bert/Whole%20Numbers%20and%20Decimals%202.html">Add or subtract whole numbers and decimals</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiply_or_divide_whole_numbers.html">Multiplication and Division: Multiply or divide whole numbers (including long methods)</a></li>
-            <li><a href="https://dmhprior.github.io/bert/use_multiplication_facts.html">Multiplication and Division: Use multiplication facts and short methods</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiply_decimals.html">Multiplication and Division: Multiply decimals and whole numbers</a></li>
-            <li><a href="https://dmhprior.github.io/bert/add_subtract_fractions.html">Fractions and Mixed Numbers: Add or subtract fractions and mixed numbers</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiply_divide_fractions.html">Fractions and Mixed Numbers: Multiply or divide fractions</a></li>
-            <li><a href="https://dmhprior.github.io/bert/find_fraction_of_number.html">Fractions and Mixed Numbers: Find a fraction of a number</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiply_divide_by_10_100_1000.html">Decimals and Percentages: Multiply or divide by 10, 100, or 1,000</a></li>
-            <li><a href="https://dmhprior.github.io/bert/work_with_decimal_numbers.html">Decimals and Percentages: Work with decimal numbers</a></li>
-            <li><a href="https://dmhprior.github.io/bert/find_percentage_of_number.html">Decimals and Percentages: Find a percentage of a number</a></li>
-            <li><a href="https://dmhprior.github.io/bert/apply_bidmas.html">Order of Operations and Brackets: Apply BIDMAS</a></li>
-            <li><a href="https://dmhprior.github.io/bert/expressions_with_brackets.html">Order of Operations and Brackets: Work with expressions including brackets</a></li>
-            <li><a href="https://dmhprior.github.io/bert/solve_missing_numbers.html">Missing Number Problems: Solve for missing numbers in equations</a></li>
-            <li><a href="https://dmhprior.github.io/bert/inverse_operations.html">Missing Number Problems: Use inverse operations</a></li>
+        <h2>My Projects</h2>
+        <ul class="button-list">
+            <li><a href="https://dmhprior.github.io/bert/Whole%20Numbers%20and%20Decimals%202.html" class="game-button">Add or subtract whole numbers and decimals</a></li>
+            <li><a href="https://dmhprior.github.io/bert/multiply_or_divide_whole_numbers.html" class="game-button">Multiplication and Division: Multiply or divide whole numbers (including long methods)</a></li>
+            <li><a href="https://dmhprior.github.io/bert/use_multiplication_facts.html" class="game-button">Multiplication and Division: Use multiplication facts and short methods</a></li>
+            <li><a href="https://dmhprior.github.io/bert/multiply_decimals.html" class="game-button">Multiplication and Division: Multiply decimals and whole numbers</a></li>
+            <li><a href="https://dmhprior.github.io/bert/add_subtract_fractions.html" class="game-button">Fractions and Mixed Numbers: Add or subtract fractions and mixed numbers</a></li>
+            <li><a href="https://dmhprior.github.io/bert/multiply_divide_fractions.html" class="game-button">Fractions and Mixed Numbers: Multiply or divide fractions</a></li>
+            <li><a href="https://dmhprior.github.io/bert/find_fraction_of_number.html" class="game-button">Fractions and Mixed Numbers: Find a fraction of a number</a></li>
+            <li><a href="https://dmhprior.github.io/bert/multiply_divide_by_10_100_1000.html" class="game-button">Decimals and Percentages: Multiply or divide by 10, 100, or 1,000</a></li>
+            <li><a href="https://dmhprior.github.io/bert/work_with_decimal_numbers.html" class="game-button">Decimals and Percentages: Work with decimal numbers</a></li>
+            <li><a href="https://dmhprior.github.io/bert/find_percentage_of_number.html" class="game-button">Decimals and Percentages: Find a percentage of a number</a></li>
+            <li><a href="https://dmhprior.github.io/bert/apply_bidmas.html" class="game-button">Order of Operations and Brackets: Apply BIDMAS</a></li>
+            <li><a href="https://dmhprior.github.io/bert/expressions_with_brackets.html" class="game-button">Order of Operations and Brackets: Work with expressions including brackets</a></li>
+            <li><a href="https://dmhprior.github.io/bert/solve_missing_numbers.html" class="game-button">Missing Number Problems: Solve for missing numbers in equations</a></li>
+            <li><a href="https://dmhprior.github.io/bert/inverse_operations.html" class="game-button">Missing Number Problems: Use inverse operations</a></li>
         </ul>
     </main>
     
