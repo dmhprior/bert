@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistics</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 400 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Statistics</h1>
+  <ul class="instructions">
+    <li>Look carefully at charts, tables, or data.</li><li>You might need to count or compare numbers.</li><li>Find totals, differences, or most/least.</li>
+    <li>Type your answer in the box. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ means try again.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+      } else {
+        feedback.textContent = "❌ Wrong";
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+      }
+      updateProgress();
+    }
+
+    
+function updateProgress() {
+  const inputs = document.querySelectorAll('input');
+  const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+  const total = inputs.length;
+  const percent = Math.round((correct / total) * 100);
+  document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+  document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+  document.querySelector('.global-bar-top').style.width = `${percent}%`;
+  document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    function generateQuestion(index, showWorking) {
+      
+const type = index % 2;
+let question = '', answer = '', working = '';
+
+if (type === 0) {
+  const a = Math.floor(Math.random() * 30 + 10);
+  const b = Math.floor(Math.random() * 30 + 10);
+  question = `How many more is ${a} than ${b}?`;
+  answer = a - b;
+  working = `${a} - ${b} = ${answer}`;
+} else {
+  const nums = [Math.floor(Math.random() * 20), Math.floor(Math.random() * 20), Math.floor(Math.random() * 20)];
+  const total = nums.reduce((a, b) => a + b, 0);
+  question = `Find the total: ${nums.join(", ")}`;
+  answer = total;
+  working = `${nums.join(" + ")} = ${total}`;
+}
+
+let html = `<div class='question'><label>Q${index + 1}: ${question} <input type='text' data-answer='${answer}' oninput='checkAnswer(this)'><span class='feedback'></span></label>`;
+if (showWorking) html += `<div class='working'>${working}</div>`;
+html += `</div>`;
+return html;
+
+    }
+
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      for (let q = 0; q < 10; q++) {
+        html += generateQuestion(q + setIndex * 10, setIndex === 0);
+      }
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 400 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>
