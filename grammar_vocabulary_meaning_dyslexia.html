@@ -4,7 +4,7 @@
   <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grammar: Vocabulary and Meaning</title>
+  <title>Vocabulary and Meaning</title>
   <style>
     body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
     h1 { color: #005792; text-align: center; }
@@ -20,9 +20,15 @@
   </style>
 </head>
 <body>
-  <h1>Grammar: Vocabulary and Meaning</h1>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 400 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Vocabulary and Meaning</h1>
   <ul class="instructions">
-    <li>Some words are more formal, others are casual or informal.</li><li>Look for clues in how a sentence sounds.</li><li>Punctuation can change the meaning of a sentence!</li>
+    <li>Words can have similar or opposite meanings.</li><li>Look at how the word is used in the sentence.</li><li>Find the best word that fits the meaning.</li>
     <li>Type your answer in the box. Try to spell it correctly!</li>
     <li>✅ means it's correct, ❌ means try again.</li>
   </ul>
@@ -49,7 +55,17 @@
       updateProgress();
     }
 
-    function updateProgress() {
+    
+function updateProgress() {
+  const inputs = document.querySelectorAll('input');
+  const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+  const total = inputs.length;
+  const percent = Math.round((correct / total) * 100);
+  document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+  document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+  document.querySelector('.global-bar-top').style.width = `${percent}%`;
+  document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
       const sets = document.querySelectorAll('.set');
       sets.forEach(set => {
         const inputs = set.querySelectorAll('input');
@@ -69,21 +85,17 @@
 
     function generateQuestion(index, showWorking) {
       
-const type = index % 3;
+const type = index % 2;
 let question = '', answer = '', working = '';
 
 if (type === 0) {
-  question = "Which is more formal: 'I wanna go' or 'I would like to go'?";
-  answer = "I would like to go";
-  working = "'Would like' is more formal.";
-} else if (type === 1) {
-  question = "Choose the correct sentence: 'Lets eat, Grandma!' or 'Lets eat Grandma!'";
-  answer = "Let's eat, Grandma!";
-  working = "The comma changes the meaning.";
+  question = "What is a synonym for 'big'?";
+  answer = "large";
+  working = "Synonyms = same or similar meaning.";
 } else {
-  question = "Which means the opposite of 'certain'?";
-  answer = "uncertain";
-  working = "Prefix 'un-' means not.";
+  question = "What is an antonym for 'early'?";
+  answer = "late";
+  working = "Antonyms = opposite meaning.";
 }
 
 let html = `<div class='question'><label>Q${index + 1}: ${question} <input type='text' data-answer='${answer.toLowerCase()}' oninput='checkAnswer(this)'><span class='feedback'></span></label>`;
@@ -102,5 +114,11 @@ return html;
       setsContainer.innerHTML += html;
     }
   </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 400 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
 </body>
 </html>

@@ -4,7 +4,7 @@
   <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Punctuation</title>
+  <title>Standard English and Formality</title>
   <style>
     body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
     h1 { color: #005792; text-align: center; }
@@ -26,9 +26,9 @@
   <div class="progress"><div class="progress-bar global-bar-top"></div></div>
 </div>
 
-  <h1>Punctuation</h1>
+  <h1>Standard English and Formality</h1>
   <ul class="instructions">
-    <li>Punctuation marks end or split up sentences.</li><li>Look for commas, apostrophes, speech marks and full stops.</li><li>Each one has a special job!</li>
+    <li>Standard English is how we write properly in school or work.</li><li>Use full words, not slang or short cuts.</li><li>Some situations need more formal language.</li>
     <li>Type your answer in the box. Try to spell it correctly!</li>
     <li>✅ means it's correct, ❌ means try again.</li>
   </ul>
@@ -85,24 +85,20 @@ function updateProgress() {
 
     function generateQuestion(index, showWorking) {
       
-const type = index % 3;
+const type = index % 2;
 let question = '', answer = '', working = '';
 
 if (type === 0) {
-  question = "Add a comma to this: 'After lunch we went out.'";
-  answer = "After lunch, we went out.";
-  working = "Comma after the fronted phrase.";
-} else if (type === 1) {
-  question = "Add an apostrophe: 'Its cold today.'";
-  answer = "It's cold today.";
-  working = "It's = it is.";
+  question = "Which is Standard English: 'We was happy' or 'We were happy'?";
+  answer = "We were happy";
+  working = "Use correct verb forms: 'were' not 'was'";
 } else {
-  question = "Add speech marks: Sarah said I am happy.";
-  answer = `"Sarah said, \"I am happy.\""`;
-  working = "Use quotation marks around the spoken words.";
+  question = "Which is more formal: 'Gonna go now' or 'I am going to leave now'?";
+  answer = "I am going to leave now";
+  working = "Formal = full sentence, no slang.";
 }
 
-let html = `<div class='question'><label>Q${index + 1}: ${question} <input type='text' data-answer='${answer}' oninput='checkAnswer(this)'><span class='feedback'></span></label>`;
+let html = `<div class='question'><label>Q${index + 1}: ${question} <input type='text' data-answer='${answer.toLowerCase()}' oninput='checkAnswer(this)'><span class='feedback'></span></label>`;
 if (showWorking) html += `<div class='working'>${working}</div>`;
 html += `</div>`;
 return html;

@@ -4,7 +4,7 @@
   <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grammar: Tenses and Verb Forms</title>
+  <title>Tenses and Verb Forms</title>
   <style>
     body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
     h1 { color: #005792; text-align: center; }
@@ -20,9 +20,15 @@
   </style>
 </head>
 <body>
-  <h1>Grammar: Tenses and Verb Forms</h1>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 400 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Tenses and Verb Forms</h1>
   <ul class="instructions">
-    <li>Verb tense shows when something happens: past, present or future.</li><li>The perfect tense uses 'have' + a verb (e.g. 'have eaten').</li><li>Keep verb tenses consistent in a sentence.</li>
+    <li>Verbs tell us when something happens: past, present or future.</li><li>Use 'have', 'has', 'had' for perfect tense.</li><li>Make sure verbs match the subject.</li>
     <li>Type your answer in the box. Try to spell it correctly!</li>
     <li>✅ means it's correct, ❌ means try again.</li>
   </ul>
@@ -49,7 +55,17 @@
       updateProgress();
     }
 
-    function updateProgress() {
+    
+function updateProgress() {
+  const inputs = document.querySelectorAll('input');
+  const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+  const total = inputs.length;
+  const percent = Math.round((correct / total) * 100);
+  document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+  document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+  document.querySelector('.global-bar-top').style.width = `${percent}%`;
+  document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
       const sets = document.querySelectorAll('.set');
       sets.forEach(set => {
         const inputs = set.querySelectorAll('input');
@@ -73,17 +89,17 @@ const type = index % 3;
 let question = '', answer = '', working = '';
 
 if (type === 0) {
-  question = "What tense is this sentence: 'She was reading a book.'?";
-  answer = "past progressive";
-  working = "'was' + 'reading' = past progressive tense.";
+  question = "What tense is this: 'She is running fast.'?";
+  answer = "present progressive";
+  working = "'is' + verb-ing = present progressive.";
 } else if (type === 1) {
-  question = "Rewrite this in the present perfect: 'He finished his homework.'";
-  answer = "He has finished his homework.";
-  working = "'has finished' is the present perfect tense.";
+  question = "What is the past tense of 'go'?";
+  answer = "went";
+  working = "Go → went (irregular verb)";
 } else {
-  question = "What verb would complete this sentence correctly? 'If she ___ harder, she would pass.'";
-  answer = "worked";
-  working = "Past tense fits a conditional sentence.";
+  question = "Complete the sentence in future tense: 'Tomorrow, I ___ to the park.'";
+  answer = "will go";
+  working = "Use 'will' + verb for future.";
 }
 
 let html = `<div class='question'><label>Q${index + 1}: ${question} <input type='text' data-answer='${answer.toLowerCase()}' oninput='checkAnswer(this)'><span class='feedback'></span></label>`;
@@ -102,5 +118,11 @@ return html;
       setsContainer.innerHTML += html;
     }
   </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 400 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
 </body>
 </html>
