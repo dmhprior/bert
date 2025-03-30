@@ -50,18 +50,36 @@
         }
         .game-button {
             display: block;
-            background-color: #003366;
             color: white;
-            padding: 12px 15px;
+            padding: 14px 18px;
             text-decoration: none;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
             font-weight: 500;
+            font-size: 18px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         .game-button:hover {
-            background-color: #004c99;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .arithmetic-button {
+            background-color: #003366; /* Dark blue */
+        }
+        .arithmetic-button:hover {
+            background-color: #004c99;
+        }
+        .reasoning-button {
+            background-color: #006633; /* Dark green */
+        }
+        .reasoning-button:hover {
+            background-color: #008040;
+        }
+        .english-button {
+            background-color: #660033; /* Dark purple */
+        }
+        .english-button:hover {
+            background-color: #800040;
         }
         h2 {
             border-bottom: 2px solid #ff0000;
@@ -80,41 +98,32 @@
         
         <h2>Maths - Arithmetic</h2>
         <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/Whole%20Numbers%20and%20Decimals%202.html" class="game-button">Add or subtract whole numbers and decimals</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiply_or_divide_whole_numbers.html" class="game-button">Multiplication and Division: Multiply or divide whole numbers (including long methods)</a></li>
-            <li><a href="https://dmhprior.github.io/bert/use_multiplication_facts.html" class="game-button">Multiplication and Division: Use multiplication facts and short methods</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiply_decimals.html" class="game-button">Multiplication and Division: Multiply decimals and whole numbers</a></li>
-            <li><a href="https://dmhprior.github.io/bert/add_subtract_fractions.html" class="game-button">Fractions and Mixed Numbers: Add or subtract fractions and mixed numbers</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiply_divide_fractions.html" class="game-button">Fractions and Mixed Numbers: Multiply or divide fractions</a></li>
-            <li><a href="https://dmhprior.github.io/bert/find_fraction_of_number.html" class="game-button">Fractions and Mixed Numbers: Find a fraction of a number</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiply_divide_by_10_100_1000.html" class="game-button">Decimals and Percentages: Multiply or divide by 10, 100, or 1,000</a></li>
-            <li><a href="https://dmhprior.github.io/bert/work_with_decimal_numbers.html" class="game-button">Decimals and Percentages: Work with decimal numbers</a></li>
-            <li><a href="https://dmhprior.github.io/bert/find_percentage_of_number.html" class="game-button">Decimals and Percentages: Find a percentage of a number</a></li>
-            <li><a href="https://dmhprior.github.io/bert/apply_bidmas.html" class="game-button">Order of Operations and Brackets: Apply BIDMAS</a></li>
-            <li><a href="https://dmhprior.github.io/bert/expressions_with_brackets.html" class="game-button">Order of Operations and Brackets: Work with expressions including brackets</a></li>
-            <li><a href="https://dmhprior.github.io/bert/solve_missing_numbers.html" class="game-button">Missing Number Problems: Solve for missing numbers in equations</a></li>
-            <li><a href="https://dmhprior.github.io/bert/inverse_operations.html" class="game-button">Missing Number Problems: Use inverse operations</a></li>
+            <li><a href="https://dmhprior.github.io/bert/addition_subtraction_dyslexia.html" class="game-button arithmetic-button">Addition & Subtraction</a></li>
+            <li><a href="https://dmhprior.github.io/bert/multiplication_division_dyslexia.html" class="game-button arithmetic-button">Multiplication & Division</a></li>
+            <li><a href="https://dmhprior.github.io/bert/fractions_dyslexia.html" class="game-button arithmetic-button">Fractions</a></li>
+            <li><a href="https://dmhprior.github.io/bert/decimals_percentages_dyslexia.html" class="game-button arithmetic-button">Decimals & Percentages</a></li>
+            <li><a href="https://dmhprior.github.io/bert/order_operations_dyslexia.html" class="game-button arithmetic-button">Order of Operations</a></li>
+            <li><a href="https://dmhprior.github.io/bert/missing_number_problems_dyslexia.html" class="game-button arithmetic-button">Missing Number Problems</a></li>
         </ul>
+        
         <h2>Maths - Reasoning</h2>
         <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/number_place_value_reasoning.html" class="game-button">Number and Place Value</a></li>
-            <li><a href="https://dmhprior.github.io/bert/reasoning_arithmetic_calculations.html" class="game-button">Arithmetic and Calculations</a></li>
-            <li><a href="https://dmhprior.github.io/bert/reasoning_algebra_missing_values.html" class="game-button">Algebra and Missing Values</a></li>
-            <li><a href="https://dmhprior.github.io/bert/reasoning_measurement_geometry.html" class="game-button">Measurement and Geometry</a></li>
-            <li><a href="https://dmhprior.github.io/bert/reasoning_fractions_decimals_percentages.html" class="game-button">Fractions, Decimals, Percentages</a></li>
-            <li><a href="https://dmhprior.github.io/bert/reasoning_number_sequences_patterns.html" class="game-button">Number Sequences and Patterns</a></li>
-            <li><a href="https://dmhprior.github.io/bert/reasoning_statistics.html" class="game-button">Statistics</a></li>
-            <li><a href="https://dmhprior.github.io/bert/reasoning_problem_solving.html" class="game-button">Problem Solving and Reasoning</a></li>
+            <li><a href="https://dmhprior.github.io/bert/reasoning_number_place_value_dyslexia.html" class="game-button reasoning-button">Number & Place Value</a></li>
+            <li><a href="https://dmhprior.github.io/bert/reasoning_fractions_decimals_percentages_dyslexia.html" class="game-button reasoning-button">Fractions, Decimals & Percentages</a></li>
+            <li><a href="https://dmhprior.github.io/bert/reasoning_measurement_geometry_dyslexia.html" class="game-button reasoning-button">Measurement & Geometry</a></li>
+            <li><a href="https://dmhprior.github.io/bert/reasoning_statistics_dyslexia.html" class="game-button reasoning-button">Statistics</a></li>
+            <li><a href="https://dmhprior.github.io/bert/reasoning_algebra_missing_values_dyslexia.html" class="game-button reasoning-button">Algebra & Missing Values</a></li>
+            <li><a href="https://dmhprior.github.io/bert/reasoning_problem_solving_dyslexia.html" class="game-button reasoning-button">Problem Solving & Reasoning</a></li>
         </ul>
         
         <h2>English</h2>
         <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/grammar_word_classes_dyslexia.html" class="game-button">Word Classes</a></li>
-            <li><a href="https://dmhprior.github.io/bert/grammar_sentence_structure_dyslexia.html" class="game-button">Grammar and Sentence Structure</a></li>
-            <li><a href="https://dmhprior.github.io/bert/grammar_tenses_verb_forms_dyslexia.html" class="game-button">Tenses and Verb Forms</a></li>
-            <li><a href="https://dmhprior.github.io/bert/grammar_punctuation_dyslexia.html" class="game-button">Punctuation</a></li>
-            <li><a href="https://dmhprior.github.io/bert/grammar_spelling_word_formation_dyslexia.html" class="game-button">Spelling and Word Formation</a></li>
-            <li><a href="https://dmhprior.github.io/bert/grammar_vocabulary_meaning_dyslexia.html" class="game-button">Vocabulary and Meaning</a></li>
+            <li><a href="https://dmhprior.github.io/bert/grammar_word_classes_dyslexia.html" class="game-button english-button">Word Classes</a></li>
+            <li><a href="https://dmhprior.github.io/bert/grammar_sentence_structure_dyslexia.html" class="game-button english-button">Grammar and Sentence Structure</a></li>
+            <li><a href="https://dmhprior.github.io/bert/grammar_tenses_verb_forms_dyslexia.html" class="game-button english-button">Tenses and Verb Forms</a></li>
+            <li><a href="https://dmhprior.github.io/bert/grammar_punctuation_dyslexia.html" class="game-button english-button">Punctuation</a></li>
+            <li><a href="https://dmhprior.github.io/bert/grammar_spelling_word_formation_dyslexia.html" class="game-button english-button">Spelling and Word Formation</a></li>
+            <li><a href="https://dmhprior.github.io/bert/grammar_vocabulary_meaning_dyslexia.html" class="game-button english-button">Vocabulary and Meaning</a></li>
         </ul>
     </main>
     
