@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spelling and Word Formation</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Spelling and Word Formation</h1>
+  <ul class="instructions">
+    <li>Prefixes go at the start (like un-, dis-, re-).</li>
+    <li>Suffixes go at the end (-ful, -less, -ly).</li>
+    <li>They change the meaning or the type of word.</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Word formation database
+    const questions = [
+      // Prefix questions
+      {
+        question: "Add a prefix to make the opposite of 'fair'.",
+        answer: "unfair",
+        working: "The prefix 'un-' means 'not' or 'opposite of'. un + fair = unfair (not fair)"
+      },
+      {
+        question: "Add a prefix to make the opposite of 'happy'.",
+        answer: "unhappy",
+        working: "The prefix 'un-' means 'not' or 'opposite of'. un + happy = unhappy (not happy)"
+      },
+      {
+        question: "Add a prefix to make the opposite of 'kind'.",
+        answer: "unkind",
+        working: "The prefix 'un-' means 'not' or 'opposite of'. un + kind = unkind (not kind)"
+      },
+      {
+        question: "Add a prefix to make the opposite of 'lucky'.",
+        answer: "unlucky",
+        working: "The prefix 'un-' means 'not' or 'opposite of'. un + lucky = unlucky (not lucky)"
+      },
+      {
+        question: "Add a prefix to make the opposite of 'able'.",
+        answer: "unable",
+        working: "The prefix 'un-' means 'not' or 'opposite of'. un + able = unable (not able)"
+      },
+      {
+        question: "Add a prefix to make the opposite of 'like'.",
+        answer: "dislike",
+        working: "The prefix 'dis-' means 'not' or 'the opposite of'. dis + like = dislike (to not like)"
+      },
+      {
+        question: "Add a prefix to make the opposite of 'agree'.",
+        answer: "disagree",
+        working: "The prefix 'dis-' means 'not' or 'the opposite of'. dis + agree = disagree (to not agree)"
+      },
+      {
+        question: "Add a prefix to make the opposite of 'appear'.",
+        answer: "disappear",
+        working: "The prefix 'dis-' means 'not', 'away', or 'reversal'. dis + appear = disappear"
+      },
+      {
+        question: "Add a prefix to make the opposite of 'connect'.",
+        answer: "disconnect",
+        working: "The prefix 'dis-' means 'reverse' or 'remove'. dis + connect = disconnect (to reverse a connection)"
+      },
+      {
+        question: "Add a prefix to mean 'again' to the word 'build'.",
+        answer: "rebuild",
+        working: "The prefix 're-' means 'again' or 'back'. re + build = rebuild (to build again)"
+      },
+      {
+        question: "Add a prefix to mean 'again' to the word 'write'.",
+        answer: "rewrite",
+        working: "The prefix 're-' means 'again' or 'back'. re + write = rewrite (to write again)"
+      },
+      {
+        question: "Add a prefix to mean 'before' to the word 'view'.",
+        answer: "preview",
+        working: "The prefix 'pre-' means 'before' or 'earlier than'. pre + view = preview (to view before)"
+      },
+      {
+        question: "Add a prefix to mean 'too much' to the word 'eat'.",
+        answer: "overeat",
+        working: "The prefix 'over-' means 'too much' or 'excessive'. over + eat = overeat (to eat too much)"
+      },
+      {
+        question: "Add a prefix to mean 'not enough' to the word 'cooked'.",
+        answer: "undercooked",
+        working: "The prefix 'under-' means 'beneath' or 'not enough'. under + cooked = undercooked (not cooked enough)"
+      },
+      {
+        question: "Add a prefix to mean 'together' to the word 'operate'.",
+        answer: "cooperate",
+        working: "The prefix 'co-' means 'together' or 'joint'. co + operate = cooperate (to work together)"
+      },
+      
+      // Suffix questions
+      {
+        question: "Add a suffix to turn 'care' into an adjective.",
+        answer: "careful",
+        working: "The suffix '-ful' means 'full of' and turns a noun into an adjective. care + ful = careful (full of care)"
+      },
+      {
+        question: "Add a suffix to turn 'hope' into an adjective.",
+        answer: "hopeful",
+        working: "The suffix '-ful' means 'full of' and turns a noun into an adjective. hope + ful = hopeful (full of hope)"
+      },
+      {
+        question: "Add a suffix to turn 'beauty' into an adjective.",
+        answer: "beautiful",
+        working: "The suffix '-ful' means 'full of' and turns a noun into an adjective. beauty + ful = beautiful (full of beauty)"
+      },
+      {
+        question: "Add a suffix to turn 'use' into an adjective meaning 'of value'.",
+        answer: "useful",
+        working: "The suffix '-ful' means 'full of' and turns a noun into an adjective. use + ful = useful (full of use/having value)"
+      },
+      {
+        question: "Add a suffix to turn 'care' into an adjective meaning 'without care'.",
+        answer: "careless",
+        working: "The suffix '-less' means 'without' and turns a noun into an adjective. care + less = careless (without care)"
+      },
+      {
+        question: "Add a suffix to turn 'help' into an adjective meaning 'without help'.",
+        answer: "helpless",
+        working: "The suffix '-less' means 'without' and turns a noun into an adjective. help + less = helpless (without help)"
+      },
+      {
+        question: "Add a suffix to turn 'quick' into an adverb.",
+        answer: "quickly",
+        working: "The suffix '-ly' turns an adjective into an adverb. quick + ly = quickly (in a quick manner)"
+      },
+      {
+        question: "Add a suffix to turn 'slow' into an adverb.",
+        answer: "slowly",
+        working: "The suffix '-ly' turns an adjective into an adverb. slow + ly = slowly (in a slow manner)"
+      },
+      {
+        question: "Add a suffix to turn 'happy' into an adverb.",
+        answer: "happily",
+        working: "The suffix '-ly' turns an adjective into an adverb. For adjectives ending in 'y', change 'y' to 'i' before adding '-ly'."
+      },
+      {
+        question: "Add a suffix to turn 'sad' into an adverb.",
+        answer: "sadly",
+        working: "The suffix '-ly' turns an adjective into an adverb. sad + ly = sadly (in a sad manner)"
+      },
+      {
+        question: "Add a suffix to turn 'teach' into a person who teaches.",
+        answer: "teacher",
+        working: "The suffix '-er' refers to a person who does the action. teach + er = teacher (someone who teaches)"
+      },
+      {
+        question: "Add a suffix to turn 'bake' into a person who bakes.",
+        answer: "baker",
+        working: "The suffix '-er' refers to a person who does the action. bake + er = baker (someone who bakes)"
+      },
+      {
+        question: "Add a suffix to turn 'write' into a person who writes.",
+        answer: "writer",
+        working: "The suffix '-er' refers to a person who does the action. write + er = writer (someone who writes)"
+      },
+      {
+        question: "Add a suffix to turn 'child' into the state of being a child.",
+        answer: "childhood",
+        working: "The suffix '-hood' means 'state or condition'. child + hood = childhood (the state of being a child)"
+      },
+      {
+        question: "Add a suffix to turn 'friend' into the state of being friends.",
+        answer: "friendship",
+        working: "The suffix '-ship' means 'state or condition'. friend + ship = friendship (the state of being friends)"
+      },
+      
+      // Root word questions
+      {
+        question: "What is the root word in 'disagree'?",
+        answer: "agree",
+        working: "The root word is what remains when prefixes and suffixes are removed. dis- is the prefix, so 'agree' is the root word."
+      },
+      {
+        question: "What is the root word in 'unhappy'?",
+        answer: "happy",
+        working: "The root word is what remains when prefixes and suffixes are removed. un- is the prefix, so 'happy' is the root word."
+      },
+      {
+        question: "What is the root word in 'dishonest'?",
+        answer: "honest",
+        working: "The root word is what remains when prefixes and suffixes are removed. dis- is the prefix, so 'honest' is the root word."
+      },
+      {
+        question: "What is the root word in 'rewrite'?",
+        answer: "write",
+        working: "The root word is what remains when prefixes and suffixes are removed. re- is the prefix, so 'write' is the root word."
+      },
+      {
+        question: "What is the root word in 'quickly'?",
+        answer: "quick",
+        working: "The root word is what remains when prefixes and suffixes are removed. -ly is the suffix, so 'quick' is the root word."
+      },
+      {
+        question: "What is the root word in 'helpful'?",
+        answer: "help",
+        working: "The root word is what remains when prefixes and suffixes are removed. -ful is the suffix, so 'help' is the root word."
+      },
+      {
+        question: "What is the root word in 'teacher'?",
+        answer: "teach",
+        working: "The root word is what remains when prefixes and suffixes are removed. -er is the suffix, so 'teach' is the root word."
+      },
+      {
+        question: "What is the root word in 'dangerous'?",
+        answer: "danger",
+        working: "The root word is what remains when prefixes and suffixes are removed. -ous is the suffix, so 'danger' is the root word."
+      },
+      {
+        question: "What is the root word in 'happiness'?",
+        answer: "happy",
+        working: "The root word is the base form before any changes. 'happy' becomes 'happi-' before adding -ness, so 'happy' is the root."
+      },
+      {
+        question: "What is the root word in 'misunderstand'?",
+        answer: "stand",
+        working: "The root word is the base after all prefixes are removed. 'mis-' and 'under-' are both prefixes, so 'stand' is the root."
+      },
+      
+      // Compound word questions
+      {
+        question: "Create a compound word by joining 'sun' and 'shine'.",
+        answer: "sunshine",
+        working: "A compound word is made by joining two separate words together. sun + shine = sunshine"
+      },
+      {
+        question: "Create a compound word by joining 'foot' and 'ball'.",
+        answer: "football",
+        working: "A compound word is made by joining two separate words together. foot + ball = football"
+      },
+      {
+        question: "Create a compound word by joining 'rain' and 'coat'.",
+        answer: "raincoat",
+        working: "A compound word is made by joining two separate words together. rain + coat = raincoat"
+      },
+      {
+        question: "Create a compound word by joining 'book' and 'case'.",
+        answer: "bookcase",
+        working: "A compound word is made by joining two separate words together. book + case = bookcase"
+      },
+      {
+        question: "Create a compound word by joining 'note' and 'book'.",
+        answer: "notebook",
+        working: "A compound word is made by joining two separate words together. note + book = notebook"
+      },
+      
+      // Spelling rules questions
+      {
+        question: "Change 'run' to past tense following spelling rules.",
+        answer: "ran",
+        working: "Irregular verbs change their spelling in the past tense. 'run' becomes 'ran' in the past tense."
+      },
+      {
+        question: "Change 'happy' to an adverb following spelling rules.",
+        answer: "happily",
+        working: "For words ending in 'y', change the 'y' to 'i' before adding '-ly'. happy → happi + ly = happily"
+      },
+      {
+        question: "Change 'hope' to 'hoping' following spelling rules.",
+        answer: "hoping",
+        working: "For words ending in 'e', drop the 'e' before adding 'ing'. hope → hop + ing = hoping"
+      },
+      {
+        question: "Change 'sit' to 'sitting' following spelling rules.",
+        answer: "sitting",
+        working: "For short vowel words ending in one consonant, double the final consonant before adding 'ing'. sit → sitt + ing = sitting"
+      },
+      {
+        question: "Change 'swim' to 'swimming' following spelling rules.",
+        answer: "swimming",
+        working: "For short vowel words ending in one consonant, double the final consonant before adding 'ing'. swim → swimm + ing = swimming"
+      },
+      {
+        question: "Change 'play' to 'played' following spelling rules.",
+        answer: "played",
+        working: "For words ending in 'y' after a vowel, just add '-ed'. play + ed = played"
+      },
+      {
+        question: "Change 'cry' to 'cried' following spelling rules.",
+        answer: "cried",
+        working: "For words ending in 'y' after a consonant, change 'y' to 'i' before adding '-ed'. cry → cri + ed = cried"
+      },
+      {
+        question: "Change 'nice' to a comparative adjective following spelling rules.",
+        answer: "nicer",
+        working: "For short adjectives (one syllable), add '-er'. nice + er = nicer"
+      },
+      {
+        question: "Change 'big' to a comparative adjective following spelling rules.",
+        answer: "bigger",
+        working: "For short adjectives ending in one consonant, double the final consonant before adding '-er'. big → bigg + er = bigger"
+      },
+      {
+        question: "Change 'beautiful' to a superlative adjective following spelling rules.",
+        answer: "most beautiful",
+        working: "For long adjectives (three or more syllables), use 'most' before the adjective. most + beautiful = most beautiful"
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer.toLowerCase()}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>

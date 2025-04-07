@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Standard English and Formality</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Standard English and Formality</h1>
+  <ul class="instructions">
+    <li>Standard English is how we write properly in school or work.</li>
+    <li>Use full words, not slang or short cuts.</li>
+    <li>Some situations need more formal language.</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Standard English and formality database
+    const questions = [
+      // Standard English questions
+      {
+        question: "Which is Standard English: 'We was happy' or 'We were happy'?",
+        answer: "We were happy",
+        working: "Use correct verb forms: 'were' not 'was' with 'we'. In Standard English, 'we' always takes 'were'."
+      },
+      {
+        question: "Which is Standard English: 'I done my homework' or 'I did my homework'?",
+        answer: "I did my homework",
+        working: "Use correct past tense: 'did' not 'done'. 'Done' is a past participle and needs a helping verb."
+      },
+      {
+        question: "Which is Standard English: 'She ain't coming' or 'She isn't coming'?",
+        answer: "She isn't coming",
+        working: "'Ain't' is non-standard English. Use proper contractions like 'isn't' in Standard English."
+      },
+      {
+        question: "Which is Standard English: 'They was running' or 'They were running'?",
+        answer: "They were running",
+        working: "Use correct verb forms: 'were' not 'was' with plural subjects like 'they'."
+      },
+      {
+        question: "Which is Standard English: 'He don't know' or 'He doesn't know'?",
+        answer: "He doesn't know",
+        working: "For he/she/it in present tense, use 'doesn't' not 'don't'. This is subject-verb agreement."
+      },
+      {
+        question: "Which is Standard English: 'We seen the movie' or 'We saw the movie'?",
+        answer: "We saw the movie",
+        working: "Use correct past tense: 'saw' not 'seen'. 'Seen' is a past participle and needs a helping verb."
+      },
+      {
+        question: "Which is Standard English: 'I could of gone' or 'I could have gone'?",
+        answer: "I could have gone",
+        working: "Use 'could have' not 'could of'. 'Could of' is a common mistake from the sound of 'could've'."
+      },
+      {
+        question: "Which is Standard English: 'Me and Tom went' or 'Tom and I went'?",
+        answer: "Tom and I went",
+        working: "Use 'I' not 'me' as a subject and put yourself last. 'I' is the subject form of the pronoun."
+      },
+      {
+        question: "Which is Standard English: 'He's better than me' or 'He's better than I am'?",
+        answer: "He's better than I am",
+        working: "In formal Standard English, 'than' is followed by a complete clause. 'Than I am' is more formal."
+      },
+      {
+        question: "Which is Standard English: 'There's three books' or 'There are three books'?",
+        answer: "There are three books",
+        working: "Use 'are' not 'is' with plural subjects. 'Books' is plural, so use 'are' not 'there's'."
+      },
+      {
+        question: "Which is Standard English: 'She's real smart' or 'She's really smart'?",
+        answer: "She's really smart",
+        working: "Use adverbs (really) not adjectives (real) to modify adjectives. 'Really' modifies 'smart'."
+      },
+      {
+        question: "Which is Standard English: 'The data is clear' or 'The data are clear'?",
+        answer: "The data are clear",
+        working: "In formal Standard English, 'data' is technically plural (singular: datum), so use 'are'."
+      },
+      
+      // Formality questions
+      {
+        question: "Which is more formal: 'Gonna go now' or 'I am going to leave now'?",
+        answer: "I am going to leave now",
+        working: "Formal language uses complete sentences with proper verb forms, not contractions like 'gonna'."
+      },
+      {
+        question: "Which is more formal: 'Let's chat later' or 'We should discuss this at a later time'?",
+        answer: "We should discuss this at a later time",
+        working: "Formal language uses specific, precise terms rather than casual expressions like 'chat'."
+      },
+      {
+        question: "Which is more formal: 'Got it?' or 'Do you understand?'",
+        answer: "Do you understand",
+        working: "Formal language uses complete questions rather than shortened phrases like 'Got it?'"
+      },
+      {
+        question: "Which is more formal: 'It's awesome' or 'It is excellent'?",
+        answer: "It is excellent",
+        working: "Formal language avoids contractions ('it's') and uses sophisticated vocabulary ('excellent' instead of 'awesome')."
+      },
+      {
+        question: "Which is more formal: 'Kids are playing' or 'Children are playing'?",
+        answer: "Children are playing",
+        working: "Formal language uses more precise terminology ('children' instead of the more casual 'kids')."
+      },
+      {
+        question: "Which is more formal: 'I wanna say thanks' or 'I would like to express my gratitude'?",
+        answer: "I would like to express my gratitude",
+        working: "Formal language avoids contractions like 'wanna' and uses more sophisticated phrasing."
+      },
+      {
+        question: "Which is more formal: 'Give me a sec' or 'Please wait a moment'?",
+        answer: "Please wait a moment",
+        working: "Formal language uses complete phrases and polite terms rather than casual shortenings."
+      },
+      {
+        question: "Which is more formal: 'The stuff you said' or 'The information you provided'?",
+        answer: "The information you provided",
+        working: "Formal language uses precise terminology ('information') rather than vague terms ('stuff')."
+      },
+      {
+        question: "Which is more formal: 'It's super important' or 'It is extremely important'?",
+        answer: "It is extremely important",
+        working: "Formal language avoids contractions ('it's') and casual intensifiers ('super')."
+      },
+      {
+        question: "Which is more formal: 'They kinda agreed' or 'They partially agreed'?",
+        answer: "They partially agreed",
+        working: "Formal language uses precise adverbs ('partially') rather than casual terms ('kinda')."
+      },
+      {
+        question: "Which is more formal: 'So you're saying...' or 'I understand that you're suggesting...'?",
+        answer: "I understand that you're suggesting",
+        working: "Formal language avoids starting sentences with 'so' and uses more precise phrasing."
+      },
+      {
+        question: "Which is more formal: 'Hope to hear from you' or 'I look forward to your response'?",
+        answer: "I look forward to your response",
+        working: "Formal language uses complete sentences instead of shortened phrases without subjects."
+      },
+      {
+        question: "Which is more formal: 'Can you fix this?' or 'Would you be able to resolve this issue?'",
+        answer: "Would you be able to resolve this issue",
+        working: "Formal language uses polite modal verbs ('would') and specific terminology ('resolve this issue')."
+      },
+      {
+        question: "Which is more formal: 'Hey there!' or 'Good morning'?",
+        answer: "Good morning",
+        working: "Formal language uses conventional greetings rather than casual expressions like 'Hey there!'."
+      },
+      {
+        question: "Which is more formal: 'No prob' or 'You're welcome'?",
+        answer: "You're welcome",
+        working: "Formal language uses complete standard phrases rather than shortened slang like 'No prob'."
+      },
+      {
+        question: "Which is more formal: 'Yeah, sure' or 'Yes, certainly'?",
+        answer: "Yes, certainly",
+        working: "Formal language uses 'yes' rather than 'yeah' and more formal adverbs like 'certainly'."
+      },
+      {
+        question: "Which is more formal: 'Lots of people think that' or 'Many individuals believe that'?",
+        answer: "Many individuals believe that",
+        working: "Formal language uses precise quantifiers ('many') and more formal terms ('individuals', 'believe')."
+      },
+      {
+        question: "Which is more formal: 'FYI, the meeting is at 3' or 'For your information, the meeting is scheduled for 3:00 pm'?",
+        answer: "For your information, the meeting is scheduled for 3:00 pm",
+        working: "Formal language avoids acronyms like 'FYI' and uses complete, precise sentences."
+      },
+      {
+        question: "Which is more formal: 'Get back to me ASAP' or 'Please respond at your earliest convenience'?",
+        answer: "Please respond at your earliest convenience",
+        working: "Formal language avoids acronyms like 'ASAP' and uses polite, complete phrases."
+      },
+      {
+        question: "Which is more formal: 'This thing doesn't work' or 'This device is not functioning correctly'?",
+        answer: "This device is not functioning correctly",
+        working: "Formal language uses specific nouns ('device') and more precise verb phrases ('not functioning correctly')."
+      },
+      {
+        question: "Which is more formal: 'Need help!' or 'I require assistance'?",
+        answer: "I require assistance",
+        working: "Formal language uses complete sentences with subjects and more formal vocabulary ('require assistance')."
+      },
+      {
+        question: "Which is more formal: 'Just checking in' or 'I'm following up on our previous conversation'?",
+        answer: "I'm following up on our previous conversation",
+        working: "Formal language uses complete, specific phrases rather than vague shortened expressions."
+      },
+      {
+        question: "Which is more formal: 'Lemme know' or 'Please inform me'?",
+        answer: "Please inform me",
+        working: "Formal language avoids contractions like 'lemme' and uses more precise, formal verbs like 'inform'."
+      },
+      {
+        question: "Which is more formal: 'BTW, did you see that email?' or 'By the way, did you receive that email correspondence?'",
+        answer: "By the way, did you receive that email correspondence",
+        working: "Formal language avoids acronyms like 'BTW' and uses more formal vocabulary ('receive', 'correspondence')."
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer.toLowerCase()}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>

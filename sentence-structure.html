@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grammar: Sentence Structure</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Grammar: Sentence Structure</h1>
+  <ul class="instructions">
+    <li>Some questions ask you to spot sentence types or identify parts of a sentence.</li>
+    <li>Clauses are parts of sentences: a main clause makes sense on its own.</li>
+    <li>Conjunctions link clauses or ideas (like 'because', 'and', 'but').</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Sentence structure database
+    const questions = [
+      // Sentence type questions
+      {
+        question: "What type of sentence is this: 'Close the door now!'?",
+        answer: "command",
+        working: "Commands tell someone to do something. They often end with an exclamation mark and may start with a verb."
+      },
+      {
+        question: "What type of sentence is this: 'Can you pass me the salt?'",
+        answer: "question",
+        working: "Questions ask for information and end with a question mark. They often start with words like what, where, when, why, how, or auxiliary verbs."
+      },
+      {
+        question: "What type of sentence is this: 'The cat sat on the mat.'",
+        answer: "statement",
+        working: "Statements give information and end with a period. They usually have a subject followed by a verb."
+      },
+      {
+        question: "What type of sentence is this: 'What a beautiful day!'",
+        answer: "exclamation",
+        working: "Exclamations express strong feelings and end with an exclamation mark. They often start with 'what' or 'how'."
+      },
+      {
+        question: "What type of sentence is this: 'Go to your room!'",
+        answer: "command",
+        working: "Commands tell someone to do something. They often start with a verb and can end with an exclamation mark for emphasis."
+      },
+      {
+        question: "What type of sentence is this: 'She walks to school every day.'",
+        answer: "statement",
+        working: "Statements provide information and end with a period. They usually follow a subject-verb structure."
+      },
+      {
+        question: "What type of sentence is this: 'How wonderful you look today!'",
+        answer: "exclamation",
+        working: "Exclamations show strong emotions like surprise or delight. They often start with 'how' or 'what' and end with an exclamation mark."
+      },
+      {
+        question: "What type of sentence is this: 'Where did you put my keys?'",
+        answer: "question",
+        working: "Questions ask for information and end with a question mark. They often begin with question words like where, what, who, when, why, or how."
+      },
+      {
+        question: "What type of sentence is this: 'Please be quiet during the movie.'",
+        answer: "command",
+        working: "Commands give instructions or tell someone to do something. 'Please' makes it more polite, but it's still a command."
+      },
+      {
+        question: "What type of sentence is this: 'What an amazing performance that was!'",
+        answer: "exclamation",
+        working: "Exclamations express strong feelings and often start with 'what' or 'how'. They end with an exclamation mark."
+      },
+      
+      // Main clause identification questions
+      {
+        question: "Which is the main clause? 'Although it was raining, we went outside.'",
+        answer: "we went outside",
+        working: "The main clause makes sense on its own and can stand as a complete sentence. 'We went outside' can stand alone, while 'Although it was raining' cannot."
+      },
+      {
+        question: "Which is the main clause? 'When the bell rings, students leave the classroom.'",
+        answer: "students leave the classroom",
+        working: "The main clause makes sense on its own. 'Students leave the classroom' is a complete thought, while 'When the bell rings' depends on the main clause."
+      },
+      {
+        question: "Which is the main clause? 'I will help you if you need me.'",
+        answer: "I will help you",
+        working: "The main clause can stand alone as a complete sentence. 'I will help you' makes complete sense by itself."
+      },
+      {
+        question: "Which is the main clause? 'Because it's cold outside, I'm wearing a coat.'",
+        answer: "I'm wearing a coat",
+        working: "The main clause makes sense independently. 'I'm wearing a coat' is a complete sentence, while 'Because it's cold outside' needs more information."
+      },
+      {
+        question: "Which is the main clause? 'While I was sleeping, the phone rang.'",
+        answer: "the phone rang",
+        working: "The main clause makes sense on its own. 'The phone rang' is a complete thought that doesn't depend on other information."
+      },
+      {
+        question: "Which is the main clause? 'Since you're here, we can start the meeting.'",
+        answer: "we can start the meeting",
+        working: "The main clause can stand alone. 'We can start the meeting' is complete, while 'Since you're here' is a subordinate clause that provides a reason."
+      },
+      {
+        question: "Which is the main clause? 'Before you go to bed, brush your teeth.'",
+        answer: "brush your teeth",
+        working: "The main clause is the command 'brush your teeth'. It can stand alone, while 'Before you go to bed' adds information about when."
+      },
+      {
+        question: "Which is the main clause? 'The teacher smiled when I answered correctly.'",
+        answer: "The teacher smiled",
+        working: "The main clause stands independently. 'The teacher smiled' is complete by itself, while 'when I answered correctly' tells when the teacher smiled."
+      },
+      {
+        question: "Which is the main clause? 'As soon as the rain stops, we'll go to the park.'",
+        answer: "we'll go to the park",
+        working: "The main clause makes sense on its own. 'We'll go to the park' is a complete thought, while 'As soon as the rain stops' is dependent."
+      },
+      {
+        question: "Which is the main clause? 'Unless you study hard, you won't pass the exam.'",
+        answer: "you won't pass the exam",
+        working: "The main clause can stand independently. 'You won't pass the exam' is complete, while 'Unless you study hard' is a conditional clause."
+      },
+      
+      // Subject of sentence questions
+      {
+        question: "What is the subject in this sentence: 'The dog chased the ball.'?",
+        answer: "The dog",
+        working: "The subject is who or what is doing the action. 'The dog' is doing the action of chasing."
+      },
+      {
+        question: "What is the subject in this sentence: 'My sister plays the piano.'?",
+        answer: "My sister",
+        working: "The subject is who or what is doing the action. 'My sister' is doing the action of playing."
+      },
+      {
+        question: "What is the subject in this sentence: 'The old man walked slowly across the street.'?",
+        answer: "The old man",
+        working: "The subject is who or what is doing the action. 'The old man' is doing the action of walking."
+      },
+      {
+        question: "What is the subject in this sentence: 'Yesterday, it rained heavily.'?",
+        answer: "it",
+        working: "The subject is who or what is doing the action. 'It' is the subject, even though it's not a specific thing in this weather sentence."
+      },
+      {
+        question: "What is the subject in this sentence: 'Under the tree sat a little girl.'?",
+        answer: "a little girl",
+        working: "Even though the sentence order is inverted, the subject is still who or what is doing the action. 'A little girl' is doing the sitting."
+      },
+      {
+        question: "What is the subject in this sentence: 'Are you coming to the party?'?",
+        answer: "you",
+        working: "In questions, the subject often comes after the first verb. 'You' is the one who might be coming."
+      },
+      {
+        question: "What is the subject in this sentence: 'The beautiful flowers bloom in spring.'?",
+        answer: "The beautiful flowers",
+        working: "The subject is who or what is doing the action. 'The beautiful flowers' are doing the action of blooming."
+      },
+      {
+        question: "What is the subject in this sentence: 'Many children enjoy playing sports.'?",
+        answer: "Many children",
+        working: "The subject is who or what is doing the action. 'Many children' are doing the action of enjoying."
+      },
+      {
+        question: "What is the subject in this sentence: 'Where is my book?'?",
+        answer: "my book",
+        working: "In questions with 'is/are/was/were', the subject usually comes after the verb. 'My book' is what the question is asking about."
+      },
+      {
+        question: "What is the subject in this sentence: 'Running every day improves your health.'?",
+        answer: "Running every day",
+        working: "The subject can be a gerund phrase (verb + -ing used as a noun). 'Running every day' is what improves your health."
+      },
+      
+      // Conjunction questions
+      {
+        question: "Which one is a coordinating conjunction? and, when, because, who",
+        answer: "and",
+        working: "Coordinating conjunctions join words, phrases, or clauses of equal importance. They are: for, and, nor, but, or, yet, so (FANBOYS)."
+      },
+      {
+        question: "Which one is a subordinating conjunction? but, if, or, so",
+        answer: "if",
+        working: "Subordinating conjunctions join a subordinate clause to a main clause. Examples include: if, because, when, although, since, while, unless."
+      },
+      {
+        question: "Which one is a coordinating conjunction? until, since, or, although",
+        answer: "or",
+        working: "Coordinating conjunctions join items of equal importance. They are: for, and, nor, but, or, yet, so (FANBOYS)."
+      },
+      {
+        question: "Which one is a subordinating conjunction? yet, where, nor, but",
+        answer: "where",
+        working: "Subordinating conjunctions introduce dependent clauses. Examples include: when, where, because, if, although, while, unless."
+      },
+      {
+        question: "Which one is a coordinating conjunction? although, because, if, but",
+        answer: "but",
+        working: "Coordinating conjunctions join words, phrases, or clauses of equal importance. They are: for, and, nor, but, or, yet, so (FANBOYS)."
+      },
+      {
+        question: "Which one is a subordinating conjunction? and, when, so, yet",
+        answer: "when",
+        working: "Subordinating conjunctions introduce dependent clauses. Examples include: when, where, because, if, although, while, unless."
+      },
+      {
+        question: "Which one is a coordinating conjunction? while, because, for, until",
+        answer: "for",
+        working: "Coordinating conjunctions join items of equal importance. They are: for, and, nor, but, or, yet, so (FANBOYS)."
+      },
+      {
+        question: "Which one is a subordinating conjunction? as, nor, but, or",
+        answer: "as",
+        working: "Subordinating conjunctions introduce dependent clauses. Examples include: as, when, while, because, if, although, unless."
+      },
+      {
+        question: "Which one is a coordinating conjunction? unless, before, while, so",
+        answer: "so",
+        working: "Coordinating conjunctions join words, phrases, or clauses of equal importance. They are: for, and, nor, but, or, yet, so (FANBOYS)."
+      },
+      {
+        question: "Which one is a subordinating conjunction? since, yet, and, nor",
+        answer: "since",
+        working: "Subordinating conjunctions introduce dependent clauses. Examples include: since, when, where, because, if, although, unless."
+      },
+      
+      // Phrase type questions
+      {
+        question: "What kind of phrase is this: 'under the table'?",
+        answer: "prepositional phrase",
+        working: "Prepositional phrases begin with a preposition (under) and include a noun/pronoun (table) and any modifiers. They often show location or time."
+      },
+      {
+        question: "What kind of phrase is this: 'running quickly'?",
+        answer: "verb phrase",
+        working: "Verb phrases contain a main verb (running) and can include modifiers, helping verbs, or objects. This one has a verb and an adverb."
+      },
+      {
+        question: "What kind of phrase is this: 'the red car'?",
+        answer: "noun phrase",
+        working: "Noun phrases contain a noun (car) and its modifiers (the, red). They function as a single noun in a sentence."
+      },
+      {
+        question: "What kind of phrase is this: 'extremely happy'?",
+        answer: "adjective phrase",
+        working: "Adjective phrases contain an adjective (happy) and its modifiers (extremely). They describe a noun or pronoun."
+      },
+      {
+        question: "What kind of phrase is this: 'in the morning'?",
+        answer: "prepositional phrase",
+        working: "Prepositional phrases begin with a preposition (in) and include a noun (morning) and any modifiers. They often show time or location."
+      },
+      {
+        question: "What kind of phrase is this: 'very carefully'?",
+        answer: "adverb phrase",
+        working: "Adverb phrases contain an adverb (carefully) and its modifiers (very). They modify verbs, adjectives, or other adverbs."
+      },
+      {
+        question: "What kind of phrase is this: 'the old wooden bridge'?",
+        answer: "noun phrase",
+        working: "Noun phrases contain a noun (bridge) and its modifiers (the, old, wooden). They act as a single noun in a sentence."
+      },
+      {
+        question: "What kind of phrase is this: 'will be singing'?",
+        answer: "verb phrase",
+        working: "Verb phrases contain a main verb (singing) and helping/auxiliary verbs (will, be). This is a future progressive verb phrase."
+      },
+      {
+        question: "What kind of phrase is this: 'on top of the mountain'?",
+        answer: "prepositional phrase",
+        working: "Prepositional phrases begin with a preposition ('on top of') and include a noun (mountain) and modifiers. They typically show location."
+      },
+      {
+        question: "What kind of phrase is this: 'surprisingly easy'?",
+        answer: "adjective phrase",
+        working: "Adjective phrases contain an adjective (easy) and its modifiers (surprisingly). They describe a noun or pronoun."
+      },
+      
+      // Clause type questions
+      {
+        question: "What type of clause is this: 'because it was raining'?",
+        answer: "subordinate clause",
+        working: "Subordinate (or dependent) clauses cannot stand alone. This one starts with a subordinating conjunction (because) and depends on a main clause."
+      },
+      {
+        question: "What type of clause is this: 'The dog barked loudly'?",
+        answer: "main clause",
+        working: "Main (or independent) clauses can stand alone as complete sentences. This one has a subject (dog) and verb (barked) and expresses a complete thought."
+      },
+      {
+        question: "What type of clause is this: 'while you were sleeping'?",
+        answer: "subordinate clause",
+        working: "Subordinate clauses cannot stand alone. This one starts with a subordinating conjunction (while) and needs a main clause to make complete sense."
+      },
+      {
+        question: "What type of clause is this: 'She read a book'?",
+        answer: "main clause",
+        working: "Main clauses express a complete thought and can stand alone. This one has a subject (She) and verb (read) and makes complete sense by itself."
+      },
+      {
+        question: "What type of clause is this: 'that I bought yesterday'?",
+        answer: "subordinate clause",
+        working: "Subordinate clauses cannot stand alone. This one is a relative clause (starting with 'that') and needs a main clause to make complete sense."
+      },
+      {
+        question: "What type of clause is this: 'I finished my homework'?",
+        answer: "main clause",
+        working: "Main clauses can stand alone as complete sentences. This one has a subject (I) and verb (finished) and expresses a complete thought."
+      },
+      {
+        question: "What type of clause is this: 'whenever it snows'?",
+        answer: "subordinate clause",
+        working: "Subordinate clauses cannot stand alone. This one starts with a subordinating conjunction (whenever) and depends on a main clause."
+      },
+      {
+        question: "What type of clause is this: 'They arrived early'?",
+        answer: "main clause",
+        working: "Main clauses express a complete thought and can stand alone. This one has a subject (They) and verb (arrived) and makes complete sense by itself."
+      },
+      {
+        question: "What type of clause is this: 'who lives next door'?",
+        answer: "subordinate clause",
+        working: "Subordinate clauses cannot stand alone. This one is a relative clause (starting with 'who') and needs a main clause to make complete sense."
+      },
+      {
+        question: "What type of clause is this: 'We went to the park'?",
+        answer: "main clause",
+        working: "Main clauses can stand alone as complete sentences. This one has a subject (We) and verb (went) and expresses a complete thought."
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer.toLowerCase()}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>

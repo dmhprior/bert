@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tenses and Verb Forms</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Tenses and Verb Forms</h1>
+  <ul class="instructions">
+    <li>Verbs tell us when something happens: past, present or future.</li>
+    <li>Use 'have', 'has', 'had' for perfect tense.</li>
+    <li>Make sure verbs match the subject.</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Tenses and verb forms database
+    const questions = [
+      // Tense identification questions
+      {
+        question: "What tense is this: 'She is running fast.'?",
+        answer: "present progressive",
+        working: "Present progressive tense uses 'is/am/are' + verb-ing. It shows an action happening now."
+      },
+      {
+        question: "What tense is this: 'He plays football every weekend.'?",
+        answer: "present simple",
+        working: "Present simple tense uses the base form of the verb (or adds -s/-es). It shows regular actions or facts."
+      },
+      {
+        question: "What tense is this: 'They have lived here for five years.'?",
+        answer: "present perfect",
+        working: "Present perfect tense uses 'have/has' + past participle. It connects past to present."
+      },
+      {
+        question: "What tense is this: 'She was reading when I called.'?",
+        answer: "past progressive",
+        working: "Past progressive tense uses 'was/were' + verb-ing. It shows an action in progress in the past."
+      },
+      {
+        question: "What tense is this: 'I will help you tomorrow.'?",
+        answer: "future simple",
+        working: "Future simple tense uses 'will' + base verb. It refers to actions that will happen in the future."
+      },
+      {
+        question: "What tense is this: 'We had finished dinner before they arrived.'?",
+        answer: "past perfect",
+        working: "Past perfect tense uses 'had' + past participle. It shows an action completed before another past action."
+      },
+      {
+        question: "What tense is this: 'They will have completed the project by next month.'?",
+        answer: "future perfect",
+        working: "Future perfect tense uses 'will have' + past participle. It shows a future action that will be completed before another time point."
+      },
+      {
+        question: "What tense is this: 'I am going to study tonight.'?",
+        answer: "future going to",
+        working: "'Going to' future uses 'am/is/are going to' + base verb. It shows planned future actions."
+      },
+      {
+        question: "What tense is this: 'She has been working for hours.'?",
+        answer: "present perfect progressive",
+        working: "Present perfect progressive uses 'has/have been' + verb-ing. It shows an ongoing action from the past until now."
+      },
+      {
+        question: "What tense is this: 'They were playing while I was cooking.'?",
+        answer: "past progressive",
+        working: "Past progressive tense uses 'was/were' + verb-ing. It shows actions in progress at a specific time in the past."
+      },
+      
+      // Past tense form questions
+      {
+        question: "What is the past tense of 'go'?",
+        answer: "went",
+        working: "'Go' is an irregular verb. Its past tense is 'went', not 'goed'."
+      },
+      {
+        question: "What is the past tense of 'eat'?",
+        answer: "ate",
+        working: "'Eat' is an irregular verb. Its past tense is 'ate', not 'eated'."
+      },
+      {
+        question: "What is the past tense of 'swim'?",
+        answer: "swam",
+        working: "'Swim' is an irregular verb. Its past tense is 'swam', not 'swimmed'."
+      },
+      {
+        question: "What is the past tense of 'run'?",
+        answer: "ran",
+        working: "'Run' is an irregular verb. Its past tense is 'ran', not 'runned'."
+      },
+      {
+        question: "What is the past tense of 'see'?",
+        answer: "saw",
+        working: "'See' is an irregular verb. Its past tense is 'saw', not 'seed' or 'seen'."
+      },
+      {
+        question: "What is the past tense of 'write'?",
+        answer: "wrote",
+        working: "'Write' is an irregular verb. Its past tense is 'wrote', not 'writed' or 'written'."
+      },
+      {
+        question: "What is the past tense of 'drive'?",
+        answer: "drove",
+        working: "'Drive' is an irregular verb. Its past tense is 'drove', not 'drived' or 'driven'."
+      },
+      {
+        question: "What is the past tense of 'buy'?",
+        answer: "bought",
+        working: "'Buy' is an irregular verb. Its past tense is 'bought', not 'buyed'."
+      },
+      {
+        question: "What is the past tense of 'bring'?",
+        answer: "brought",
+        working: "'Bring' is an irregular verb. Its past tense is 'brought', not 'bringed'."
+      },
+      {
+        question: "What is the past tense of 'know'?",
+        answer: "knew",
+        working: "'Know' is an irregular verb. Its past tense is 'knew', not 'knowed'."
+      },
+      
+      // Complete the sentence questions (future tense)
+      {
+        question: "Complete the sentence in future tense: 'Tomorrow, I ___ to the park.'",
+        answer: "will go",
+        working: "Future simple tense uses 'will' + base verb to talk about future actions."
+      },
+      {
+        question: "Complete the sentence in future tense: 'She ___ a new car next month.'",
+        answer: "will buy",
+        working: "Future simple tense uses 'will' + base verb to talk about future actions."
+      },
+      {
+        question: "Complete the sentence in future tense: 'We ___ at the party tomorrow.'",
+        answer: "will be",
+        working: "Future simple tense uses 'will' + base verb to talk about future actions."
+      },
+      {
+        question: "Complete the sentence in future tense: 'They ___ dinner by the time we arrive.'",
+        answer: "will have finished",
+        working: "Future perfect tense uses 'will have' + past participle to show actions that will be completed by a specific future time."
+      },
+      {
+        question: "Complete the sentence in future tense: 'I ___ my homework tonight.'",
+        answer: "am going to do",
+        working: "Future 'going to' uses 'am/is/are going to' + base verb to show planned future actions."
+      },
+      {
+        question: "Complete the sentence in future tense: 'The train ___ at 5 PM tomorrow.'",
+        answer: "will arrive",
+        working: "Future simple tense uses 'will' + base verb to talk about future actions."
+      },
+      {
+        question: "Complete the sentence in future tense: 'This time next week, I ___ on the beach.'",
+        answer: "will be lying",
+        working: "Future progressive tense uses 'will be' + verb-ing to show actions that will be in progress at a specific time in the future."
+      },
+      {
+        question: "Complete the sentence in future tense: 'By December, they ___ in their new house for a year.'",
+        answer: "will have been living",
+        working: "Future perfect progressive uses 'will have been' + verb-ing to show ongoing actions that will continue up to a point in the future."
+      },
+      {
+        question: "Complete the sentence in future tense: 'The movie ___ by the time we get to the theater.'",
+        answer: "will have started",
+        working: "Future perfect tense uses 'will have' + past participle to show actions that will be completed by a specific future time."
+      },
+      {
+        question: "Complete the sentence in future tense: 'I ___ the doctor next Wednesday.'",
+        answer: "am seeing",
+        working: "Present progressive can be used for future arrangements. 'Am seeing' shows a planned future appointment."
+      },
+      
+      // Subject-verb agreement questions
+      {
+        question: "Choose the correct form: 'The team (play/plays) tomorrow.'",
+        answer: "plays",
+        working: "'Team' is a singular collective noun, so it takes the singular verb form 'plays'."
+      },
+      {
+        question: "Choose the correct form: 'The children (is/are) playing outside.'",
+        answer: "are",
+        working: "'Children' is plural, so it takes the plural verb form 'are'."
+      },
+      {
+        question: "Choose the correct form: 'Each of the students (has/have) a book.'",
+        answer: "has",
+        working: "When 'each' is the subject, it takes a singular verb 'has'."
+      },
+      {
+        question: "Choose the correct form: 'Neither of them (want/wants) to go.'",
+        answer: "wants",
+        working: "'Neither' takes a singular verb, so 'wants' is correct."
+      },
+      {
+        question: "Choose the correct form: 'The data (is/are) incorrect.'",
+        answer: "are",
+        working: "'Data' is technically a plural noun (the singular is 'datum'), so it takes 'are'."
+      },
+      {
+        question: "Choose the correct form: 'My family (have/has) arrived.'",
+        answer: "has",
+        working: "'Family' is a singular collective noun, so it takes the singular verb 'has'."
+      },
+      {
+        question: "Choose the correct form: 'The news (was/were) shocking.'",
+        answer: "was",
+        working: "'News' appears plural but is actually a singular noun, so it takes 'was'."
+      },
+      {
+        question: "Choose the correct form: 'Mathematics (is/are) my favorite subject.'",
+        answer: "is",
+        working: "Subjects ending in -ics (mathematics, physics) are treated as singular, so 'is' is correct."
+      },
+      {
+        question: "Choose the correct form: 'A number of people (was/were) at the party.'",
+        answer: "were",
+        working: "'A number of' takes a plural verb, so 'were' is correct."
+      },
+      {
+        question: "Choose the correct form: 'Everyone (has/have) gone home.'",
+        answer: "has",
+        working: "'Everyone' is singular, so it takes the singular verb 'has'."
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer.toLowerCase()}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>

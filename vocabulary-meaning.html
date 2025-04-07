@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocabulary and Meaning</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Vocabulary and Meaning</h1>
+  <ul class="instructions">
+    <li>Words can have similar or opposite meanings.</li>
+    <li>Look at how the word is used in the sentence.</li>
+    <li>Find the best word that fits the meaning.</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Synonym and antonym database
+    const questions = [
+      // Synonym questions
+      {
+        question: "What is a synonym for 'big'?",
+        answer: "large",
+        working: "Synonyms are words with the same or similar meaning. 'Large' means the same as 'big'."
+      },
+      {
+        question: "What is a synonym for 'happy'?",
+        answer: "joyful",
+        working: "Synonyms are words with the same or similar meaning. 'Joyful' means the same as 'happy'."
+      },
+      {
+        question: "What is a synonym for 'fast'?",
+        answer: "quick",
+        working: "Synonyms are words with the same or similar meaning. 'Quick' means the same as 'fast'."
+      },
+      {
+        question: "What is a synonym for 'pretty'?",
+        answer: "beautiful",
+        working: "Synonyms are words with the same or similar meaning. 'Beautiful' means the same as 'pretty'."
+      },
+      {
+        question: "What is a synonym for 'sad'?",
+        answer: "unhappy",
+        working: "Synonyms are words with the same or similar meaning. 'Unhappy' means the same as 'sad'."
+      },
+      {
+        question: "What is a synonym for 'cold'?",
+        answer: "chilly",
+        working: "Synonyms are words with the same or similar meaning. 'Chilly' means the same as 'cold'."
+      },
+      {
+        question: "What is a synonym for 'smart'?",
+        answer: "intelligent",
+        working: "Synonyms are words with the same or similar meaning. 'Intelligent' means the same as 'smart'."
+      },
+      {
+        question: "What is a synonym for 'small'?",
+        answer: "tiny",
+        working: "Synonyms are words with the same or similar meaning. 'Tiny' means the same as 'small'."
+      },
+      {
+        question: "What is a synonym for 'difficult'?",
+        answer: "hard",
+        working: "Synonyms are words with the same or similar meaning. 'Hard' means the same as 'difficult'."
+      },
+      {
+        question: "What is a synonym for 'scared'?",
+        answer: "afraid",
+        working: "Synonyms are words with the same or similar meaning. 'Afraid' means the same as 'scared'."
+      },
+      {
+        question: "What is a synonym for 'tired'?",
+        answer: "exhausted",
+        working: "Synonyms are words with the same or similar meaning. 'Exhausted' means the same as 'tired' but stronger."
+      },
+      {
+        question: "What is a synonym for 'angry'?",
+        answer: "furious",
+        working: "Synonyms are words with the same or similar meaning. 'Furious' means the same as 'angry' but more intense."
+      },
+      {
+        question: "What is a synonym for 'begin'?",
+        answer: "start",
+        working: "Synonyms are words with the same or similar meaning. 'Start' means the same as 'begin'."
+      },
+      {
+        question: "What is a synonym for 'end'?",
+        answer: "finish",
+        working: "Synonyms are words with the same or similar meaning. 'Finish' means the same as 'end'."
+      },
+      {
+        question: "What is a synonym for 'help'?",
+        answer: "assist",
+        working: "Synonyms are words with the same or similar meaning. 'Assist' means the same as 'help'."
+      },
+      {
+        question: "What is a synonym for 'old'?",
+        answer: "ancient",
+        working: "Synonyms are words with the same or similar meaning. 'Ancient' means the same as 'old' but more extreme."
+      },
+      {
+        question: "What is a synonym for 'quiet'?",
+        answer: "silent",
+        working: "Synonyms are words with the same or similar meaning. 'Silent' means the same as 'quiet' but more complete."
+      },
+      {
+        question: "What is a synonym for 'strong'?",
+        answer: "powerful",
+        working: "Synonyms are words with the same or similar meaning. 'Powerful' means the same as 'strong'."
+      },
+      {
+        question: "What is a synonym for 'thin'?",
+        answer: "slim",
+        working: "Synonyms are words with the same or similar meaning. 'Slim' means the same as 'thin'."
+      },
+      {
+        question: "What is a synonym for 'wet'?",
+        answer: "damp",
+        working: "Synonyms are words with the same or similar meaning. 'Damp' means the same as 'wet' but less intense."
+      },
+      {
+        question: "What is a synonym for 'show'?",
+        answer: "display",
+        working: "Synonyms are words with the same or similar meaning. 'Display' means the same as 'show'."
+      },
+      {
+        question: "What is a synonym for 'look'?",
+        answer: "see",
+        working: "Synonyms are words with the same or similar meaning. 'See' means the same as 'look'."
+      },
+      {
+        question: "What is a synonym for 'tell'?",
+        answer: "say",
+        working: "Synonyms are words with the same or similar meaning. 'Say' means the same as 'tell'."
+      },
+      {
+        question: "What is a synonym for 'interesting'?",
+        answer: "fascinating",
+        working: "Synonyms are words with the same or similar meaning. 'Fascinating' means the same as 'interesting' but more intense."
+      },
+      {
+        question: "What is a synonym for 'boring'?",
+        answer: "dull",
+        working: "Synonyms are words with the same or similar meaning. 'Dull' means the same as 'boring'."
+      },
+      
+      // Antonym questions
+      {
+        question: "What is an antonym for 'early'?",
+        answer: "late",
+        working: "Antonyms are words with opposite meanings. 'Late' is the opposite of 'early'."
+      },
+      {
+        question: "What is an antonym for 'hot'?",
+        answer: "cold",
+        working: "Antonyms are words with opposite meanings. 'Cold' is the opposite of 'hot'."
+      },
+      {
+        question: "What is an antonym for 'dark'?",
+        answer: "light",
+        working: "Antonyms are words with opposite meanings. 'Light' is the opposite of 'dark'."
+      },
+      {
+        question: "What is an antonym for 'happy'?",
+        answer: "sad",
+        working: "Antonyms are words with opposite meanings. 'Sad' is the opposite of 'happy'."
+      },
+      {
+        question: "What is an antonym for 'good'?",
+        answer: "bad",
+        working: "Antonyms are words with opposite meanings. 'Bad' is the opposite of 'good'."
+      },
+      {
+        question: "What is an antonym for 'big'?",
+        answer: "small",
+        working: "Antonyms are words with opposite meanings. 'Small' is the opposite of 'big'."
+      },
+      {
+        question: "What is an antonym for 'fast'?",
+        answer: "slow",
+        working: "Antonyms are words with opposite meanings. 'Slow' is the opposite of 'fast'."
+      },
+      {
+        question: "What is an antonym for 'loud'?",
+        answer: "quiet",
+        working: "Antonyms are words with opposite meanings. 'Quiet' is the opposite of 'loud'."
+      },
+      {
+        question: "What is an antonym for 'right'?",
+        answer: "wrong",
+        working: "Antonyms are words with opposite meanings. 'Wrong' is the opposite of 'right'."
+      },
+      {
+        question: "What is an antonym for 'high'?",
+        answer: "low",
+        working: "Antonyms are words with opposite meanings. 'Low' is the opposite of 'high'."
+      },
+      {
+        question: "What is an antonym for 'old'?",
+        answer: "new",
+        working: "Antonyms are words with opposite meanings. 'New' is the opposite of 'old'."
+      },
+      {
+        question: "What is an antonym for 'strong'?",
+        answer: "weak",
+        working: "Antonyms are words with opposite meanings. 'Weak' is the opposite of 'strong'."
+      },
+      {
+        question: "What is an antonym for 'open'?",
+        answer: "closed",
+        working: "Antonyms are words with opposite meanings. 'Closed' is the opposite of 'open'."
+      },
+      {
+        question: "What is an antonym for 'long'?",
+        answer: "short",
+        working: "Antonyms are words with opposite meanings. 'Short' is the opposite of 'long'."
+      },
+      {
+        question: "What is an antonym for 'full'?",
+        answer: "empty",
+        working: "Antonyms are words with opposite meanings. 'Empty' is the opposite of 'full'."
+      },
+      {
+        question: "What is an antonym for 'hard'?",
+        answer: "soft",
+        working: "Antonyms are words with opposite meanings. 'Soft' is the opposite of 'hard'."
+      },
+      {
+        question: "What is an antonym for 'difficult'?",
+        answer: "easy",
+        working: "Antonyms are words with opposite meanings. 'Easy' is the opposite of 'difficult'."
+      },
+      {
+        question: "What is an antonym for 'wet'?",
+        answer: "dry",
+        working: "Antonyms are words with opposite meanings. 'Dry' is the opposite of 'wet'."
+      },
+      {
+        question: "What is an antonym for 'cheap'?",
+        answer: "expensive",
+        working: "Antonyms are words with opposite meanings. 'Expensive' is the opposite of 'cheap'."
+      },
+      {
+        question: "What is an antonym for 'clean'?",
+        answer: "dirty",
+        working: "Antonyms are words with opposite meanings. 'Dirty' is the opposite of 'clean'."
+      },
+      {
+        question: "What is an antonym for 'young'?",
+        answer: "old",
+        working: "Antonyms are words with opposite meanings. 'Old' is the opposite of 'young'."
+      },
+      {
+        question: "What is an antonym for 'thick'?",
+        answer: "thin",
+        working: "Antonyms are words with opposite meanings. 'Thin' is the opposite of 'thick'."
+      },
+      {
+        question: "What is an antonym for 'wide'?",
+        answer: "narrow",
+        working: "Antonyms are words with opposite meanings. 'Narrow' is the opposite of 'wide'."
+      },
+      {
+        question: "What is an antonym for 'start'?",
+        answer: "finish",
+        working: "Antonyms are words with opposite meanings. 'Finish' is the opposite of 'start'."
+      },
+      {
+        question: "What is an antonym for 'above'?",
+        answer: "below",
+        working: "Antonyms are words with opposite meanings. 'Below' is the opposite of 'above'."
+      },
+      
+      // Contextual meaning questions
+      {
+        question: "In 'The waves crashed on the shore', what does 'crashed' mean?",
+        answer: "hit forcefully",
+        working: "Context tells us 'crashed' means the waves hit the shore with force, not like a car accident."
+      },
+      {
+        question: "In 'She caught the ball', what does 'caught' mean?",
+        answer: "grabbed",
+        working: "Context tells us 'caught' means she grabbed or received the ball in her hands."
+      },
+      {
+        question: "In 'The singer had a cold', what does 'cold' mean?",
+        answer: "illness",
+        working: "Context tells us 'cold' means an illness, not the temperature."
+      },
+      {
+        question: "In 'The wind was howling', what does 'howling' suggest?",
+        answer: "loud and strong",
+        working: "The word 'howling' suggests the wind was making a loud, strong sound like a wolf."
+      },
+      {
+        question: "In 'She broke down in tears', what does 'broke down' mean?",
+        answer: "started crying",
+        working: "Context tells us 'broke down' means she started crying suddenly, not that something mechanical stopped working."
+      },
+      {
+        question: "In 'That was a piece of cake', what does the phrase mean?",
+        answer: "easy",
+        working: "This is an idiom where 'piece of cake' means something was very easy to do."
+      },
+      {
+        question: "In 'Keep an eye on the baby', what does 'keep an eye on' mean?",
+        answer: "watch carefully",
+        working: "This phrase means to watch carefully or monitor, not literally using your eye."
+      },
+      {
+        question: "In 'It's raining cats and dogs', what does this phrase mean?",
+        answer: "raining heavily",
+        working: "This is an idiom that means it's raining very heavily, not literally animals falling."
+      },
+      {
+        question: "In 'She has a green thumb', what does 'green thumb' suggest?",
+        answer: "good at gardening",
+        working: "This idiom suggests she is good at growing plants, not that her thumb is literally green."
+      },
+      {
+        question: "In 'He hit the road early', what does 'hit the road' mean?",
+        answer: "started traveling",
+        working: "This phrase means he started his journey or left, not physically hitting the road."
+      },
+      {
+        question: "In 'I can't put my finger on the problem', what does the phrase mean?",
+        answer: "can't identify exactly",
+        working: "This idiom means being unable to identify or explain something precisely."
+      },
+      {
+        question: "In 'Let's face the music', what does this phrase mean?",
+        answer: "accept consequences",
+        working: "This idiom means to accept the consequences of your actions, not literally listening to music."
+      },
+      {
+        question: "In 'She gave me the cold shoulder', what does this mean?",
+        answer: "ignored me",
+        working: "This idiom means she ignored or treated me in an unfriendly way."
+      },
+      {
+        question: "In 'We need to read between the lines', what does this phrase mean?",
+        answer: "find hidden meaning",
+        working: "This idiom means to look for the hidden or implied meaning, not literally reading."
+      },
+      {
+        question: "In 'That cost an arm and a leg', what does this phrase mean?",
+        answer: "very expensive",
+        working: "This idiom means something was very expensive, not literal body parts."
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer.toLowerCase()}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>
