@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Punctuation</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; line-height: 1.6; }
+    h1 { color: #005792; text-align: center; margin-bottom: 20px; }
+    ul.instructions { margin-bottom: 25px; }
+    .set { margin-bottom: 40px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 15px; margin-bottom: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    textarea { 
+      font-size: 1.1em; 
+      padding: 8px; 
+      width: 100%; 
+      min-height: 80px; 
+      border: 2px solid #ddd; 
+      border-radius: 5px; 
+      margin-bottom: 10px;
+      font-family: 'Segoe UI', 'OpenDyslexic', Arial, sans-serif;
+      line-height: 1.5;
+    }
+    textarea:focus { border-color: #005792; outline: none; }
+    .feedback { font-size: 1.2em; font-weight: bold; display: block; margin: 10px 0; }
+    .explanation { 
+      margin-top: 10px; 
+      padding: 12px; 
+      background: #fff9f9; 
+      border-left: 8px solid #ff6b6b; 
+      border-radius: 4px; 
+      display: none; 
+    }
+    .working { font-style: italic; color: #444; margin-top: 8px; }
+    .progress { height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 15px 0; }
+    .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #005792, #00a8e8); transition: width 0.3s ease-in-out; }
+    .done-box { font-weight: bold; margin-top: 10px; padding: 8px; text-align: center; }
+    .key-instruction { background: #e8f4f8; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+    .key-instruction strong { color: #005792; }
+    .correct-answer { font-weight: bold; color: #2e7d32; }
+    .check-btn {
+      background-color: #005792;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background-color 0.3s;
+    }
+    .check-btn:hover {
+      background-color: #00a8e8;
+    }
+    .category-heading {
+      background: #e8f4f8;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      color: #005792;
+      font-weight: bold;
+    }
+    .diff-highlight {
+      font-weight: bold;
+      color: #d32f2f;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Punctuation</h1>
+  <ul class="instructions">
+    <li>Punctuation marks help organize sentences to make their meaning clear.</li>
+    <li>Each question shows a sentence with missing or incorrect punctuation.</li>
+    <li>Edit the text in the box to add commas, apostrophes, quotation marks, etc.</li>
+    <li>When you're done, click the "Check Answer" button or press Ctrl+Enter.</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation.</li>
+  </ul>
+  
+  <div class="key-instruction">
+    <strong>How to fix punctuation:</strong> Simply edit the text by adding or changing punctuation marks. Don't change the words themselves - just add missing punctuation or fix punctuation errors!
+  </div>
+  
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+    const totalSets = 10;
+    const questionsPerSet = 10;
+
+    function checkAnswer(textarea, event) {
+      // If triggered by keydown, only proceed if Ctrl+Enter was pressed
+      if (event && event.type === 'keydown' && !(event.key === 'Enter' && event.ctrlKey)) {
+        return;
+      }
+      
+      const question = textarea.getAttribute("data-question");
+      const expected = textarea.getAttribute("data-answer");
+      const feedback = textarea.nextElementSibling;
+      const given = textarea.value.trim();
+      const explanationDiv = textarea.parentElement.querySelector('.explanation');
+      
+      // Normalize spaces and trim
+      const normalizedGiven = given.replace(/\s+/g, ' ').trim();
+      const normalizedExpected = expected.replace(/\s+/g, ' ').trim();
+      
+      if (normalizedGiven === normalizedExpected) {
+        feedback.textContent = "✅ Correct!";
+        feedback.style.color = "green";
+        textarea.classList.add("correct");
+        explanationDiv.style.display = "none";
+        correctSound.play();
+      } else {
+        // Find and highlight differences
+        let diffHighlight = "The correct answer is: ";
+        diffHighlight += `<span class="correct-answer">${expected}</span>`;
+        
+        feedback.innerHTML = `❌ Not quite right. Keep trying!`;
+        feedback.style.color = "red";
+        textarea.classList.remove("correct");
+        
+        // Show explanation
+        explanationDiv.innerHTML = diffHighlight + '<p>' + textarea.getAttribute("data-explanation") + '</p>';
+        explanationDiv.style.display = "block";
+      }
+      
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const textareas = document.querySelectorAll('textarea');
+      const correct = Array.from(textareas).filter(t => t.classList.contains('correct')).length;
+      const total = textareas.length;
+      const percent = Math.round((correct / total) * 100);
+      
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const textareas = set.querySelectorAll('textarea');
+        const total = textareas.length;
+        const correct = Array.from(textareas).filter(t => t.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+          doneBox.style.background = '#e8f5e9';
+          doneBox.style.borderRadius = '5px';
+          doneBox.style.padding = '10px';
+        } else {
+          doneBox.textContent = `${correct} of ${total} questions solved`;
+          doneBox.style.color = '#666';
+          doneBox.style.background = 'transparent';
+        }
+      });
+    }
+
+    // Punctuation database - separated by categories
+    const questions = {
+      commas: [
+        {
+          question: "After lunch we went out.",
+          answer: "After lunch, we went out.",
+          explanation: "Use a comma after a fronted adverbial phrase (a phrase at the beginning that tells when, where, or how)."
+        },
+        {
+          question: "When it rains the plants grow.",
+          answer: "When it rains, the plants grow.",
+          explanation: "Use a comma after a subordinate clause that starts a sentence."
+        },
+        {
+          question: "I need milk eggs and butter from the shop.",
+          answer: "I need milk, eggs, and butter from the shop.",
+          explanation: "Use commas to separate items in a list. The last comma before 'and' is called the Oxford comma."
+        },
+        {
+          question: "Yes I am coming to the party.",
+          answer: "Yes, I am coming to the party.",
+          explanation: "Use a comma after introductory words like 'yes', 'no', 'well', etc."
+        },
+        {
+          question: "My friend who is tall plays basketball.",
+          answer: "My friend, who is tall, plays basketball.",
+          explanation: "Use commas around non-defining relative clauses (extra information that could be removed)."
+        },
+        {
+          question: "Tom my best friend is moving away.",
+          answer: "Tom, my best friend, is moving away.",
+          explanation: "Use commas around an appositive (a phrase that renames or explains the noun before it)."
+        },
+        {
+          question: "He ran fast but he didn't win the race.",
+          answer: "He ran fast, but he didn't win the race.",
+          explanation: "Use a comma before coordinating conjunctions (and, but, or, so, yet, for, nor) that join two complete sentences."
+        },
+        {
+          question: "However she still wanted to try.",
+          answer: "However, she still wanted to try.",
+          explanation: "Use a comma after transitional expressions like 'however', 'therefore', 'moreover', etc."
+        },
+        {
+          question: "July 4 2024 is a Thursday.",
+          answer: "July 4, 2024, is a Thursday.",
+          explanation: "Use commas to separate parts of dates and addresses."
+        },
+        {
+          question: "London England is a big city.",
+          answer: "London, England, is a big city.",
+          explanation: "Use commas between city and country or state names."
+        }
+      ],
+      apostrophes: [
+        {
+          question: "Its cold today.",
+          answer: "It's cold today.",
+          explanation: "Use an apostrophe in contractions: 'It's' = 'It is'."
+        },
+        {
+          question: "Whos coming to the party?",
+          answer: "Who's coming to the party?",
+          explanation: "Use an apostrophe in contractions: 'Who's' = 'Who is'."
+        },
+        {
+          question: "Dont forget your lunch!",
+          answer: "Don't forget your lunch!",
+          explanation: "Use an apostrophe in contractions: 'Don't' = 'Do not'."
+        },
+        {
+          question: "Theyre going to be late.",
+          answer: "They're going to be late.",
+          explanation: "Use an apostrophe in contractions: 'They're' = 'They are'."
+        },
+        {
+          question: "The girls bag is heavy.",
+          answer: "The girl's bag is heavy.",
+          explanation: "Use an apostrophe to show possession for singular nouns: 'girl's' shows the bag belongs to one girl."
+        },
+        {
+          question: "The dogs bone was buried.",
+          answer: "The dog's bone was buried.",
+          explanation: "Use an apostrophe to show possession for singular nouns: 'dog's' shows the bone belongs to one dog."
+        },
+        {
+          question: "The boys bikes are outside.",
+          answer: "The boys' bikes are outside.",
+          explanation: "Use an apostrophe after the 's' to show possession for plural nouns ending in 's': 'boys'' shows the bikes belong to multiple boys."
+        },
+        {
+          question: "The childrens toys were broken.",
+          answer: "The children's toys were broken.",
+          explanation: "Use an apostrophe before the 's' for irregular plurals that don't end in 's': 'children's' shows possession for 'children'."
+        },
+        {
+          question: "Ill tell you later.",
+          answer: "I'll tell you later.",
+          explanation: "Use an apostrophe in contractions: 'I'll' = 'I will'."
+        },
+        {
+          question: "The teachers lounge is upstairs.",
+          answer: "The teachers' lounge is upstairs.",
+          explanation: "Use an apostrophe after the 's' to show possession for plural nouns ending in 's': 'teachers'' shows the lounge belongs to multiple teachers."
+        }
+      ],
+      quotes: [
+        {
+          question: "Sarah said I am happy.",
+          answer: "Sarah said, \"I am happy.\"",
+          explanation: "Use quotation marks around the exact words that someone says. Also add a comma before the quote."
+        },
+        {
+          question: "I need to go home now he said.",
+          answer: "\"I need to go home now,\" he said.",
+          explanation: "Use quotation marks around the exact words that someone says. Add a comma inside the quotation marks when followed by 'he said'."
+        },
+        {
+          question: "The teacher asked where is your homework?",
+          answer: "The teacher asked, \"Where is your homework?\"",
+          explanation: "Use quotation marks around direct questions. Also add a comma before the quote."
+        },
+        {
+          question: "Stop shouted the policeman.",
+          answer: "\"Stop!\" shouted the policeman.",
+          explanation: "Use quotation marks around commands. Add an exclamation mark inside the quotation marks for commands."
+        },
+        {
+          question: "Can I go to the park she asked her mom.",
+          answer: "\"Can I go to the park?\" she asked her mom.",
+          explanation: "Use quotation marks around questions. Add a question mark inside the quotation marks."
+        },
+        {
+          question: "I've never been to Paris Tom admitted.",
+          answer: "\"I've never been to Paris,\" Tom admitted.",
+          explanation: "Use quotation marks around the exact words that someone says. Add a comma inside the quotation marks when followed by attribution."
+        },
+        {
+          question: "The sign said No Entry.",
+          answer: "The sign said \"No Entry.\"",
+          explanation: "Use quotation marks around text that is being quoted, such as signs or notices."
+        },
+        {
+          question: "My favorite book is Charlotte's Web said Lisa.",
+          answer: "\"My favorite book is Charlotte's Web,\" said Lisa.",
+          explanation: "Use quotation marks around what someone says. Note that apostrophes can appear inside quotation marks."
+        },
+        {
+          question: "Help me cried the little boy.",
+          answer: "\"Help me!\" cried the little boy.",
+          explanation: "Use quotation marks around exclamations. Add an exclamation mark inside the quotation marks for emotional statements."
+        },
+        {
+          question: "I think she said I'll be there soon.",
+          answer: "I think she said, \"I'll be there soon.\"",
+          explanation: "Use quotation marks only around the exact words that were spoken, not around the entire sentence."
+        }
+      ],
+      endMarks: [
+        {
+          question: "The cat sat on the mat",
+          answer: "The cat sat on the mat.",
+          explanation: "Use a period (full stop) at the end of a statement sentence."
+        },
+        {
+          question: "Mr Smith is our teacher",
+          answer: "Mr. Smith is our teacher.",
+          explanation: "Use a period after abbreviations like Mr., Mrs., Dr., etc. (Note: British English may omit these)."
+        },
+        {
+          question: "Did you see that movie",
+          answer: "Did you see that movie?",
+          explanation: "Use a question mark, not a period, at the end of a question."
+        },
+        {
+          question: "I went to the store I bought milk",
+          answer: "I went to the store. I bought milk.",
+          explanation: "Use periods to separate complete sentences. Without a conjunction, these need to be separate sentences."
+        },
+        {
+          question: "Look out",
+          answer: "Look out!",
+          explanation: "Use an exclamation mark, not a period, for exclamations, warnings, or commands with emphasis."
+        },
+        {
+          question: "Please arrive by 2pm",
+          answer: "Please arrive by 2 p.m.",
+          explanation: "Use periods in time abbreviations: a.m. and p.m. (with spaces in formal writing)."
+        },
+        {
+          question: "Dr Jones will see you now",
+          answer: "Dr. Jones will see you now.",
+          explanation: "Use a period after title abbreviations like Dr. and at the end of the sentence."
+        },
+        {
+          question: "The dog barked the cat ran away",
+          answer: "The dog barked. The cat ran away.",
+          explanation: "Use periods to separate complete sentences when they're not joined by a conjunction."
+        },
+        {
+          question: "How are you today",
+          answer: "How are you today?",
+          explanation: "Use a question mark at the end of a direct question."
+        },
+        {
+          question: "Stop that right now",
+          answer: "Stop that right now!",
+          explanation: "Use an exclamation mark for commands given with strong emotion or urgency."
+        }
+      ],
+      mixed: [
+        {
+          question: "Please bring the following items pencils paper rulers",
+          answer: "Please bring the following items: pencils, paper, rulers.",
+          explanation: "Use a colon before a list, commas between list items, and a period at the end of the sentence."
+        },
+        {
+          question: "The movie was awesome",
+          answer: "The movie was awesome!",
+          explanation: "Use an exclamation mark for statements expressing strong emotion like excitement."
+        },
+        {
+          question: "Where did you go for your holiday",
+          answer: "Where did you go for your holiday?",
+          explanation: "Questions that start with question words (who, what, where, when, why, how) end with question marks."
+        },
+        {
+          question: "He said I dont know",
+          answer: "He said, \"I don't know.\"",
+          explanation: "Use quotation marks around direct speech, a comma before the quote, and an apostrophe in contractions."
+        },
+        {
+          question: "The mens clothing store is on Oak Street",
+          answer: "The men's clothing store is on Oak Street.",
+          explanation: "Use an apostrophe to show possession for irregular plurals and a period to end the sentence."
+        },
+        {
+          question: "Actually I think we should leave now",
+          answer: "Actually, I think we should leave now.",
+          explanation: "Use a comma after introductory words or phrases at the beginning of a sentence."
+        },
+        {
+          question: "You went where",
+          answer: "You went where?",
+          explanation: "Even though it doesn't start with a question word, this is still a direct question and needs a question mark."
+        },
+        {
+          question: "John said that hes going to be late",
+          answer: "John said that he's going to be late.",
+          explanation: "Use an apostrophe in the contraction 'he's' (he is) and a period to end the statement."
+        },
+        {
+          question: "The house which was built in 1950 needs a new roof",
+          answer: "The house, which was built in 1950, needs a new roof.",
+          explanation: "Use commas around non-restrictive clauses (extra information) and a period to end the statement."
+        },
+        {
+          question: "I want to visit Paris Rome and Barcelona someday",
+          answer: "I want to visit Paris, Rome, and Barcelona someday.",
+          explanation: "Use commas to separate items in a list and a period to end the statement."
+        }
+      ]
+    };
+
+    // Generate 10 sets with 10 unique questions
+    for (let setIndex = 0; setIndex < totalSets; setIndex++) {
+      let html = `<div class='set'>
+        <h2>Set ${setIndex + 1}</h2>
+        <div class='progress'><div class='progress-bar'></div></div>
+        <div class='done-box'></div>`;
+
+      // Determine which question types to use for this set
+      // We'll ensure each set has a mix of different punctuation types
+      const categories = Object.keys(questions);
+      const questionsForSet = [];
+      
+      // Use 2 questions from each category to ensure variety
+      categories.forEach(category => {
+        // Get 2 random questions from this category
+        const categoryQuestions = [...questions[category]]; // Copy the array
+        for (let i = 0; i < 2; i++) {
+          if (categoryQuestions.length > 0) {
+            const randomIndex = Math.floor(Math.random() * categoryQuestions.length);
+            questionsForSet.push({
+              ...categoryQuestions[randomIndex],
+              category: category
+            });
+            categoryQuestions.splice(randomIndex, 1); // Remove the question so it's not selected again
+          }
+        }
+      });
+      
+      // Shuffle the questions for this set
+      for (let i = questionsForSet.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questionsForSet[i], questionsForSet[j]] = [questionsForSet[j], questionsForSet[i]];
+      }
+      
+      // Sort by category for better learning
+      questionsForSet.sort((a, b) => a.category.localeCompare(b.category));
+      
+      let currentCategory = '';
+      
+      // Add the questions to the HTML
+      for (let q = 0; q < questionsForSet.length; q++) {
+        const currentQuestion = questionsForSet[q];
+        
+        // Add category headings
+        if (currentCategory !== currentQuestion.category) {
+          currentCategory = currentQuestion.category;
+          let categoryDisplayName = '';
+          
+          switch(currentCategory) {
+            case 'commas':
+              categoryDisplayName = 'Commas';
+              break;
+            case 'apostrophes':
+              categoryDisplayName = 'Apostrophes';
+              break;
+            case 'quotes':
+              categoryDisplayName = 'Quotation Marks';
+              break;
+            case 'endMarks':
+              categoryDisplayName = 'End Punctuation';
+              break;
+            case 'mixed':
+              categoryDisplayName = 'Mixed Punctuation';
+              break;
+          }
+          
+          html += `<div class='category-heading'>${categoryDisplayName}</div>`;
+        }
+        
+        html += `
+          <div class='question'>
+            <div>Q${q + 1}: Fix the punctuation in this sentence:</div>
+            <textarea 
+              data-question="${currentQuestion.question}"
+              data-answer="${currentQuestion.answer}"
+              data-explanation="${currentQuestion.explanation}"
+              onkeydown="if(event.ctrlKey && event.key==='Enter') {event.preventDefault(); checkAnswer(this, event);}"
+            >${currentQuestion.question}</textarea>
+            <button class="check-btn" onclick="checkAnswer(this.previousElementSibling, event)">Check Answer</button>
+            <div class='feedback'></div>
+            <div class='explanation' ${setIndex === 0 ? 'style="display:block;"' : ''}>
+              <p>${currentQuestion.explanation}</p>
+            </div>
+          </div>`;
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+    
+    // Initial progress update
+    updateProgress();
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>
