@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multiplication & Division</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Multiplication & Division</h1>
+  <ul class="instructions">
+    <li>Multiplication means groups of the same number.</li>
+    <li>Division means sharing into equal parts.</li>
+    <li>Use your times tables to help!</li>
+    <li>You might see some decimal numbers too.</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Multiplication and division database
+    const questions = [
+      // Basic multiplication (times tables)
+      {
+        question: "3 × 4 = ",
+        answer: "12",
+        working: "3 groups of 4: 4 + 4 + 4 = 12"
+      },
+      {
+        question: "6 × 7 = ",
+        answer: "42",
+        working: "6 groups of 7: 7 + 7 + 7 + 7 + 7 + 7 = 42"
+      },
+      {
+        question: "8 × 9 = ",
+        answer: "72",
+        working: "8 groups of 9: 9 + 9 + 9 + 9 + 9 + 9 + 9 + 9 = 72"
+      },
+      {
+        question: "5 × 6 = ",
+        answer: "30",
+        working: "5 groups of 6: 6 + 6 + 6 + 6 + 6 = 30"
+      },
+      {
+        question: "7 × 8 = ",
+        answer: "56",
+        working: "7 groups of 8: 8 + 8 + 8 + 8 + 8 + 8 + 8 = 56"
+      },
+      {
+        question: "9 × 4 = ",
+        answer: "36",
+        working: "9 groups of 4: 4 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + 4 = 36"
+      },
+      {
+        question: "3 × 9 = ",
+        answer: "27",
+        working: "3 groups of 9: 9 + 9 + 9 = 27"
+      },
+      {
+        question: "6 × 8 = ",
+        answer: "48",
+        working: "6 groups of 8: 8 + 8 + 8 + 8 + 8 + 8 = 48"
+      },
+      {
+        question: "7 × 7 = ",
+        answer: "49",
+        working: "7 groups of 7: 7 + 7 + 7 + 7 + 7 + 7 + 7 = 49"
+      },
+      {
+        question: "4 × 5 = ",
+        answer: "20",
+        working: "4 groups of 5: 5 + 5 + 5 + 5 = 20"
+      },
+      
+      // Basic division (derived from times tables)
+      {
+        question: "12 ÷ 3 = ",
+        answer: "4",
+        working: "How many groups of 3 make 12? 3 + 3 + 3 + 3 = 12, so that's 4 groups."
+      },
+      {
+        question: "42 ÷ 7 = ",
+        answer: "6",
+        working: "How many groups of 7 make 42? 7 + 7 + 7 + 7 + 7 + 7 = 42, so that's 6 groups."
+      },
+      {
+        question: "81 ÷ 9 = ",
+        answer: "9",
+        working: "How many groups of 9 make 81? 9 + 9 + 9 + 9 + 9 + 9 + 9 + 9 + 9 = 81, so that's 9 groups."
+      },
+      {
+        question: "30 ÷ 6 = ",
+        answer: "5",
+        working: "How many groups of 6 make 30? 6 + 6 + 6 + 6 + 6 = 30, so that's 5 groups."
+      },
+      {
+        question: "56 ÷ 8 = ",
+        answer: "7",
+        working: "How many groups of 8 make 56? 8 + 8 + 8 + 8 + 8 + 8 + 8 = 56, so that's 7 groups."
+      },
+      {
+        question: "36 ÷ 9 = ",
+        answer: "4",
+        working: "How many groups of 9 make 36? 9 + 9 + 9 + 9 = 36, so that's 4 groups."
+      },
+      {
+        question: "27 ÷ 3 = ",
+        answer: "9",
+        working: "How many groups of 3 make 27? 3 + 3 + 3 + 3 + 3 + 3 + 3 + 3 + 3 = 27, so that's 9 groups."
+      },
+      {
+        question: "48 ÷ 6 = ",
+        answer: "8",
+        working: "How many groups of 6 make 48? 6 + 6 + 6 + 6 + 6 + 6 + 6 + 6 = 48, so that's 8 groups."
+      },
+      {
+        question: "49 ÷ 7 = ",
+        answer: "7",
+        working: "How many groups of 7 make 49? 7 + 7 + 7 + 7 + 7 + 7 + 7 = 49, so that's 7 groups."
+      },
+      {
+        question: "20 ÷ 4 = ",
+        answer: "5",
+        working: "How many groups of 4 make 20? 4 + 4 + 4 + 4 + 4 = 20, so that's 5 groups."
+      },
+      
+      // Multiplying by 10, 100, 1000
+      {
+        question: "7 × 10 = ",
+        answer: "70",
+        working: "When multiplying by 10, add a zero to the end of the number: 7 → 70"
+      },
+      {
+        question: "25 × 10 = ",
+        answer: "250",
+        working: "When multiplying by 10, add a zero to the end of the number: 25 → 250"
+      },
+      {
+        question: "9 × 100 = ",
+        answer: "900",
+        working: "When multiplying by 100, add two zeros to the end of the number: 9 → 900"
+      },
+      {
+        question: "43 × 100 = ",
+        answer: "4300",
+        working: "When multiplying by 100, add two zeros to the end of the number: 43 → 4300"
+      },
+      {
+        question: "6 × 1000 = ",
+        answer: "6000",
+        working: "When multiplying by 1000, add three zeros to the end of the number: 6 → 6000"
+      },
+      
+      // Dividing by 10, 100, 1000
+      {
+        question: "70 ÷ 10 = ",
+        answer: "7",
+        working: "When dividing by 10, remove one zero from the end of the number: 70 → 7"
+      },
+      {
+        question: "250 ÷ 10 = ",
+        answer: "25",
+        working: "When dividing by 10, remove one zero from the end of the number: 250 → 25"
+      },
+      {
+        question: "900 ÷ 100 = ",
+        answer: "9",
+        working: "When dividing by 100, remove two zeros from the end of the number: 900 → 9"
+      },
+      {
+        question: "4300 ÷ 100 = ",
+        answer: "43",
+        working: "When dividing by 100, remove two zeros from the end of the number: 4300 → 43"
+      },
+      {
+        question: "6000 ÷ 1000 = ",
+        answer: "6",
+        working: "When dividing by 1000, remove three zeros from the end of the number: 6000 → 6"
+      },
+      
+      // Multiplying 2-digit by 1-digit numbers
+      {
+        question: "12 × 4 = ",
+        answer: "48",
+        working: "Multiply each digit by 4 and add: (10 × 4) + (2 × 4) = 40 + 8 = 48"
+      },
+      {
+        question: "23 × 3 = ",
+        answer: "69",
+        working: "Multiply each digit by 3 and add: (20 × 3) + (3 × 3) = 60 + 9 = 69"
+      },
+      {
+        question: "35 × 5 = ",
+        answer: "175",
+        working: "Multiply each digit by 5 and add: (30 × 5) + (5 × 5) = 150 + 25 = 175"
+      },
+      {
+        question: "41 × 7 = ",
+        answer: "287",
+        working: "Multiply each digit by 7 and add: (40 × 7) + (1 × 7) = 280 + 7 = 287"
+      },
+      {
+        question: "56 × 6 = ",
+        answer: "336",
+        working: "Multiply each digit by 6 and add: (50 × 6) + (6 × 6) = 300 + 36 = 336"
+      },
+      
+      // Dividing 2-digit by 1-digit numbers
+      {
+        question: "84 ÷ 4 = ",
+        answer: "21",
+        working: "Divide 8 tens by 4 = 2 tens (20), plus 4 ones divided by 4 = 1, so 20 + 1 = 21"
+      },
+      {
+        question: "96 ÷ 3 = ",
+        answer: "32",
+        working: "Divide 9 tens by 3 = 3 tens (30), plus 6 ones divided by 3 = 2, so 30 + 2 = 32"
+      },
+      {
+        question: "75 ÷ 5 = ",
+        answer: "15",
+        working: "Divide 7 tens by 5 = 1 ten with 2 remaining (10 + 20 = 30), plus 5 ones divided by 5 = 1, so 14 + 1 = 15"
+      },
+      {
+        question: "63 ÷ 7 = ",
+        answer: "9",
+        working: "Divide 6 tens by 7 = 0 tens with 6 remaining (60), plus 3 ones = 63 ones, then 63 ÷ 7 = 9"
+      },
+      {
+        question: "72 ÷ 8 = ",
+        answer: "9",
+        working: "Divide 7 tens by 8 = 0 tens with 7 remaining (70), plus 2 ones = 72 ones, then 72 ÷ 8 = 9"
+      },
+      
+      // Decimal multiplication
+      {
+        question: "2.5 × 3 = ",
+        answer: "7.5",
+        working: "First multiply ignoring the decimal point: 25 × 3 = 75. Then place the decimal point in the correct position: 7.5"
+      },
+      {
+        question: "4.2 × 2 = ",
+        answer: "8.4",
+        working: "First multiply ignoring the decimal point: 42 × 2 = 84. Then place the decimal point in the correct position: 8.4"
+      },
+      {
+        question: "3.5 × 4 = ",
+        answer: "14",
+        working: "First multiply ignoring the decimal point: 35 × 4 = 140. Then place the decimal point in the correct position: 14.0 = 14"
+      },
+      {
+        question: "1.5 × 6 = ",
+        answer: "9",
+        working: "First multiply ignoring the decimal point: 15 × 6 = 90. Then place the decimal point in the correct position: 9.0 = 9"
+      },
+      {
+        question: "0.7 × 8 = ",
+        answer: "5.6",
+        working: "First multiply ignoring the decimal point: 7 × 8 = 56. Then place the decimal point in the correct position: 5.6"
+      },
+      
+      // Decimal division
+      {
+        question: "6.4 ÷ 2 = ",
+        answer: "3.2",
+        working: "Divide as normal, keeping the decimal point in the same position: 6.4 ÷ 2 = 3.2"
+      },
+      {
+        question: "9.6 ÷ 3 = ",
+        answer: "3.2",
+        working: "Divide as normal, keeping the decimal point in the same position: 9.6 ÷ 3 = 3.2"
+      },
+      {
+        question: "7.5 ÷ 5 = ",
+        answer: "1.5",
+        working: "Divide as normal, keeping the decimal point in the same position: 7.5 ÷ 5 = 1.5"
+      },
+      {
+        question: "12.6 ÷ 6 = ",
+        answer: "2.1",
+        working: "Divide as normal, keeping the decimal point in the same position: 12.6 ÷ 6 = 2.1"
+      },
+      {
+        question: "14.4 ÷ 4 = ",
+        answer: "3.6",
+        working: "Divide as normal, keeping the decimal point in the same position: 14.4 ÷ 4 = 3.6"
+      },
+      
+      // Multiplication with money
+      {
+        question: "£3.50 × 4 = ",
+        answer: "£14",
+        working: "First multiply ignoring the decimal point and pound sign: 350 × 4 = 1400. Then place the decimal point and pound sign: £14.00 = £14"
+      },
+      {
+        question: "£2.75 × 3 = ",
+        answer: "£8.25",
+        working: "First multiply ignoring the decimal point and pound sign: 275 × 3 = 825. Then place the decimal point and pound sign: £8.25"
+      },
+      {
+        question: "£5.20 × 2 = ",
+        answer: "£10.40",
+        working: "First multiply ignoring the decimal point and pound sign: 520 × 2 = 1040. Then place the decimal point and pound sign: £10.40"
+      },
+      {
+        question: "£1.99 × 5 = ",
+        answer: "£9.95",
+        working: "First multiply ignoring the decimal point and pound sign: 199 × 5 = 995. Then place the decimal point and pound sign: £9.95"
+      },
+      {
+        question: "£4.25 × 4 = ",
+        answer: "£17",
+        working: "First multiply ignoring the decimal point and pound sign: 425 × 4 = 1700. Then place the decimal point and pound sign: £17.00 = £17"
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>

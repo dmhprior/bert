@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractions</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; line-height: 1.6; }
+    h1 { color: #005792; text-align: center; margin-bottom: 20px; }
+    ul.instructions { margin-bottom: 25px; }
+    .set { margin-bottom: 40px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 15px; margin-bottom: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1.1em; padding: 8px; width: 100%; max-width: 300px; border: 2px solid #ddd; border-radius: 5px; }
+    input:focus { border-color: #005792; outline: none; }
+    .feedback { margin-left: 10px; font-size: 1.2em; font-weight: bold; }
+    .explanation { margin-top: 10px; padding: 12px; background: #fff9f9; border-left: 8px solid #ff6b6b; border-radius: 4px; display: none; }
+    .working { font-style: italic; color: #444; margin-top: 8px; }
+    .progress { height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 15px 0; }
+    .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #005792, #00a8e8); transition: width 0.3s ease-in-out; }
+    .done-box { font-weight: bold; margin-top: 10px; padding: 8px; text-align: center; }
+    .key-instruction { background: #e8f4f8; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+    .key-instruction strong { color: #005792; }
+    .difficulty { font-size: 0.9em; color: #666; margin-bottom: 5px; }
+    .correct-answer { font-weight: bold; color: #2e7d32; }
+    .fraction { display: inline-block; text-align: center; vertical-align: middle; margin: 0 5px; }
+    .numerator, .denominator { display: block; }
+    .fraction-line { display: block; height: 1px; background: black; margin: 3px 0; }
+    .mixed-number { display: inline-flex; align-items: center; }
+    .mixed-number .whole-number { margin-right: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Fractions</h1>
+  <ul class="instructions">
+    <li>Fractions are parts of a whole number.</li>
+    <li>You might need to add, subtract, multiply, or divide fractions.</li>
+    <li>Simplify your answer if you can.</li>
+    <li>Pay special attention to mixed numbers (like 1<sup>1</sup>/<sub>2</sub>).</li>
+    <li>Type your answer in the box and press <strong>Enter</strong> to check.</li>
+    <li>✅ means it's correct, ❌ means try again (the correct answer will be shown).</li>
+  </ul>
+  
+  <div class="key-instruction">
+    <strong>Important:</strong> Press the Enter key after typing your answer to submit it. This helps you check your work more carefully.
+  </div>
+  
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+    const totalSets = 10;
+    const questionsPerSet = 10;
+    const totalQuestions = totalSets * questionsPerSet;
+
+    // Helper function to find the greatest common divisor (for fraction simplification)
+    function gcd(a, b) {
+      return b ? gcd(b, a % b) : a;
+    }
+
+    // Helper function to simplify fractions
+    function simplifyFraction(numerator, denominator) {
+      const divisor = gcd(Math.abs(numerator), Math.abs(denominator));
+      return [numerator / divisor, denominator / divisor];
+    }
+
+    function checkAnswer(input, event) {
+      // Only proceed if Enter key was pressed
+      if (event && event.key !== 'Enter') return;
+      
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanationDiv = input.parentElement.nextElementSibling;
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        explanationDiv.style.display = "none";
+        correctSound.play();
+      } else {
+        feedback.textContent = "❌ Try again";
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation with correct answer
+        explanationDiv.innerHTML = `<p>The correct answer is <span class="correct-answer">${expected}</span>.</p>` + explanationDiv.innerHTML;
+        explanationDiv.style.display = "block";
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+          doneBox.style.background = '#e8f5e9';
+          doneBox.style.borderRadius = '5px';
+          doneBox.style.padding = '10px';
+        } else {
+          doneBox.textContent = `${correct} of ${total} questions solved`;
+          doneBox.style.color = '#666';
+          doneBox.style.background = 'transparent';
+        }
+      });
+    }
+
+    function generateQuestion(index, setIndex, showWorking) {
+      // Create different types of questions based on the category
+      let question, answer, working, difficulty, explanation;
+      
+      // Determine difficulty based on set index
+      const difficultyLevel = Math.min(Math.floor(setIndex / 3) + 1, 3);
+      const difficultyLabels = ["Beginner", "Intermediate", "Advanced"];
+      
+      // Determine question type based on question index within the set
+      const questionType = index % 5;
+      
+      if (questionType === 0) { // Finding fraction of a whole number
+        let num, denom, whole;
+        
+        if (difficultyLevel === 1) {
+          denom = [2, 4, 5, 10][Math.floor(Math.random() * 4)];
+          num = Math.floor(Math.random() * (denom - 1)) + 1;
+          whole = Math.floor(Math.random() * 20) + 5;
+        } else if (difficultyLevel === 2) {
+          denom = [3, 6, 8, 12][Math.floor(Math.random() * 4)];
+          num = Math.floor(Math.random() * (denom - 1)) + 1;
+          whole = Math.floor(Math.random() * 50) + 10;
+        } else {
+          denom = [7, 9, 11, 15][Math.floor(Math.random() * 4)];
+          num = Math.floor(Math.random() * (denom - 1)) + 1;
+          whole = Math.floor(Math.random() * 100) + 20;
+        }
+        
+        question = `What is ${num}/${denom} of ${whole}?`;
+        const result = (whole * num) / denom;
+        answer = result.toString();
+        if (result === Math.floor(result)) {
+          answer = Math.floor(result).toString();
+        }
+        
+        working = `${whole} × ${num}/${denom} = ${result}`;
+        explanation = `To find a fraction of a whole number, multiply the whole number by the fraction. So ${whole} × ${num}/${denom} = ${whole * num}/${denom} = ${result}.`;
+        
+      } else if (questionType === 1) { // Adding fractions with same denominator
+        let denom, num1, num2;
+        
+        if (difficultyLevel === 1) {
+          denom = [2, 4, 5, 10][Math.floor(Math.random() * 4)];
+          num1 = Math.floor(Math.random() * (denom - 1)) + 1;
+          num2 = Math.floor(Math.random() * (denom - 1)) + 1;
+        } else if (difficultyLevel === 2) {
+          denom = [6, 8, 12][Math.floor(Math.random() * 3)];
+          num1 = Math.floor(Math.random() * (denom - 1)) + 1;
+          num2 = Math.floor(Math.random() * (denom - 1)) + 1;
+        } else {
+          denom = [9, 15, 20, 25][Math.floor(Math.random() * 4)];
+          num1 = Math.floor(Math.random() * (denom - 1)) + 1;
+          num2 = Math.floor(Math.random() * (denom - 1)) + 1;
+        }
+        
+        question = `Add ${num1}/${denom} + ${num2}/${denom}`;
+        let resultNum = num1 + num2;
+        let resultDenom = denom;
+        
+        // Simplify if possible
+        const simplified = simplifyFraction(resultNum, resultDenom);
+        resultNum = simplified[0];
+        resultDenom = simplified[1];
+        
+        if (resultNum >= resultDenom) {
+          // Convert to mixed number
+          const whole = Math.floor(resultNum / resultDenom);
+          const remainder = resultNum % resultDenom;
+          
+          if (remainder === 0) {
+            answer = whole.toString();
+            working = `${num1}/${denom} + ${num2}/${denom} = ${num1 + num2}/${denom} = ${whole}`;
+            explanation = `Add the numerators with the same denominator: ${num1} + ${num2} = ${num1 + num2}. So ${num1}/${denom} + ${num2}/${denom} = ${num1 + num2}/${denom}. Since ${num1 + num2} is divisible by ${denom}, this equals ${whole}.`;
+          } else {
+            answer = `${whole} ${remainder}/${resultDenom}`;
+            working = `${num1}/${denom} + ${num2}/${denom} = ${num1 + num2}/${denom} = ${whole} ${remainder}/${resultDenom}`;
+            explanation = `Add the numerators with the same denominator: ${num1} + ${num2} = ${num1 + num2}. So ${num1}/${denom} + ${num2}/${denom} = ${num1 + num2}/${denom}. Convert to a mixed number: ${whole} ${remainder}/${resultDenom}.`;
+          }
+        } else {
+          answer = `${resultNum}/${resultDenom}`;
+          working = `${num1}/${denom} + ${num2}/${denom} = ${num1 + num2}/${denom}`;
+          
+          if (num1 + num2 !== resultNum || denom !== resultDenom) {
+            working += ` = ${resultNum}/${resultDenom} (simplified)`;
+            explanation = `Add the numerators with the same denominator: ${num1} + ${num2} = ${num1 + num2}. So ${num1}/${denom} + ${num2}/${denom} = ${num1 + num2}/${denom}. Simplify by dividing both numerator and denominator by ${gcd(num1 + num2, denom)}.`;
+          } else {
+            explanation = `Add the numerators with the same denominator: ${num1} + ${num2} = ${num1 + num2}. So ${num1}/${denom} + ${num2}/${denom} = ${num1 + num2}/${denom}.`;
+          }
+        }
+        
+      } else if (questionType === 2) { // Multiplying fractions
+        let num1, denom1, num2, denom2;
+        
+        if (difficultyLevel === 1) {
+          denom1 = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+          num1 = Math.floor(Math.random() * (denom1 - 1)) + 1;
+          denom2 = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+          num2 = Math.floor(Math.random() * (denom2 - 1)) + 1;
+        } else if (difficultyLevel === 2) {
+          denom1 = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
+          num1 = Math.floor(Math.random() * (denom1 - 1)) + 1;
+          denom2 = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
+          num2 = Math.floor(Math.random() * (denom2 - 1)) + 1;
+        } else {
+          denom1 = [3, 4, 5, 6, 7, 8][Math.floor(Math.random() * 6)];
+          num1 = Math.floor(Math.random() * (denom1 - 1)) + 1;
+          denom2 = [3, 4, 5, 6, 7, 8][Math.floor(Math.random() * 6)];
+          num2 = Math.floor(Math.random() * (denom2 - 1)) + 1;
+        }
+        
+        question = `Multiply ${num1}/${denom1} × ${num2}/${denom2}`;
+        
+        let resultNum = num1 * num2;
+        let resultDenom = denom1 * denom2;
+        
+        // Simplify if possible
+        const simplified = simplifyFraction(resultNum, resultDenom);
+        resultNum = simplified[0];
+        resultDenom = simplified[1];
+        
+        answer = `${resultNum}/${resultDenom}`;
+        working = `${num1}/${denom1} × ${num2}/${denom2} = ${num1 * num2}/${denom1 * denom2}`;
+        
+        if (num1 * num2 !== resultNum || denom1 * denom2 !== resultDenom) {
+          working += ` = ${resultNum}/${resultDenom} (simplified)`;
+          explanation = `To multiply fractions, multiply the numerators together and the denominators together: ${num1} × ${num2} = ${num1 * num2}, and ${denom1} × ${denom2} = ${denom1 * denom2}. So ${num1}/${denom1} × ${num2}/${denom2} = ${num1 * num2}/${denom1 * denom2}. Simplify by dividing both numerator and denominator by ${gcd(num1 * num2, denom1 * denom2)}.`;
+        } else {
+          explanation = `To multiply fractions, multiply the numerators together and the denominators together: ${num1} × ${num2} = ${num1 * num2}, and ${denom1} × ${denom2} = ${denom1 * denom2}. So ${num1}/${denom1} × ${num2}/${denom2} = ${num1 * num2}/${denom1 * denom2}.`;
+        }
+        
+      } else if (questionType === 3) { // Mixed numbers to improper fractions
+        let whole, num, denom;
+        
+        if (difficultyLevel === 1) {
+          whole = Math.floor(Math.random() * 5) + 1;
+          denom = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+          num = Math.floor(Math.random() * (denom - 1)) + 1;
+        } else if (difficultyLevel === 2) {
+          whole = Math.floor(Math.random() * 10) + 2;
+          denom = [3, 4, 6, 8][Math.floor(Math.random() * 4)];
+          num = Math.floor(Math.random() * (denom - 1)) + 1;
+        } else {
+          whole = Math.floor(Math.random() * 20) + 5;
+          denom = [5, 6, 8, 10, 12][Math.floor(Math.random() * 5)];
+          num = Math.floor(Math.random() * (denom - 1)) + 1;
+        }
+        
+        question = `Convert ${whole} ${num}/${denom} to an improper fraction`;
+        
+        const resultNum = whole * denom + num;
+        const resultDenom = denom;
+        
+        answer = `${resultNum}/${resultDenom}`;
+        working = `${whole} ${num}/${denom} = (${whole} × ${denom} + ${num})/${denom} = ${resultNum}/${resultDenom}`;
+        explanation = `To convert a mixed number to an improper fraction, multiply the whole number by the denominator, add the numerator, and put the result over the original denominator: (${whole} × ${denom} + ${num})/${denom} = ${resultNum}/${resultDenom}.`;
+        
+      } else { // Dividing fractions
+        let num1, denom1, num2, denom2;
+        
+        if (difficultyLevel === 1) {
+          denom1 = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+          num1 = Math.floor(Math.random() * (denom1 - 1)) + 1;
+          denom2 = [2, 3, 4, 5][Math.floor(Math.random() * 4)];
+          num2 = Math.floor(Math.random() * (denom2 - 1)) + 1;
+        } else if (difficultyLevel === 2) {
+          denom1 = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
+          num1 = Math.floor(Math.random() * (denom1 - 1)) + 1;
+          denom2 = [2, 3, 4, 5, 6][Math.floor(Math.random() * 5)];
+          num2 = Math.floor(Math.random() * (denom2 - 1)) + 1;
+        } else {
+          denom1 = [3, 4, 5, 6, 7, 8][Math.floor(Math.random() * 6)];
+          num1 = Math.floor(Math.random() * (denom1 - 1)) + 1;
+          denom2 = [3, 4, 5, 6, 7, 8][Math.floor(Math.random() * 6)];
+          num2 = Math.floor(Math.random() * (denom2 - 1)) + 1;
+        }
+        
+        question = `Divide ${num1}/${denom1} ÷ ${num2}/${denom2}`;
+        
+        let resultNum = num1 * denom2;
+        let resultDenom = denom1 * num2;
+        
+        // Simplify if possible
+        const simplified = simplifyFraction(resultNum, resultDenom);
+        resultNum = simplified[0];
+        resultDenom = simplified[1];
+        
+        answer = `${resultNum}/${resultDenom}`;
+        working = `${num1}/${denom1} ÷ ${num2}/${denom2} = ${num1}/${denom1} × ${denom2}/${num2} = ${num1 * denom2}/${denom1 * num2}`;
+        
+        if (num1 * denom2 !== resultNum || denom1 * num2 !== resultDenom) {
+          working += ` = ${resultNum}/${resultDenom} (simplified)`;
+          explanation = `To divide fractions, multiply by the reciprocal (flip the second fraction): ${num1}/${denom1} ÷ ${num2}/${denom2} = ${num1}/${denom1} × ${denom2}/${num2} = ${num1 * denom2}/${denom1 * num2}. Simplify by dividing both numerator and denominator by ${gcd(num1 * denom2, denom1 * num2)}.`;
+        } else {
+          explanation = `To divide fractions, multiply by the reciprocal (flip the second fraction): ${num1}/${denom1} ÷ ${num2}/${denom2} = ${num1}/${denom1} × ${denom2}/${num2} = ${num1 * denom2}/${denom1 * num2}.`;
+        }
+      }
+      
+      difficulty = difficultyLabels[difficultyLevel - 1];
+      
+      let html = `<div class='question'>
+        <div class='difficulty'>${difficulty} Level</div>
+        <label>Q${index + 1}: ${question} <input type='text' data-answer='${answer}' onkeydown='checkAnswer(this, event)'><span class='feedback'></span></label>
+        <div class='explanation' ${showWorking ? 'style="display:block;"' : ''}>
+          <p>${explanation}</p>
+          <div class='working'><strong>Step-by-step:</strong> ${working}</div>
+        </div>
+      </div>`;
+      
+      return html;
+    }
+
+    for (let setIndex = 0; setIndex < totalSets; setIndex++) {
+      let html = `<div class='set'>
+        <h2>Set ${setIndex + 1}</h2>
+        <div class='progress'><div class='progress-bar'></div></div>
+        <div class='done-box'></div>`;
+      
+      for (let q = 0; q < questionsPerSet; q++) {
+        html += generateQuestion(q + setIndex * questionsPerSet, setIndex, setIndex === 0);
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+    
+    // Initial progress update
+    updateProgress();
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>
