@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algebra & Missing Values</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Algebra & Missing Values</h1>
+  <ul class="instructions">
+    <li>Use the opposite (inverse) operation to find missing numbers.</li>
+    <li>Look for patterns or what makes the sentence true.</li>
+    <li>You might see letters like x or ?</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Algebra and missing values database
+    const questions = [
+      // Addition missing value questions
+      {
+        question: "x + 15 = 42",
+        answer: "27",
+        working: "To find x, subtract 15 from both sides: x = 42 - 15 = 27"
+      },
+      {
+        question: "x + 23 = 51",
+        answer: "28",
+        working: "To find x, subtract 23 from both sides: x = 51 - 23 = 28"
+      },
+      {
+        question: "x + 39 = 75",
+        answer: "36",
+        working: "To find x, subtract 39 from both sides: x = 75 - 39 = 36"
+      },
+      {
+        question: "x + 17 = 56",
+        answer: "39",
+        working: "To find x, subtract 17 from both sides: x = 56 - 17 = 39"
+      },
+      {
+        question: "x + 45 = 102",
+        answer: "57",
+        working: "To find x, subtract 45 from both sides: x = 102 - 45 = 57"
+      },
+      {
+        question: "x + 83 = 121",
+        answer: "38",
+        working: "To find x, subtract 83 from both sides: x = 121 - 83 = 38"
+      },
+      {
+        question: "x + 64 = 137",
+        answer: "73",
+        working: "To find x, subtract 64 from both sides: x = 137 - 64 = 73"
+      },
+      {
+        question: "x + 125 = 259",
+        answer: "134",
+        working: "To find x, subtract 125 from both sides: x = 259 - 125 = 134"
+      },
+      {
+        question: "x + 218 = 347",
+        answer: "129",
+        working: "To find x, subtract 218 from both sides: x = 347 - 218 = 129"
+      },
+      {
+        question: "x + 145 = 302",
+        answer: "157",
+        working: "To find x, subtract 145 from both sides: x = 302 - 145 = 157"
+      },
+      
+      // Subtraction missing value questions
+      {
+        question: "x - 18 = 24",
+        answer: "42",
+        working: "To find x, add 18 to both sides: x = 24 + 18 = 42"
+      },
+      {
+        question: "x - 25 = 32",
+        answer: "57",
+        working: "To find x, add 25 to both sides: x = 32 + 25 = 57"
+      },
+      {
+        question: "x - 47 = 19",
+        answer: "66",
+        working: "To find x, add 47 to both sides: x = 19 + 47 = 66"
+      },
+      {
+        question: "x - 33 = 51",
+        answer: "84",
+        working: "To find x, add 33 to both sides: x = 51 + 33 = 84"
+      },
+      {
+        question: "x - 65 = 27",
+        answer: "92",
+        working: "To find x, add 65 to both sides: x = 27 + 65 = 92"
+      },
+      {
+        question: "x - 52 = 119",
+        answer: "171",
+        working: "To find x, add 52 to both sides: x = 119 + 52 = 171"
+      },
+      {
+        question: "x - 87 = 136",
+        answer: "223",
+        working: "To find x, add 87 to both sides: x = 136 + 87 = 223"
+      },
+      {
+        question: "x - 105 = 45",
+        answer: "150",
+        working: "To find x, add 105 to both sides: x = 45 + 105 = 150"
+      },
+      {
+        question: "x - 123 = 76",
+        answer: "199",
+        working: "To find x, add 123 to both sides: x = 76 + 123 = 199"
+      },
+      {
+        question: "x - 75 = 125",
+        answer: "200",
+        working: "To find x, add 75 to both sides: x = 125 + 75 = 200"
+      },
+      
+      // Multiplication missing value questions
+      {
+        question: "5x = 30",
+        answer: "6",
+        working: "To find x, divide both sides by 5: x = 30 ÷ 5 = 6"
+      },
+      {
+        question: "7x = 56",
+        answer: "8",
+        working: "To find x, divide both sides by 7: x = 56 ÷ 7 = 8"
+      },
+      {
+        question: "9x = 81",
+        answer: "9",
+        working: "To find x, divide both sides by 9: x = 81 ÷ 9 = 9"
+      },
+      {
+        question: "4x = 36",
+        answer: "9",
+        working: "To find x, divide both sides by 4: x = 36 ÷ 4 = 9"
+      },
+      {
+        question: "8x = 64",
+        answer: "8",
+        working: "To find x, divide both sides by 8: x = 64 ÷ 8 = 8"
+      },
+      {
+        question: "12x = 84",
+        answer: "7",
+        working: "To find x, divide both sides by 12: x = 84 ÷ 12 = 7"
+      },
+      {
+        question: "3x = 27",
+        answer: "9",
+        working: "To find x, divide both sides by 3: x = 27 ÷ 3 = 9"
+      },
+      {
+        question: "6x = 42",
+        answer: "7",
+        working: "To find x, divide both sides by 6: x = 42 ÷ 6 = 7"
+      },
+      {
+        question: "10x = 120",
+        answer: "12",
+        working: "To find x, divide both sides by 10: x = 120 ÷ 10 = 12"
+      },
+      {
+        question: "15x = 75",
+        answer: "5",
+        working: "To find x, divide both sides by 15: x = 75 ÷ 15 = 5"
+      },
+      
+      // Division missing value questions
+      {
+        question: "x ÷ 5 = 8",
+        answer: "40",
+        working: "To find x, multiply both sides by 5: x = 8 × 5 = 40"
+      },
+      {
+        question: "x ÷ 4 = 9",
+        answer: "36",
+        working: "To find x, multiply both sides by 4: x = 9 × 4 = 36"
+      },
+      {
+        question: "x ÷ 7 = 6",
+        answer: "42",
+        working: "To find x, multiply both sides by 7: x = 6 × 7 = 42"
+      },
+      {
+        question: "x ÷ 3 = 12",
+        answer: "36",
+        working: "To find x, multiply both sides by 3: x = 12 × 3 = 36"
+      },
+      {
+        question: "x ÷ 8 = 7",
+        answer: "56",
+        working: "To find x, multiply both sides by 8: x = 7 × 8 = 56"
+      },
+      {
+        question: "x ÷ 6 = 9",
+        answer: "54",
+        working: "To find x, multiply both sides by 6: x = 9 × 6 = 54"
+      },
+      {
+        question: "x ÷ 10 = 13",
+        answer: "130",
+        working: "To find x, multiply both sides by 10: x = 13 × 10 = 130"
+      },
+      {
+        question: "x ÷ 12 = 7",
+        answer: "84",
+        working: "To find x, multiply both sides by 12: x = 7 × 12 = 84"
+      },
+      {
+        question: "x ÷ 9 = 8",
+        answer: "72",
+        working: "To find x, multiply both sides by 9: x = 8 × 9 = 72"
+      },
+      {
+        question: "x ÷ 11 = 5",
+        answer: "55",
+        working: "To find x, multiply both sides by 11: x = 5 × 11 = 55"
+      },
+      
+      // Two-step equations
+      {
+        question: "2x + 5 = 15",
+        answer: "5",
+        working: "First, subtract 5 from both sides: 2x = 10. Then, divide both sides by 2: x = 10 ÷ 2 = 5"
+      },
+      {
+        question: "3x - 4 = 11",
+        answer: "5",
+        working: "First, add 4 to both sides: 3x = 15. Then, divide both sides by 3: x = 15 ÷ 3 = 5"
+      },
+      {
+        question: "5x + 10 = 30",
+        answer: "4",
+        working: "First, subtract 10 from both sides: 5x = 20. Then, divide both sides by 5: x = 20 ÷ 5 = 4"
+      },
+      {
+        question: "4x - 8 = 20",
+        answer: "7",
+        working: "First, add 8 to both sides: 4x = 28. Then, divide both sides by 4: x = 28 ÷ 4 = 7"
+      },
+      {
+        question: "6x + 12 = 42",
+        answer: "5",
+        working: "First, subtract 12 from both sides: 6x = 30. Then, divide both sides by 6: x = 30 ÷ 6 = 5"
+      },
+      
+      // Function tables
+      {
+        question: "If x → 2x + 3 and input is 5, what is the output?",
+        answer: "13",
+        working: "Substitute x = 5 into the function 2x + 3: 2 × 5 + 3 = 10 + 3 = 13"
+      },
+      {
+        question: "If x → 3x - 4 and input is 6, what is the output?",
+        answer: "14",
+        working: "Substitute x = 6 into the function 3x - 4: 3 × 6 - 4 = 18 - 4 = 14"
+      },
+      {
+        question: "If x → x² + 1 and input is 4, what is the output?",
+        answer: "17",
+        working: "Substitute x = 4 into the function x² + 1: 4² + 1 = 16 + 1 = 17"
+      },
+      {
+        question: "If x → 4x + 2 and input is 3, what is the output?",
+        answer: "14",
+        working: "Substitute x = 3 into the function 4x + 2: 4 × 3 + 2 = 12 + 2 = 14"
+      },
+      {
+        question: "If x → 5x - 2 and input is 4, what is the output?",
+        answer: "18",
+        working: "Substitute x = 4 into the function 5x - 2: 5 × 4 - 2 = 20 - 2 = 18"
+      },
+      
+      // Algebraic expressions
+      {
+        question: "Simplify: 2x + 3x",
+        answer: "5x",
+        working: "Combine like terms by adding the coefficients: 2x + 3x = (2 + 3)x = 5x"
+      },
+      {
+        question: "Simplify: 7y - 2y",
+        answer: "5y",
+        working: "Combine like terms by subtracting the coefficients: 7y - 2y = (7 - 2)y = 5y"
+      },
+      {
+        question: "Simplify: 4a + 6b + 3a",
+        answer: "7a + 6b",
+        working: "Combine like terms: 4a + 3a = 7a. The term 6b stays as is. Result: 7a + 6b"
+      },
+      {
+        question: "Simplify: 8m - 3m + 2m",
+        answer: "7m",
+        working: "Combine like terms: 8m - 3m + 2m = (8 - 3 + 2)m = 7m"
+      },
+      {
+        question: "Simplify: 5p + 3q - 2p + q",
+        answer: "3p + 4q",
+        working: "Combine like terms: 5p - 2p = 3p and 3q + q = 4q. Result: 3p + 4q"
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Measurement & Geometry</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Measurement & Geometry</h1>
+  <ul class="instructions">
+    <li>Measure using units like cm, m, g, and litres.</li>
+    <li>Look at shapes and angles carefully.</li>
+    <li>Check if it's 2D or 3D!</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Measurement and Geometry questions database
+    const questions = [
+      // Length conversion questions
+      {
+        question: "Convert 45 cm to metres",
+        answer: "0.45",
+        working: "To convert centimetres to metres, divide by 100: 45 ÷ 100 = 0.45 m"
+      },
+      {
+        question: "Convert 5.2 m to centimetres",
+        answer: "520",
+        working: "To convert metres to centimetres, multiply by 100: 5.2 × 100 = 520 cm"
+      },
+      {
+        question: "Convert 375 cm to metres",
+        answer: "3.75",
+        working: "To convert centimetres to metres, divide by 100: 375 ÷ 100 = 3.75 m"
+      },
+      {
+        question: "Convert 2.8 m to centimetres",
+        answer: "280",
+        working: "To convert metres to centimetres, multiply by 100: 2.8 × 100 = 280 cm"
+      },
+      {
+        question: "Convert 150 cm to metres",
+        answer: "1.5",
+        working: "To convert centimetres to metres, divide by 100: 150 ÷ 100 = 1.5 m"
+      },
+      {
+        question: "Convert 300 mm to centimetres",
+        answer: "30",
+        working: "To convert millimetres to centimetres, divide by 10: 300 ÷ 10 = 30 cm"
+      },
+      {
+        question: "Convert 7.5 cm to millimetres",
+        answer: "75",
+        working: "To convert centimetres to millimetres, multiply by 10: 7.5 × 10 = 75 mm"
+      },
+      {
+        question: "Convert 1.2 km to metres",
+        answer: "1200",
+        working: "To convert kilometres to metres, multiply by 1000: 1.2 × 1000 = 1200 m"
+      },
+      {
+        question: "Convert 650 m to kilometres",
+        answer: "0.65",
+        working: "To convert metres to kilometres, divide by 1000: 650 ÷ 1000 = 0.65 km"
+      },
+      {
+        question: "Convert 2500 m to kilometres",
+        answer: "2.5",
+        working: "To convert metres to kilometres, divide by 1000: 2500 ÷ 1000 = 2.5 km"
+      },
+      
+      // Perimeter questions
+      {
+        question: "Find the perimeter of a rectangle with sides 8 cm and 5 cm",
+        answer: "26",
+        working: "Perimeter of a rectangle = 2 × (length + width) = 2 × (8 + 5) = 2 × 13 = 26 cm"
+      },
+      {
+        question: "Find the perimeter of a rectangle with sides 12 cm and 7 cm",
+        answer: "38",
+        working: "Perimeter of a rectangle = 2 × (length + width) = 2 × (12 + 7) = 2 × 19 = 38 cm"
+      },
+      {
+        question: "Find the perimeter of a square with sides of 9 cm",
+        answer: "36",
+        working: "Perimeter of a square = 4 × side length = 4 × 9 = 36 cm"
+      },
+      {
+        question: "Find the perimeter of a triangle with sides 5 cm, 7 cm, and 8 cm",
+        answer: "20",
+        working: "Perimeter of a triangle = sum of all sides = 5 + 7 + 8 = 20 cm"
+      },
+      {
+        question: "Find the perimeter of a regular hexagon with sides of 4 cm",
+        answer: "24",
+        working: "Perimeter of a regular hexagon = 6 × side length = 6 × 4 = 24 cm"
+      },
+      
+      // Area questions
+      {
+        question: "Find the area of a rectangle with sides 6 cm and 9 cm",
+        answer: "54",
+        working: "Area of a rectangle = length × width = 6 × 9 = 54 square cm"
+      },
+      {
+        question: "Find the area of a square with sides of 7 cm",
+        answer: "49",
+        working: "Area of a square = side length × side length = 7 × 7 = 49 square cm"
+      },
+      {
+        question: "Find the area of a triangle with base 8 cm and height 6 cm",
+        answer: "24",
+        working: "Area of a triangle = ½ × base × height = ½ × 8 × 6 = 24 square cm"
+      },
+      {
+        question: "Find the area of a parallelogram with base 10 cm and height 4 cm",
+        answer: "40",
+        working: "Area of a parallelogram = base × height = 10 × 4 = 40 square cm"
+      },
+      {
+        question: "Find the area of a trapezoid with parallel sides 7 cm and 13 cm, and height 5 cm",
+        answer: "50",
+        working: "Area of a trapezoid = ½ × (sum of parallel sides) × height = ½ × (7 + 13) × 5 = ½ × 20 × 5 = 50 square cm"
+      },
+      
+      // Weight/mass conversion questions
+      {
+        question: "Convert 3.5 kg to grams",
+        answer: "3500",
+        working: "To convert kilograms to grams, multiply by 1000: 3.5 × 1000 = 3500 g"
+      },
+      {
+        question: "Convert 2750 g to kilograms",
+        answer: "2.75",
+        working: "To convert grams to kilograms, divide by 1000: 2750 ÷ 1000 = 2.75 kg"
+      },
+      {
+        question: "Convert 5000 g to kilograms",
+        answer: "5",
+        working: "To convert grams to kilograms, divide by 1000: 5000 ÷ 1000 = 5 kg"
+      },
+      {
+        question: "Convert 0.25 kg to grams",
+        answer: "250",
+        working: "To convert kilograms to grams, multiply by 1000: 0.25 × 1000 = 250 g"
+      },
+      {
+        question: "Convert 1.75 kg to grams",
+        answer: "1750",
+        working: "To convert kilograms to grams, multiply by 1000: 1.75 × 1000 = 1750 g"
+      },
+      
+      // Volume/capacity conversion questions
+      {
+        question: "Convert 3.2 liters to milliliters",
+        answer: "3200",
+        working: "To convert liters to milliliters, multiply by 1000: 3.2 × 1000 = 3200 ml"
+      },
+      {
+        question: "Convert 4500 ml to liters",
+        answer: "4.5",
+        working: "To convert milliliters to liters, divide by 1000: 4500 ÷ 1000 = 4.5 liters"
+      },
+      {
+        question: "Convert 750 ml to liters",
+        answer: "0.75",
+        working: "To convert milliliters to liters, divide by 1000: 750 ÷ 1000 = 0.75 liters"
+      },
+      {
+        question: "Convert 0.8 liters to milliliters",
+        answer: "800",
+        working: "To convert liters to milliliters, multiply by 1000: 0.8 × 1000 = 800 ml"
+      },
+      {
+        question: "Convert 6.25 liters to milliliters",
+        answer: "6250",
+        working: "To convert liters to milliliters, multiply by 1000: 6.25 × 1000 = 6250 ml"
+      },
+      
+      // Angle measurement questions
+      {
+        question: "How many degrees in a right angle?",
+        answer: "90",
+        working: "A right angle is exactly 90 degrees."
+      },
+      {
+        question: "How many degrees in a half turn?",
+        answer: "180",
+        working: "A half turn (or straight angle) is exactly 180 degrees."
+      },
+      {
+        question: "How many degrees in a full turn?",
+        answer: "360",
+        working: "A full turn (or complete circle) is exactly 360 degrees."
+      },
+      {
+        question: "What is an acute angle less than?",
+        answer: "90",
+        working: "An acute angle is less than 90 degrees (a right angle)."
+      },
+      {
+        question: "What is an obtuse angle greater than?",
+        answer: "90",
+        working: "An obtuse angle is greater than 90 degrees (a right angle)."
+      },
+      
+      // Shape recognition questions
+      {
+        question: "How many sides does a pentagon have?",
+        answer: "5",
+        working: "A pentagon is a 2D shape with exactly 5 sides."
+      },
+      {
+        question: "How many sides does a hexagon have?",
+        answer: "6",
+        working: "A hexagon is a 2D shape with exactly 6 sides."
+      },
+      {
+        question: "How many faces does a cube have?",
+        answer: "6",
+        working: "A cube is a 3D shape with exactly 6 faces."
+      },
+      {
+        question: "How many vertices (corners) does a square-based pyramid have?",
+        answer: "5",
+        working: "A square-based pyramid has 5 vertices: 4 at the base and 1 at the apex."
+      },
+      {
+        question: "How many edges does a triangular prism have?",
+        answer: "9",
+        working: "A triangular prism has 9 edges: 3 along one triangular face, 3 along the other triangular face, and 3 connecting the two triangular faces."
+      },
+      
+      // Time calculation questions
+      {
+        question: "How many minutes are there in 2.5 hours?",
+        answer: "150",
+        working: "To convert hours to minutes, multiply by 60: 2.5 × 60 = 150 minutes"
+      },
+      {
+        question: "How many seconds are there in 4 minutes?",
+        answer: "240",
+        working: "To convert minutes to seconds, multiply by 60: 4 × 60 = 240 seconds"
+      },
+      {
+        question: "How many hours are there in 180 minutes?",
+        answer: "3",
+        working: "To convert minutes to hours, divide by 60: 180 ÷ 60 = 3 hours"
+      },
+      {
+        question: "How many minutes are there in 3 hours and 15 minutes?",
+        answer: "195",
+        working: "Convert hours to minutes: 3 × 60 = 180 minutes. Add the extra minutes: 180 + 15 = 195 minutes"
+      },
+      {
+        question: "How many seconds are there in 2.5 minutes?",
+        answer: "150",
+        working: "To convert minutes to seconds, multiply by 60: 2.5 × 60 = 150 seconds"
+      },
+      
+      // Temperature conversion questions
+      {
+        question: "Convert 25°C to °F",
+        answer: "77",
+        working: "To convert Celsius to Fahrenheit, use the formula: F = (C × 9/5) + 32 = (25 × 9/5) + 32 = 45 + 32 = 77°F"
+      },
+      {
+        question: "Convert 95°F to °C",
+        answer: "35",
+        working: "To convert Fahrenheit to Celsius, use the formula: C = (F - 32) × 5/9 = (95 - 32) × 5/9 = 63 × 5/9 = 35°C"
+      },
+      {
+        question: "Convert 0°C to °F",
+        answer: "32",
+        working: "To convert Celsius to Fahrenheit, use the formula: F = (C × 9/5) + 32 = (0 × 9/5) + 32 = 0 + 32 = 32°F"
+      },
+      {
+        question: "Convert 68°F to °C",
+        answer: "20",
+        working: "To convert Fahrenheit to Celsius, use the formula: C = (F - 32) × 5/9 = (68 - 32) × 5/9 = 36 × 5/9 = 20°C"
+      },
+      {
+        question: "Convert 100°C to °F",
+        answer: "212",
+        working: "To convert Celsius to Fahrenheit, use the formula: F = (C × 9/5) + 32 = (100 × 9/5) + 32 = 180 + 32 = 212°F"
+      },
+      
+      // Coordinate geometry questions
+      {
+        question: "What are the coordinates of the point 3 units right and 4 units up from the origin?",
+        answer: "(3,4)",
+        working: "The first coordinate (x) represents horizontal distance right, the second coordinate (y) represents vertical distance up: (3, 4)"
+      },
+      {
+        question: "What are the coordinates of the point 2 units left and 5 units up from the origin?",
+        answer: "(-2,5)",
+        working: "The first coordinate (x) is negative when going left: -2. The second coordinate (y) is positive when going up: 5. So the coordinates are (-2, 5)"
+      },
+      {
+        question: "What are the coordinates of the point 4 units right and 1 unit down from the origin?",
+        answer: "(4,-1)",
+        working: "The first coordinate (x) is positive when going right: 4. The second coordinate (y) is negative when going down: -1. So the coordinates are (4, -1)"
+      },
+      {
+        question: "What are the coordinates of the origin on a coordinate grid?",
+        answer: "(0,0)",
+        working: "The origin is the point where the x and y axes intersect, with coordinates (0, 0)"
+      },
+      {
+        question: "If point A is at (3, 4) and point B is at (3, 7), what is the distance between them?",
+        answer: "3",
+        working: "Points have the same x-coordinate, so they are on a vertical line. The distance is the difference in y-coordinates: 7 - 4 = 3 units"
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>

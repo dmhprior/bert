@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Problem Solving & Reasoning</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Problem Solving & Reasoning</h1>
+  <ul class="instructions">
+    <li>Read the whole problem carefully.</li>
+    <li>Underline the key numbers or clues.</li>
+    <li>Decide what operation you need: +, −, × or ÷.</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Problem Solving database
+    const questions = [
+      // Addition word problems
+      {
+        question: "Sally has 35 apples. She gets 12 more. How many now?",
+        answer: "47",
+        working: "This is an addition problem. Add the apples she starts with and the new ones: 35 + 12 = 47 apples."
+      },
+      {
+        question: "Tom has 23 marbles. His friend gives him 18 more. How many marbles does Tom have now?",
+        answer: "41",
+        working: "To find the total, add the marbles he started with and the new ones: 23 + 18 = 41 marbles."
+      },
+      {
+        question: "A shop sold 125 chocolates in the morning and 98 in the afternoon. How many chocolates did they sell in total?",
+        answer: "223",
+        working: "To find the total number of chocolates sold, add the morning and afternoon sales: 125 + 98 = 223 chocolates."
+      },
+      {
+        question: "Lin collected 167 stamps and her brother collected 134 stamps. How many stamps do they have altogether?",
+        answer: "301",
+        working: "To find the combined total, add both collections: 167 + 134 = 301 stamps."
+      },
+      {
+        question: "A bookshelf has 42 fiction books and 37 non-fiction books. How many books are on the shelf?",
+        answer: "79",
+        working: "To find the total number of books, add both types: 42 + 37 = 79 books."
+      },
+      
+      // Subtraction word problems
+      {
+        question: "There are 45 sweets. 18 are eaten. How many left?",
+        answer: "27",
+        working: "This is a subtraction problem. Subtract the eaten sweets from the total: 45 - 18 = 27 sweets left."
+      },
+      {
+        question: "Jake had 76 stickers. He gave 29 stickers to his friend. How many stickers does Jake have now?",
+        answer: "47",
+        working: "To find how many stickers remain, subtract what he gave away: 76 - 29 = 47 stickers."
+      },
+      {
+        question: "A car park had 142 cars. 87 cars left. How many cars are still in the car park?",
+        answer: "55",
+        working: "To find the number of cars remaining, subtract the cars that left: 142 - 87 = 55 cars."
+      },
+      {
+        question: "Lisa had £56. She spent £24 on a new game. How much money does Lisa have left?",
+        answer: "32",
+        working: "To find the money left, subtract what was spent: £56 - £24 = £32."
+      },
+      {
+        question: "A train had 215 passengers. At the first stop, 89 passengers got off. How many passengers were left on the train?",
+        answer: "126",
+        working: "To find the number of passengers remaining, subtract those who got off: 215 - 89 = 126 passengers."
+      },
+      
+      // Multiplication word problems
+      {
+        question: "Each bag has 4 marbles. There are 12 bags. Total marbles?",
+        answer: "48",
+        working: "This is a multiplication problem. Multiply the number of marbles per bag by the number of bags: 4 × 12 = 48 marbles."
+      },
+      {
+        question: "A bakery makes 25 cupcakes each day. How many cupcakes do they make in 7 days?",
+        answer: "175",
+        working: "To find the total cupcakes, multiply the daily amount by the number of days: 25 × 7 = 175 cupcakes."
+      },
+      {
+        question: "Each box contains 16 chocolates. How many chocolates are in 9 boxes?",
+        answer: "144",
+        working: "To find the total chocolates, multiply the number per box by the number of boxes: 16 × 9 = 144 chocolates."
+      },
+      {
+        question: "A teacher gives 5 stickers to each student. There are 28 students in the class. How many stickers does the teacher need?",
+        answer: "140",
+        working: "To find the total stickers, multiply the stickers per student by the number of students: 5 × 28 = 140 stickers."
+      },
+      {
+        question: "A bookshelf has 6 shelves. Each shelf can hold 14 books. How many books can the bookshelf hold in total?",
+        answer: "84",
+        working: "To find the total capacity, multiply the books per shelf by the number of shelves: 6 × 14 = 84 books."
+      },
+      
+      // Division word problems
+      {
+        question: "There are 48 stickers. Put into 6 piles. How many in each?",
+        answer: "8",
+        working: "This is a division problem. Divide the total number of stickers by the number of piles: 48 ÷ 6 = 8 stickers in each pile."
+      },
+      {
+        question: "Lucas has 56 marbles. He wants to share them equally between 8 friends. How many marbles will each friend get?",
+        answer: "7",
+        working: "To find how many marbles per friend, divide the total by the number of friends: 56 ÷ 8 = 7 marbles each."
+      },
+      {
+        question: "A baker has 96 cookies. She puts them into boxes of 12. How many boxes can she fill?",
+        answer: "8",
+        working: "To find how many boxes, divide the total cookies by the cookies per box: 96 ÷ 12 = 8 boxes."
+      },
+      {
+        question: "A school orders 144 pencils. They are packed in boxes of 24. How many boxes will they receive?",
+        answer: "6",
+        working: "To find the number of boxes, divide the total pencils by the pencils per box: 144 ÷ 24 = 6 boxes."
+      },
+      {
+        question: "Sarah has £75 and wants to buy books that cost £15 each. How many books can she buy?",
+        answer: "5",
+        working: "To find how many books, divide the total money by the cost per book: £75 ÷ £15 = 5 books."
+      },
+      
+      // Multi-step word problems
+      {
+        question: "Jake had 25 stickers. He was given 15 more but then lost 8. How many stickers does he have now?",
+        answer: "32",
+        working: "This is a multi-step problem. First add: 25 + 15 = 40 stickers. Then subtract the lost ones: 40 - 8 = 32 stickers."
+      },
+      {
+        question: "Each classroom needs 6 boxes of chalk. There are 8 classrooms. One box costs £3. How much will all the chalk cost?",
+        answer: "144",
+        working: "First find total boxes needed: 6 × 8 = 48 boxes. Then find total cost: 48 × £3 = £144."
+      },
+      {
+        question: "Lisa bought 4 notebooks for £3 each and 2 pens for £2 each. How much did she spend in total?",
+        answer: "16",
+        working: "Calculate cost of notebooks: 4 × £3 = £12. Calculate cost of pens: 2 × £2 = £4. Add total: £12 + £4 = £16."
+      },
+      {
+        question: "A shop sold 148 ice creams on Saturday and 92 on Sunday. How many ice creams did they sell altogether?",
+        answer: "240",
+        working: "Add the number of ice creams sold each day: 148 + 92 = 240 ice creams."
+      },
+      {
+        question: "Tim has 87 marbles. He gives 35 to his friend and then buys 18 more. How many marbles does Tim have now?",
+        answer: "70",
+        working: "First subtract the marbles given away: 87 - 35 = 52. Then add the new marbles: 52 + 18 = 70 marbles."
+      },
+      
+      // Comparison word problems
+      {
+        question: "Sam has 45 stickers. Ben has 32 stickers. How many more stickers does Sam have than Ben?",
+        answer: "13",
+        working: "To find the difference, subtract the smaller number from the larger: 45 - 32 = 13 more stickers."
+      },
+      {
+        question: "A red ribbon is 76 cm long. A blue ribbon is 49 cm long. How much longer is the red ribbon than the blue ribbon?",
+        answer: "27",
+        working: "To find how much longer, subtract the shorter length from the longer one: 76 - 49 = 27 cm longer."
+      },
+      {
+        question: "Class A has 28 students. Class B has 34 students. How many fewer students are in Class A than Class B?",
+        answer: "6",
+        working: "To find how many fewer, subtract the smaller number from the larger: 34 - 28 = 6 fewer students."
+      },
+      {
+        question: "Jane scored 87 points. Mark scored 65 points. By how many points did Jane beat Mark?",
+        answer: "22",
+        working: "To find the difference in scores, subtract: 87 - 65 = 22 points."
+      },
+      {
+        question: "A train journey takes 145 minutes. A bus journey takes 210 minutes. How much shorter is the train journey?",
+        answer: "65",
+        working: "To find how much shorter, subtract the shorter time from the longer time: 210 - 145 = 65 minutes shorter."
+      },
+      
+      // Ratio and proportion problems
+      {
+        question: "If 3 pencils cost 60p, how much do 5 pencils cost?",
+        answer: "100",
+        working: "Find the cost of 1 pencil: 60p ÷ 3 = 20p. Then find the cost of 5 pencils: 20p × 5 = 100p."
+      },
+      {
+        question: "If 4 chocolate bars cost £2, how much do 7 chocolate bars cost?",
+        answer: "3.50",
+        working: "Find the cost of 1 chocolate bar: £2 ÷ 4 = £0.50. Then find the cost of 7 bars: £0.50 × 7 = £3.50."
+      },
+      {
+        question: "If 5 oranges weigh 600g, how much do 8 oranges weigh?",
+        answer: "960",
+        working: "Find the weight of 1 orange: 600g ÷ 5 = 120g. Then find the weight of 8 oranges: 120g × 8 = 960g."
+      },
+      {
+        question: "If 9 identical books cost £27, how much do 12 books cost?",
+        answer: "36",
+        working: "Find the cost of 1 book: £27 ÷ 9 = £3. Then find the cost of 12 books: £3 × 12 = £36."
+      },
+      {
+        question: "If 7 workers can complete a job in 4 days, how many days would it take 14 workers to complete the same job?",
+        answer: "2",
+        working: "If you double the workers, the time will be halved: 4 days ÷ 2 = 2 days."
+      },
+      
+      // Logic problems
+      {
+        question: "I think of a number. I double it and add 10. The result is 24. What was my number?",
+        answer: "7",
+        working: "Work backward. 24 - 10 = 14 (after removing the added 10). 14 ÷ 2 = 7 (after undoing the doubling)."
+      },
+      {
+        question: "Jack is 10 years old. His sister is twice his age. How old will Jack be when he is half his sister's age?",
+        answer: "20",
+        working: "Sister's age now = 2 × 10 = 20. Half of sister's age = 20 ÷ 2 = 10. Jack's age is already 10, so when Jack is 20, his sister will be 30, and 20 is half of 40, not 30. The answer is 20."
+      },
+      {
+        question: "A number is 3 more than twice another number. The sum of the numbers is 21. What is the smaller number?",
+        answer: "6",
+        working: "Let's call the smaller number x. The larger number is 2x + 3. Their sum is x + (2x + 3) = 3x + 3 = 21. So 3x = 18, and x = 6."
+      },
+      {
+        question: "Sally has 5 more books than Tom. Together they have 23 books. How many books does Tom have?",
+        answer: "9",
+        working: "Let's call Tom's books x. Sally has x + 5 books. Together they have x + (x + 5) = 2x + 5 = 23. So 2x = 18, and x = 9."
+      },
+      {
+        question: "A jar of cookies had some cookies in it. After eating 12 cookies, there are 28 cookies left. How many cookies were in the jar at the start?",
+        answer: "40",
+        working: "Let's call the initial number of cookies x. After eating 12, there are x - 12 = 28 cookies left. So x = 28 + 12 = 40 cookies."
+      },
+      
+      // Measurement problems
+      {
+        question: "A bottle holds 750ml of water. How many liters is that?",
+        answer: "0.75",
+        working: "To convert milliliters to liters, divide by 1000: 750 ÷ 1000 = 0.75 liters."
+      },
+      {
+        question: "Sam is 143cm tall. How many meters is that?",
+        answer: "1.43",
+        working: "To convert centimeters to meters, divide by 100: 143 ÷ 100 = 1.43 meters."
+      },
+      {
+        question: "A recipe needs 250g of flour. How many kilograms is that?",
+        answer: "0.25",
+        working: "To convert grams to kilograms, divide by 1000: 250 ÷ 1000 = 0.25 kilograms."
+      },
+      {
+        question: "A journey is 3.5km long. How many meters is that?",
+        answer: "3500",
+        working: "To convert kilometers to meters, multiply by 1000: 3.5 × 1000 = 3500 meters."
+      },
+      {
+        question: "A box weighs 2.75kg. How many grams is that?",
+        answer: "2750",
+        working: "To convert kilograms to grams, multiply by 1000: 2.75 × 1000 = 2750 grams."
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>

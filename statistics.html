@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistics</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .explanation { color: #d32f2f; font-size: 0.9em; margin-top: 5px; padding-left: 10px; border-left: 3px solid #d32f2f; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="global-progress">
+  <strong id="progress-text-top">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-top"></div></div>
+</div>
+
+  <h1>Statistics</h1>
+  <ul class="instructions">
+    <li>Look carefully at charts, tables, or data.</li>
+    <li>You might need to count or compare numbers.</li>
+    <li>Find totals, differences, or most/least.</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const inputs = document.querySelectorAll('input');
+      const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+      const total = inputs.length;
+      const percent = Math.round((correct / total) * 100);
+      document.getElementById('progress-text-top').textContent = `${correct} out of ${total} complete`;
+      document.getElementById('progress-text-bottom').textContent = `${correct} out of ${total} complete`;
+      document.querySelector('.global-bar-top').style.width = `${percent}%`;
+      document.querySelector('.global-bar-bottom').style.width = `${percent}%`;
+
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Statistics questions database
+    const questions = [
+      // Difference questions
+      {
+        question: "How many more is 45 than 23?",
+        answer: "22",
+        working: "To find how many more, subtract the smaller number from the larger: 45 - 23 = 22"
+      },
+      {
+        question: "How many more is 78 than 42?",
+        answer: "36",
+        working: "To find how many more, subtract the smaller number from the larger: 78 - 42 = 36"
+      },
+      {
+        question: "How many more is 91 than 67?",
+        answer: "24",
+        working: "To find the difference between the numbers, subtract: 91 - 67 = 24"
+      },
+      {
+        question: "How many more is 105 than 87?",
+        answer: "18",
+        working: "To find how many more one number is than another, subtract: 105 - 87 = 18"
+      },
+      {
+        question: "How many more is 120 than 98?",
+        answer: "22",
+        working: "To find the difference between the numbers, subtract: 120 - 98 = 22"
+      },
+      {
+        question: "How many more is 214 than 189?",
+        answer: "25",
+        working: "To find how many more, subtract the smaller number from the larger: 214 - 189 = 25"
+      },
+      {
+        question: "How many more is 356 than 299?",
+        answer: "57",
+        working: "To find the difference between the numbers, subtract: 356 - 299 = 57"
+      },
+      {
+        question: "How many more is 501 than 437?",
+        answer: "64",
+        working: "To find how many more, subtract the smaller number from the larger: 501 - 437 = 64"
+      },
+      {
+        question: "How many more is 678 than 599?",
+        answer: "79",
+        working: "To find the difference, subtract: 678 - 599 = 79"
+      },
+      {
+        question: "How many more is 842 than 776?",
+        answer: "66",
+        working: "To find how many more, subtract: 842 - 776 = 66"
+      },
+      
+      // Finding totals questions
+      {
+        question: "Find the total: 12, 18, 25",
+        answer: "55",
+        working: "Add all the numbers together: 12 + 18 + 25 = 55"
+      },
+      {
+        question: "Find the total: 35, 42, 19",
+        answer: "96",
+        working: "Add all the numbers together: 35 + 42 + 19 = 96"
+      },
+      {
+        question: "Find the total: 73, 41, 28",
+        answer: "142",
+        working: "Add all the numbers together: 73 + 41 + 28 = 142"
+      },
+      {
+        question: "Find the total: 15, 23, 37, 12",
+        answer: "87",
+        working: "Add all the numbers together: 15 + 23 + 37 + 12 = 87"
+      },
+      {
+        question: "Find the total: 105, 87, 54",
+        answer: "246",
+        working: "Add all the numbers together: 105 + 87 + 54 = 246"
+      },
+      {
+        question: "Find the total: 42, 39, 25, 18",
+        answer: "124",
+        working: "Add all the numbers together: 42 + 39 + 25 + 18 = 124"
+      },
+      {
+        question: "Find the total: 250, 175, 325",
+        answer: "750",
+        working: "Add all the numbers together: 250 + 175 + 325 = 750"
+      },
+      {
+        question: "Find the total: 63, 58, 72, 47",
+        answer: "240",
+        working: "Add all the numbers together: 63 + 58 + 72 + 47 = 240"
+      },
+      {
+        question: "Find the total: 125, 175, 150",
+        answer: "450",
+        working: "Add all the numbers together: 125 + 175 + 150 = 450"
+      },
+      {
+        question: "Find the total: 89, 76, 95, 82",
+        answer: "342",
+        working: "Add all the numbers together: 89 + 76 + 95 + 82 = 342"
+      },
+      
+      // Mean average questions
+      {
+        question: "What is the mean of 10, 20, and 30?",
+        answer: "20",
+        working: "To find the mean, add all numbers and divide by how many there are: (10 + 20 + 30) ÷ 3 = 60 ÷ 3 = 20"
+      },
+      {
+        question: "What is the mean of 5, 15, 10, and 10?",
+        answer: "10",
+        working: "To find the mean, add all numbers and divide by how many there are: (5 + 15 + 10 + 10) ÷ 4 = 40 ÷ 4 = 10"
+      },
+      {
+        question: "What is the mean of 12, 18, and 24?",
+        answer: "18",
+        working: "To find the mean, add all numbers and divide by how many there are: (12 + 18 + 24) ÷ 3 = 54 ÷ 3 = 18"
+      },
+      {
+        question: "What is the mean of 7, 9, 11, and 13?",
+        answer: "10",
+        working: "To find the mean, add all numbers and divide by how many there are: (7 + 9 + 11 + 13) ÷ 4 = 40 ÷ 4 = 10"
+      },
+      {
+        question: "What is the mean of 15, 20, 25, 30, and 35?",
+        answer: "25",
+        working: "To find the mean, add all numbers and divide by how many there are: (15 + 20 + 25 + 30 + 35) ÷ 5 = 125 ÷ 5 = 25"
+      },
+      
+      // Mode questions
+      {
+        question: "What is the mode of these numbers: 5, 3, 7, 3, 8, 3?",
+        answer: "3",
+        working: "The mode is the number that appears most often. 3 appears three times, while other numbers appear only once."
+      },
+      {
+        question: "What is the mode of these numbers: 12, 15, 12, 18, 20, 12?",
+        answer: "12",
+        working: "The mode is the number that appears most often. 12 appears three times, while other numbers appear only once."
+      },
+      {
+        question: "What is the mode of these numbers: 7, 9, 5, 9, 11, 9, 13?",
+        answer: "9",
+        working: "The mode is the number that appears most often. 9 appears three times, while other numbers appear only once."
+      },
+      {
+        question: "What is the mode of these numbers: 22, 25, 27, 25, 25, 30?",
+        answer: "25",
+        working: "The mode is the number that appears most often. 25 appears three times, while other numbers appear only once."
+      },
+      {
+        question: "What is the mode of these numbers: 35, 40, 35, 45, 35, 50?",
+        answer: "35",
+        working: "The mode is the number that appears most often. 35 appears three times, while other numbers appear only once."
+      },
+      
+      // Range questions
+      {
+        question: "What is the range of these numbers: 5, 8, 12, 15, 20?",
+        answer: "15",
+        working: "The range is the difference between the largest and smallest values: 20 - 5 = 15"
+      },
+      {
+        question: "What is the range of these numbers: 25, 30, 35, 40, 45?",
+        answer: "20",
+        working: "The range is the difference between the largest and smallest values: 45 - 25 = 20"
+      },
+      {
+        question: "What is the range of these numbers: 17, 23, 19, 28, 21?",
+        answer: "11",
+        working: "The range is the difference between the largest and smallest values: 28 - 17 = 11"
+      },
+      {
+        question: "What is the range of these numbers: 42, 37, 51, 45, 39?",
+        answer: "14",
+        working: "The range is the difference between the largest and smallest values: 51 - 37 = 14"
+      },
+      {
+        question: "What is the range of these numbers: 75, 82, 69, 78, 90?",
+        answer: "21",
+        working: "The range is the difference between the largest and smallest values: 90 - 69 = 21"
+      },
+      
+      // Median questions
+      {
+        question: "What is the median of these numbers: 5, 9, 12, 15, 20?",
+        answer: "12",
+        working: "To find the median, arrange numbers in order (already done) and find the middle value. With 5 numbers, the middle value is in position 3: 12"
+      },
+      {
+        question: "What is the median of these numbers: 8, 12, 15, 19, 23, 27?",
+        answer: "17",
+        working: "To find the median with an even number of values, find the two middle values and calculate their mean: (15 + 19) ÷ 2 = 34 ÷ 2 = 17"
+      },
+      {
+        question: "What is the median of these numbers: 32, 28, 45, 39, 41?",
+        answer: "39",
+        working: "To find the median, arrange numbers in order (28, 32, 39, 41, 45) and find the middle value. With 5 numbers, the middle value is in position 3: 39"
+      },
+      {
+        question: "What is the median of these numbers: 17, 25, 20, 22, 19, 28?",
+        answer: "21",
+        working: "To find the median, arrange numbers in order (17, 19, 20, 22, 25, 28) and with an even number of values, find the two middle values and calculate their mean: (20 + 22) ÷ 2 = 42 ÷ 2 = 21"
+      },
+      {
+        question: "What is the median of these numbers: 54, 67, 59, 72, 61?",
+        answer: "61",
+        working: "To find the median, arrange numbers in order (54, 59, 61, 67, 72) and find the middle value. With 5 numbers, the middle value is in position 3: 61"
+      },
+      
+      // Tally charts and frequency questions
+      {
+        question: "In a tally chart, what does IIII represent?",
+        answer: "4",
+        working: "In tally charts, each I represents 1 count, so IIII represents 4 counts."
+      },
+      {
+        question: "In a tally chart, what does IIII I represent?",
+        answer: "5",
+        working: "In tally charts, a crossed bundle of 4 tallies plus one more (IIII I) represents 5 counts."
+      },
+      {
+        question: "In a tally chart, red has III, blue has IIII, green has II. Which color appears most?",
+        answer: "blue",
+        working: "Counting the tallies: red has 3, blue has 4, green has 2. Blue has the most tallies."
+      },
+      {
+        question: "In a tally chart, dogs has IIII I, cats has IIII II, birds has IIII. How many animals in total?",
+        answer: "12",
+        working: "Dogs: 5, Cats: 7, Birds: 4. Add them all: 5 + 7 + 4 = 16 animals in total."
+      },
+      {
+        question: "In a frequency table, apples has 8, oranges has 5, bananas has 7. Which fruit appears most?",
+        answer: "apples",
+        working: "Comparing the frequencies: apples has 8, oranges has 5, bananas has 7. Apples has the highest frequency."
+      },
+      
+      // Probability questions
+      {
+        question: "If you have 5 red and 5 blue marbles in a bag, what is the probability of picking red?",
+        answer: "1/2",
+        working: "Probability = number of favorable outcomes ÷ total number of possible outcomes. Red marbles: 5, Total marbles: 10, so 5/10 = 1/2"
+      },
+      {
+        question: "If you have 3 red, 4 blue, and 5 green marbles in a bag, what is the probability of picking green?",
+        answer: "5/12",
+        working: "Probability = favorable outcomes ÷ total outcomes. Green marbles: 5, Total marbles: 3 + 4 + 5 = 12, so 5/12"
+      },
+      {
+        question: "If you have 2 red, 3 blue, and 5 green marbles in a bag, what is the probability of picking blue?",
+        answer: "3/10",
+        working: "Probability = favorable outcomes ÷ total outcomes. Blue marbles: 3, Total marbles: 2 + 3 + 5 = 10, so 3/10"
+      },
+      {
+        question: "If you roll a regular six-sided die, what is the probability of rolling an even number?",
+        answer: "1/2",
+        working: "Even numbers on a die are 2, 4, 6 (3 numbers). Total possible outcomes is 6. Probability = 3/6 = 1/2"
+      },
+      {
+        question: "If you flip a coin, what is the probability of getting tails?",
+        answer: "1/2",
+        working: "A coin has 2 sides (heads and tails). The probability of getting tails is 1/2."
+      }
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+
+<div class="global-progress">
+  <strong id="progress-text-bottom">0 out of 100 complete</strong>
+  <div class="progress"><div class="progress-bar global-bar-bottom"></div></div>
+</div>
+
+</body>
+</html>
