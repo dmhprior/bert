@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://fonts.cdnfonts.com/css/opendyslexic' rel='stylesheet'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grammar: Word Classes</title>
+  <style>
+    body { font-family: 'OpenDyslexic', Arial, sans-serif; font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #005792; text-align: center; }
+    ul.instructions { margin-bottom: 20px; }
+    .set { margin-bottom: 40px; }
+    .question { background: #fff; border-left: 8px solid #005792; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    input { font-size: 1em; padding: 6px; width: 100%; max-width: 300px; margin-bottom: 5px; }
+    .feedback { margin-left: 10px; font-size: 1.2em; display: inline-block; }
+    .working { font-style: italic; font-size: 0.9em; color: #444; margin-top: 5px; }
+    .progress { height: 20px; background: #ccc; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+    .progress-bar { height: 100%; width: 0%; background: #005792; }
+    .done-box { font-weight: bold; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Grammar: Word Classes</h1>
+  <ul class="instructions">
+    <li>Nouns are names of people, places or things.</li>
+    <li>Verbs are actions or things we do.</li>
+    <li>Adjectives describe things (like big, small, happy).</li>
+    <li>Pronouns replace names (like he, she, it).</li>
+    <li>Adverbs modify verbs, adjectives, or other adverbs (like quickly, very).</li>
+    <li>Prepositions show relationships between words (like in, on, under).</li>
+    <li>Type your answer in the box and press Enter key to check it. Try to spell it correctly!</li>
+    <li>✅ means it's correct, ❌ will show the correct answer with an explanation to help you learn.</li>
+  </ul>
+  <div id="sets"></div>
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <script>
+    const setsContainer = document.getElementById("sets");
+    const correctSound = document.getElementById("correct-sound");
+
+    function checkAnswer(input) {
+      const expected = input.getAttribute("data-answer").toLowerCase().replace(/\s+/g, '');
+      const feedback = input.nextElementSibling;
+      const given = input.value.toLowerCase().replace(/\s+/g, '');
+      const explanation = input.getAttribute("data-explanation");
+      
+      if (given === expected) {
+        feedback.textContent = "✅ Correct";
+        feedback.style.color = "green";
+        input.classList.add("correct");
+        correctSound.play();
+        // Hide explanation if previously shown
+        const explanationDiv = input.parentElement.nextElementSibling;
+        if (explanationDiv && explanationDiv.classList.contains('explanation')) {
+          explanationDiv.style.display = 'none';
+        }
+      } else {
+        feedback.textContent = `❌ Correct answer: ${input.getAttribute("data-answer")}`;
+        feedback.style.color = "red";
+        input.classList.remove("correct");
+        
+        // Show explanation
+        let explanationDiv = input.parentElement.nextElementSibling;
+        if (!explanationDiv || !explanationDiv.classList.contains('explanation')) {
+          explanationDiv = document.createElement('div');
+          explanationDiv.classList.add('explanation');
+          explanationDiv.style.color = '#d32f2f';
+          explanationDiv.style.fontSize = '0.9em';
+          explanationDiv.style.marginTop = '5px';
+          explanationDiv.style.paddingLeft = '10px';
+          explanationDiv.style.borderLeft = '3px solid #d32f2f';
+          input.parentElement.after(explanationDiv);
+        }
+        explanationDiv.textContent = explanation;
+        explanationDiv.style.display = 'block';
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const sets = document.querySelectorAll('.set');
+      sets.forEach(set => {
+        const inputs = set.querySelectorAll('input');
+        const total = inputs.length;
+        const correct = Array.from(inputs).filter(i => i.classList.contains('correct')).length;
+        const bar = set.querySelector('.progress-bar');
+        bar.style.width = `${(correct / total) * 100}%`;
+        const doneBox = set.querySelector('.done-box');
+        if (correct === total) {
+          doneBox.textContent = '✅ Set Complete!';
+          doneBox.style.color = 'green';
+        } else {
+          doneBox.textContent = '';
+        }
+      });
+    }
+
+    // Grammar questions database
+    const questions = [
+      // Noun identification questions
+      {
+        question: "Which word is a noun? table, quickly, ran, green",
+        answer: "table",
+        working: "Nouns are naming words for people, places, or things."
+      },
+      {
+        question: "Which word is a noun? happiness, singing, beautiful, slowly",
+        answer: "happiness",
+        working: "Nouns are naming words. 'Happiness' is a thing (abstract)."
+      },
+      {
+        question: "Which word is a noun? teacher, write, clever, carefully",
+        answer: "teacher",
+        working: "Nouns are naming words. 'Teacher' is a person."
+      },
+      {
+        question: "Which word is a noun? London, under, happy, walks",
+        answer: "London",
+        working: "Nouns are naming words. 'London' is a place."
+      },
+      {
+        question: "Which word is a noun? elephant, jumps, colorful, outside",
+        answer: "elephant",
+        working: "Nouns are naming words. 'Elephant' is an animal (thing)."
+      },
+      {
+        question: "Which word is a noun? sadness, quicker, singing, above",
+        answer: "sadness",
+        working: "Nouns are naming words. 'Sadness' is a feeling (abstract thing)."
+      },
+      {
+        question: "Which word is a noun? bravery, stronger, swiftly, plays",
+        answer: "bravery",
+        working: "Nouns are naming words. 'Bravery' is a quality (abstract thing)."
+      },
+      {
+        question: "Which word is a noun? Australia, towards, laughing, bright",
+        answer: "Australia",
+        working: "Nouns are naming words. 'Australia' is a place."
+      },
+      {
+        question: "Which word is a noun? computer, typing, technological, rapidly",
+        answer: "computer",
+        working: "Nouns are naming words. 'Computer' is a thing."
+      },
+      {
+        question: "Which word is a noun? excitement, beautifully, clever, running",
+        answer: "excitement",
+        working: "Nouns are naming words. 'Excitement' is a feeling (abstract thing)."
+      },
+      
+      // Verb identification questions
+      {
+        question: "Which word is a verb? happy, blue, jump, loud",
+        answer: "jump",
+        working: "Verbs are action or doing words."
+      },
+      {
+        question: "Which word is a verb? child, wrote, small, quietly",
+        answer: "wrote",
+        working: "Verbs are action words. 'Wrote' is the past tense of 'write'."
+      },
+      {
+        question: "Which word is a verb? sing, mountain, heavy, smoothly",
+        answer: "sing",
+        working: "Verbs are action words. 'Sing' is something you do."
+      },
+      {
+        question: "Which word is a verb? paper, yellow, behind, travels",
+        answer: "travels",
+        working: "Verbs are action words. 'Travels' is something someone does."
+      },
+      {
+        question: "Which word is a verb? drink, water, thirsty, outside",
+        answer: "drink",
+        working: "Verbs are action words. 'Drink' is something you do."
+      },
+      {
+        question: "Which word is a verb? building, construct, high, carefully",
+        answer: "construct",
+        working: "Verbs are action words. 'Construct' means to build something."
+      },
+      {
+        question: "Which word is a verb? smile, picture, beautiful, near",
+        answer: "smile",
+        working: "Verbs are action words. 'Smile' is something you do with your face."
+      },
+      {
+        question: "Which word is a verb? forest, speaks, tall, suddenly",
+        answer: "speaks",
+        working: "Verbs are action words. 'Speaks' is a form of 'speak', which is an action."
+      },
+      {
+        question: "Which word is a verb? laughed, comedy, funny, loudly",
+        answer: "laughed",
+        working: "Verbs are action words. 'Laughed' is the past tense of 'laugh'."
+      },
+      {
+        question: "Which word is a verb? grow, plant, green, upwards",
+        answer: "grow",
+        working: "Verbs are action words. 'Grow' is something plants and people do."
+      },
+      
+      // Adjective identification questions
+      {
+        question: "The big dog barked loudly. What kind of word is 'big'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Big' describes the dog."
+      },
+      {
+        question: "The funny clown made everyone laugh. What kind of word is 'funny'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Funny' describes the clown."
+      },
+      {
+        question: "She wore a beautiful dress to the party. What kind of word is 'beautiful'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Beautiful' describes the dress."
+      },
+      {
+        question: "The old book had yellow pages. What kind of word is 'old'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Old' describes the book."
+      },
+      {
+        question: "The tall giraffe ate leaves from the tree. What kind of word is 'tall'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Tall' describes the giraffe."
+      },
+      {
+        question: "I found some delicious berries in the garden. What kind of word is 'delicious'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Delicious' describes the berries."
+      },
+      {
+        question: "The brave firefighter saved the cat. What kind of word is 'brave'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Brave' describes the firefighter."
+      },
+      {
+        question: "The scary movie made me jump. What kind of word is 'scary'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Scary' describes the movie."
+      },
+      {
+        question: "A huge elephant sprayed water from its trunk. What kind of word is 'huge'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Huge' describes the elephant."
+      },
+      {
+        question: "The clever fox found a way into the chicken coop. What kind of word is 'clever'?",
+        answer: "adjective",
+        working: "Adjectives describe nouns. 'Clever' describes the fox."
+      },
+      
+      // Pronoun replacement questions
+      {
+        question: "Rewrite this using a pronoun: \"Tom went to the park because Tom wanted to play.\"",
+        answer: "Tom went to the park because he wanted to play.",
+        working: "Use 'he' instead of saying 'Tom' twice."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"Sarah bought a cake, and Sarah ate the cake.\"",
+        answer: "Sarah bought a cake, and she ate it.",
+        working: "Use 'she' instead of 'Sarah' and 'it' instead of 'the cake'."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"The children played games because the children were bored.\"",
+        answer: "The children played games because they were bored.",
+        working: "Use 'they' instead of saying 'the children' twice."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"My brother fixed the bicycle when my brother got home.\"",
+        answer: "My brother fixed the bicycle when he got home.",
+        working: "Use 'he' instead of saying 'my brother' twice."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"The book was on the table, but now the book is gone.\"",
+        answer: "The book was on the table, but now it is gone.",
+        working: "Use 'it' instead of saying 'the book' twice."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"Mary and John went to the movies, and Mary and John enjoyed the film.\"",
+        answer: "Mary and John went to the movies, and they enjoyed the film.",
+        working: "Use 'they' instead of saying 'Mary and John' twice."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"The dog chased the ball when the ball rolled away.\"",
+        answer: "The dog chased the ball when it rolled away.",
+        working: "Use 'it' instead of saying 'the ball' twice."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"My parents were late because my parents missed the bus.\"",
+        answer: "My parents were late because they missed the bus.",
+        working: "Use 'they' instead of saying 'my parents' twice."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"The teacher gave homework, and the teacher explained it carefully.\"",
+        answer: "The teacher gave homework, and she explained it carefully.",
+        working: "Use 'she' or 'he' instead of saying 'the teacher' twice."
+      },
+      {
+        question: "Rewrite this using a pronoun: \"The birds flew away when the birds heard the noise.\"",
+        answer: "The birds flew away when they heard the noise.",
+        working: "Use 'they' instead of saying 'the birds' twice."
+      },
+      
+      // Modal verb identification questions
+      {
+        question: "Which word is a modal verb? should, ran, blue, book",
+        answer: "should",
+        working: "Modal verbs show possibility or necessity. Examples include: can, could, may, might, must, shall, should, will, would."
+      },
+      {
+        question: "Which word is a modal verb? must, walking, green, chair",
+        answer: "must",
+        working: "Modal verbs show possibility or necessity. 'Must' shows something is necessary or required."
+      },
+      {
+        question: "Which word is a modal verb? could, jumped, happy, table",
+        answer: "could",
+        working: "Modal verbs show possibility or necessity. 'Could' shows ability or possibility."
+      },
+      {
+        question: "Which word is a modal verb? red, would, running, door",
+        answer: "would",
+        working: "Modal verbs show possibility or necessity. 'Would' is often used for hypothetical situations."
+      },
+      {
+        question: "Which word is a modal verb? car, singing, might, cold",
+        answer: "might",
+        working: "Modal verbs show possibility or necessity. 'Might' shows possibility."
+      },
+      {
+        question: "Which word is a modal verb? can, pencil, silly, walked",
+        answer: "can",
+        working: "Modal verbs show possibility or necessity. 'Can' shows ability or possibility."
+      },
+      {
+        question: "Which word is a modal verb? shall, computer, bright, eating",
+        answer: "shall",
+        working: "Modal verbs show possibility or necessity. 'Shall' shows intention or prediction."
+      },
+      {
+        question: "Which word is a modal verb? may, desk, blue, swimming",
+        answer: "may",
+        working: "Modal verbs show possibility or necessity. 'May' shows permission or possibility."
+      },
+      {
+        question: "Which word is a modal verb? will, beach, clever, dancing",
+        answer: "will",
+        working: "Modal verbs show possibility or necessity. 'Will' shows future action or intention."
+      },
+      {
+        question: "Which word is a modal verb? ought, rabbit, slowly, tall",
+        answer: "ought",
+        working: "Modal verbs show possibility or necessity. 'Ought' (often used as 'ought to') shows duty or correctness."
+      },
+      
+      // Adverb identification questions
+      {
+        question: "The turtle moves slowly across the sand. What kind of word is 'slowly'?",
+        answer: "adverb",
+        working: "Adverbs modify verbs. 'Slowly' tells how the turtle moves."
+      },
+      {
+        question: "She sang beautifully at the concert. What kind of word is 'beautifully'?",
+        answer: "adverb",
+        working: "Adverbs modify verbs. 'Beautifully' tells how she sang."
+      },
+      {
+        question: "The children played happily in the garden. What kind of word is 'happily'?",
+        answer: "adverb",
+        working: "Adverbs modify verbs. 'Happily' tells how the children played."
+      },
+      {
+        question: "He carefully carried the eggs to the kitchen. What kind of word is 'carefully'?",
+        answer: "adverb",
+        working: "Adverbs modify verbs. 'Carefully' tells how he carried the eggs."
+      },
+      {
+        question: "The dog barked loudly at the mailman. What kind of word is 'loudly'?",
+        answer: "adverb",
+        working: "Adverbs modify verbs. 'Loudly' tells how the dog barked."
+      },
+      {
+        question: "The team played extremely well yesterday. What kind of word is 'extremely'?",
+        answer: "adverb",
+        working: "Adverbs can modify other adverbs. 'Extremely' modifies 'well'."
+      },
+      {
+        question: "She is very talented at playing piano. What kind of word is 'very'?",
+        answer: "adverb",
+        working: "Adverbs can modify adjectives. 'Very' modifies 'talented'."
+      },
+      {
+        question: "The cat purred softly as it slept. What kind of word is 'softly'?",
+        answer: "adverb",
+        working: "Adverbs modify verbs. 'Softly' tells how the cat purred."
+      },
+      {
+        question: "I completely forgot about the meeting. What kind of word is 'completely'?",
+        answer: "adverb",
+        working: "Adverbs modify verbs. 'Completely' tells to what extent I forgot."
+      },
+      {
+        question: "The baby sleeps peacefully through the night. What kind of word is 'peacefully'?",
+        answer: "adverb",
+        working: "Adverbs modify verbs. 'Peacefully' tells how the baby sleeps."
+      },
+      
+      // Preposition identification questions
+      {
+        question: "The book is on the table. What kind of word is 'on'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'On' shows the relationship between the book and the table."
+      },
+      {
+        question: "The cat is under the chair. What kind of word is 'under'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'Under' shows the relationship between the cat and the chair."
+      },
+      {
+        question: "We walked through the forest. What kind of word is 'through'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'Through' shows the relationship between walking and the forest."
+      },
+      {
+        question: "The plane flew above the clouds. What kind of word is 'above'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'Above' shows the relationship between the plane and the clouds."
+      },
+      {
+        question: "Let's meet after lunch. What kind of word is 'after'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'After' shows a time relationship."
+      },
+      {
+        question: "The key is inside the drawer. What kind of word is 'inside'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'Inside' shows the relationship between the key and the drawer."
+      },
+      {
+        question: "We arrived before sunset. What kind of word is 'before'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'Before' shows a time relationship."
+      },
+      {
+        question: "The bird flew into the tree. What kind of word is 'into'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'Into' shows the relationship between the bird and the tree."
+      },
+      {
+        question: "The flowers are beside the window. What kind of word is 'beside'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'Beside' shows the relationship between the flowers and the window."
+      },
+      {
+        question: "She walked toward the school. What kind of word is 'toward'?",
+        answer: "preposition",
+        working: "Prepositions show relationships between words. 'Toward' shows the relationship between walking and the school."
+      },
+      
+      // Conjunction identification questions
+      {
+        question: "I like tea and coffee. What kind of word is 'and'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'And' joins 'tea' and 'coffee'."
+      },
+      {
+        question: "She will come if she can. What kind of word is 'if'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'If' joins the two clauses with a condition."
+      },
+      {
+        question: "I wanted to go, but I was too tired. What kind of word is 'but'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'But' joins the two clauses with a contrast."
+      },
+      {
+        question: "We can eat now or wait until later. What kind of word is 'or'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'Or' joins the two options."
+      },
+      {
+        question: "She arrived early because she took a taxi. What kind of word is 'because'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'Because' joins the two clauses with a reason."
+      },
+      {
+        question: "I'll call you when I get home. What kind of word is 'when'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'When' joins the two clauses with a time relationship."
+      },
+      {
+        question: "He ran fast so he could catch the bus. What kind of word is 'so'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'So' joins the two clauses with a result."
+      },
+      {
+        question: "Although it was raining, we went for a walk. What kind of word is 'although'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'Although' joins the two clauses with a contrast."
+      },
+      {
+        question: "You must study hard, otherwise you'll fail. What kind of word is 'otherwise'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'Otherwise' joins the two clauses with a consequence."
+      },
+      {
+        question: "I'll go whether you come or not. What kind of word is 'whether'?",
+        answer: "conjunction",
+        working: "Conjunctions join words or sentences together. 'Whether' joins the clauses with alternatives."
+      },
+      
+      // Determiner identification questions
+      {
+        question: "The cat sat on the mat. What kind of word is 'the'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify which one. 'The' is a definite article."
+      },
+      {
+        question: "I need an umbrella for the rain. What kind of word is 'an'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify which one. 'An' is an indefinite article."
+      },
+      {
+        question: "She has many friends at school. What kind of word is 'many'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify quantity. 'Many' indicates a large number."
+      },
+      {
+        question: "This book belongs to me. What kind of word is 'this'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify which one. 'This' is a demonstrative determiner."
+      },
+      {
+        question: "Those apples are ripe. What kind of word is 'those'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify which ones. 'Those' is a demonstrative determiner."
+      },
+      {
+        question: "Some people prefer coffee. What kind of word is 'some'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify quantity. 'Some' indicates an unspecified amount."
+      },
+      {
+        question: "Every student passed the test. What kind of word is 'every'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify which ones. 'Every' refers to all members of a group individually."
+      },
+      {
+        question: "My brother is taller than me. What kind of word is 'my'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify which one. 'My' is a possessive determiner."
+      },
+      {
+        question: "We have several options available. What kind of word is 'several'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify quantity. 'Several' indicates more than two but not many."
+      },
+      {
+        question: "Both sisters are talented musicians. What kind of word is 'both'?",
+        answer: "determiner",
+        working: "Determiners come before nouns and specify which ones. 'Both' refers to two items together."
+      },
+    ];
+
+    // Fisher-Yates shuffle algorithm to randomize questions
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the questions
+    const shuffledQuestions = shuffleArray([...questions]);
+    
+    // Generate 10 sets with 10 unique questions each
+    for (let setIndex = 0; setIndex < 10; setIndex++) {
+      let html = `<div class='set'><h2>Set ${setIndex + 1}</h2><div class='progress'><div class='progress-bar'></div></div><div class='done-box'></div>`;
+      
+      for (let q = 0; q < 10; q++) {
+        const questionIndex = setIndex * 10 + q;
+        if (questionIndex < shuffledQuestions.length) {
+          const currentQuestion = shuffledQuestions[questionIndex];
+          html += `<div class='question'><label>Q${q + 1}: ${currentQuestion.question} <input type='text' data-answer='${currentQuestion.answer.toLowerCase()}' data-explanation='${currentQuestion.working}' onkeydown='if(event.key==="Enter") {event.preventDefault(); checkAnswer(this);}'><span class='feedback'></span></label>`;
+          
+          // Only show working notes for the first set to help students
+          if (setIndex === 0) {
+            html += `<div class='working'>${currentQuestion.working}</div>`;
+          }
+          
+          html += `</div>`;
+        }
+      }
+      
+      html += `</div>`;
+      setsContainer.innerHTML += html;
+    }
+  </script>
+</body>
+</html>
