@@ -1,179 +1,389 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Bert Prior's SATs Games</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SATs Revision Timetable</title>
     <style>
-        body {
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            max-width: 900px;
-            margin: 0 auto;
+        }
+        .timetable th, .timetable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .timetable th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .timetable tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        header {
-            background: #ff0000;
-            padding: 30px;
+        .week-heading {
+            background-color: #e6f2ff;
+            font-weight: bold;
             text-align: center;
-            margin-bottom: 30px;
+        }
+        .study-tips {
+            background-color: #f7f7f7;
+            padding: 15px;
             border-radius: 5px;
-            color: white;
+            margin-top: 20px;
+        }
+        .study-tips h2 {
+            margin-top: 0;
+        }
+        .study-tips ul {
+            padding-left: 20px;
         }
         h1 {
-            font-size: 48px;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        footer {
             text-align: center;
-            margin-top: 40px;
-            color: #777;
-            padding: 20px;
-            border-top: 1px solid #ddd;
+            color: #333;
         }
-        img {
-            display: block;
-            margin: 0 auto;
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        a {
+            color: #0066cc;
+            text-decoration: none;
         }
-        .button-list {
-            list-style-type: none;
-            padding: 0;
+        a:hover {
+            text-decoration: underline;
         }
-        .button-list li {
-            margin-bottom: 12px;
-        }
-        .game-button {
-            display: block;
+        .back-button {
+            display: inline-block;
+            background-color: #0066cc;
             color: white;
-            padding: 14px 18px;
+            padding: 10px 20px;
             text-decoration: none;
             border-radius: 5px;
-            transition: background-color 0.3s, transform 0.3s;
-            font-weight: 500;
-            font-size: 18px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            margin: 20px 0;
         }
-        .game-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .back-button:hover {
+            background-color: #0052a3;
+            text-decoration: none;
         }
-        .arithmetic-button {
-            background-color: #003366; /* Dark blue */
-        }
-        .arithmetic-button:hover {
-            background-color: #004c99;
-        }
-        .reasoning-button {
-            background-color: #006633; /* Dark green */
-        }
-        .reasoning-button:hover {
-            background-color: #008040;
-        }
-        .english-button {
-            background-color: #660033; /* Dark purple */
-        }
-        .english-button:hover {
-            background-color: #800040;
-        }
-        h2 {
-            border-bottom: 2px solid #ff0000;
-            padding-bottom: 10px;
-            margin-top: 30px;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Bert Prior's SATs Games</h1>
-    </header>
-    
-    <main>
-        <img src="bert-image.jpg" alt="Bert Prior" width="300">
+    <div class="container">
+        <a href="index.html" class="back-button">← Back to Main Page</a>
         
-        <!-- SATs Revision Timetable -->
-        <h2>SATs Revision Timetable</h2>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 30px;">
-            <tr>
-                <th style="border: 1px solid #0074cc; padding: 10px; text-align: center; background-color: #0074cc; color: #ffffff;">Day</th>
-                <th style="border: 1px solid #0074cc; padding: 10px; text-align: center; background-color: #0074cc; color: #ffffff;">Mathematics Topic</th>
-                <th style="border: 1px solid #0074cc; padding: 10px; text-align: center; background-color: #0074cc; color: #ffffff;">English Topic</th>
+        <h1>SATs Revision Timetable</h1>
+        <h2 style="text-align: center;">April 15th - May 11th, 2025</h2>
+        
+        <p>This timetable ensures complete coverage of all BERT SATs practice sets before the exams begin on May 12th. Each day includes three different topics to maintain variety and interest.</p>
+        
+        <table class="timetable">
+            <tr class="week-heading">
+                <td colspan="2">Week 1: April 15th - April 20th</td>
             </tr>
             <tr>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;">Monday</td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#addition-subtraction" style="text-decoration: none; color: #004080; font-weight: bold;">Addition & Subtraction</a></td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#word-classes" style="text-decoration: none; color: #004080; font-weight: bold;">Word Classes</a></td>
+                <th>Day</th>
+                <th>Topics</th>
             </tr>
             <tr>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;">Tuesday</td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#multiplication-division" style="text-decoration: none; color: #004080; font-weight: bold;">Multiplication & Division</a></td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#grammar-sentence-structure" style="text-decoration: none; color: #004080; font-weight: bold;">Grammar and Sentence Structure</a></td>
+                <td>Tuesday, April 15th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set1">Addition & Subtraction: Set 1</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set1">Reading Comprehension: Set 1</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/spelling.html#set1">Spelling: Set 1</a></li>
+                    </ul>
+                </td>
             </tr>
             <tr>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;">Wednesday</td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#fractions" style="text-decoration: none; color: #004080; font-weight: bold;">Fractions</a></td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#tenses-verb-forms" style="text-decoration: none; color: #004080; font-weight: bold;">Tenses and Verb Forms</a></td>
+                <td>Wednesday, April 16th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set1">Multiplication & Division: Set 1</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set1">Measurement & Geometry: Set 1</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/grammar.html#set1">Grammar: Set 1</a></li>
+                    </ul>
+                </td>
             </tr>
             <tr>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;">Thursday</td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#decimals-percentages" style="text-decoration: none; color: #004080; font-weight: bold;">Decimals & Percentages</a></td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#punctuation" style="text-decoration: none; color: #004080; font-weight: bold;">Punctuation</a></td>
+                <td>Thursday, April 17th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set1">Fractions, Decimals & Percentages: Set 1</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set1">Statistics & Algebra: Set 1</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/vocabulary.html#set1">Vocabulary: Set 1</a></li>
+                    </ul>
+                </td>
             </tr>
             <tr>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;">Friday</td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#order-of-operations" style="text-decoration: none; color: #004080; font-weight: bold;">Order of Operations</a></td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#spelling-word-formation" style="text-decoration: none; color: #004080; font-weight: bold;">Spelling and Word Formation</a></td>
+                <td>Friday, April 18th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set2">Addition & Subtraction: Set 2</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set2">Reading Comprehension: Set 2</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/punctuation.html#set1">Punctuation: Set 1</a></li>
+                    </ul>
+                </td>
             </tr>
             <tr>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;">Saturday</td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#missing-number-problems" style="text-decoration: none; color: #004080; font-weight: bold;">Missing Number Problems</a></td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#vocabulary-meaning" style="text-decoration: none; color: #004080; font-weight: bold;">Vocabulary and Meaning</a></td>
+                <td>Saturday, April 19th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set2">Multiplication & Division: Set 2</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set2">Measurement & Geometry: Set 2</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/spelling.html#set2">Spelling: Set 2</a></li>
+                    </ul>
+                </td>
             </tr>
             <tr>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><strong>Sunday</strong></td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#maths-review" style="text-decoration: none; color: #004080; font-weight: bold;">Maths Review & Practice</a></td>
-                <td style="border: 1px solid #0074cc; padding: 10px; text-align: center;"><a href="#english-review" style="text-decoration: none; color: #004080; font-weight: bold;">English Review & Practice</a></td>
+                <td>Sunday, April 20th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set2">Fractions, Decimals & Percentages: Set 2</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set2">Statistics & Algebra: Set 2</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/grammar.html#set2">Grammar: Set 2</a></li>
+                    </ul>
+                </td>
+            </tr>
+            
+            <tr class="week-heading">
+                <td colspan="2">Week 2: April 21st - April 27th</td>
+            </tr>
+            <tr>
+                <td>Monday, April 21st</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set3">Addition & Subtraction: Set 3</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set3">Reading Comprehension: Set 3</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/vocabulary.html#set2">Vocabulary: Set 2</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Tuesday, April 22nd</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set3">Multiplication & Division: Set 3</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set3">Measurement & Geometry: Set 3</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/punctuation.html#set2">Punctuation: Set 2</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Wednesday, April 23rd</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set3">Fractions, Decimals & Percentages: Set 3</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set3">Statistics & Algebra: Set 3</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/spelling.html#set3">Spelling: Set 3</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Thursday, April 24th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set4">Addition & Subtraction: Set 4</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set4">Reading Comprehension: Set 4</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/grammar.html#set3">Grammar: Set 3</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Friday, April 25th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set4">Multiplication & Division: Set 4</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set4">Measurement & Geometry: Set 4</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/vocabulary.html#set3">Vocabulary: Set 3</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Saturday, April 26th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set4">Fractions, Decimals & Percentages: Set 4</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set4">Statistics & Algebra: Set 4</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/punctuation.html#set3">Punctuation: Set 3</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Sunday, April 27th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set5">Addition & Subtraction: Set 5</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set5">Reading Comprehension: Set 5</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/spelling.html#set4">Spelling: Set 4</a></li>
+                    </ul>
+                </td>
+            </tr>
+            
+            <tr class="week-heading">
+                <td colspan="2">Week 3: April 28th - May 4th</td>
+            </tr>
+            <tr>
+                <td>Monday, April 28th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set5">Multiplication & Division: Set 5</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set5">Measurement & Geometry: Set 5</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/grammar.html#set4">Grammar: Set 4</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Tuesday, April 29th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set5">Fractions, Decimals & Percentages: Set 5</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set5">Statistics & Algebra: Set 5</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/vocabulary.html#set4">Vocabulary: Set 4</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Wednesday, April 30th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set6">Addition & Subtraction: Set 6</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set6">Reading Comprehension: Set 6</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/punctuation.html#set4">Punctuation: Set 4</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Thursday, May 1st</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set6">Multiplication & Division: Set 6</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set6">Measurement & Geometry: Set 6</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/spelling.html#set5">Spelling: Set 5</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Friday, May 2nd</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set6">Fractions, Decimals & Percentages: Set 6</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set6">Statistics & Algebra: Set 6</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/grammar.html#set5">Grammar: Set 5</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Saturday, May 3rd</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set7">Addition & Subtraction: Set 7</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set7">Reading Comprehension: Set 7</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/vocabulary.html#set5">Vocabulary: Set 5</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Sunday, May 4th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set7">Multiplication & Division: Set 7</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set7">Measurement & Geometry: Set 7</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/punctuation.html#set5">Punctuation: Set 5</a></li>
+                    </ul>
+                </td>
+            </tr>
+            
+            <tr class="week-heading">
+                <td colspan="2">Week 4: May 5th - May 11th (Final Week)</td>
+            </tr>
+            <tr>
+                <td>Monday, May 5th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set7">Fractions, Decimals & Percentages: Set 7</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set7">Statistics & Algebra: Set 7</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/spelling.html#set6">Spelling: Set 6</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Tuesday, May 6th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set8">Addition & Subtraction: Set 8</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set8">Reading Comprehension: Set 8</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/grammar.html#set6">Grammar: Set 6</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Wednesday, May 7th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set8">Multiplication & Division: Set 8</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set8">Measurement & Geometry: Set 8</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/vocabulary.html#set6">Vocabulary: Set 6</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Thursday, May 8th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set8">Fractions, Decimals & Percentages: Set 8</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set8">Statistics & Algebra: Set 8</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/punctuation.html#set6">Punctuation: Set 6</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Friday, May 9th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction.html#set9">Addition & Subtraction: Set 9</a> & <a href="https://dmhprior.github.io/bert/addition-subtraction.html#set10">Set 10</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/reading-comprehension.html#set9">Reading Comprehension: Set 9</a> & <a href="https://dmhprior.github.io/bert/reading-comprehension.html#set10">Set 10</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/spelling.html#set7">Spelling: Set 7</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Saturday, May 10th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html#set9">Multiplication & Division: Set 9</a> & <a href="https://dmhprior.github.io/bert/multiplication-division.html#set10">Set 10</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html#set9">Measurement & Geometry: Set 9</a> & <a href="https://dmhprior.github.io/bert/measurement-geometry.html#set10">Set 10</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/grammar.html#set7">Grammar: Set 7</a></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Sunday, May 11th</td>
+                <td>
+                    <ul>
+                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set9">Fractions, Decimals & Percentages: Set 9</a> & <a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html#set10">Set 10</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/statistics-algebra.html#set9">Statistics & Algebra: Set 9</a> & <a href="https://dmhprior.github.io/bert/statistics-algebra.html#set10">Set 10</a></li>
+                        <li><a href="https://dmhprior.github.io/bert/vocabulary.html#set7">Vocabulary: Set 7</a> & <a href="https://dmhprior.github.io/bert/punctuation.html#set7">Punctuation: Set 7</a></li>
+                    </ul>
+                </td>
             </tr>
         </table>
-        
-        <h2 id="addition-subtraction">Maths - Arithmetic</h2>
-        <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/addition-subtraction-enhanced.html" class="game-button arithmetic-button">Addition & Subtraction</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiplication-division.html" class="game-button arithmetic-button" id="multiplication-division">Multiplication & Division</a></li>
-            <li><a href="https://dmhprior.github.io/bert/fractions-enhanced.html" class="game-button arithmetic-button" id="fractions">Fractions</a></li>
-            <li><a href="https://dmhprior.github.io/bert/decimals-percentages.html" class="game-button arithmetic-button" id="decimals-percentages">Decimals & Percentages</a></li>
-            <li><a href="https://dmhprior.github.io/bert/order-operations.html" class="game-button arithmetic-button" id="order-of-operations">Order of Operations</a></li>
-            <li><a href="https://dmhprior.github.io/bert/missing-number-enhanced.html" class="game-button arithmetic-button" id="missing-number-problems">Missing Number Problems</a></li>
-        </ul>
-        
-        <h2>Maths - Reasoning</h2>
-        <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/number-place-value.html" class="game-button reasoning-button">Number & Place Value</a></li>
-            <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html" class="game-button reasoning-button">Fractions, Decimals & Percentages</a></li>
-            <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html" class="game-button reasoning-button">Measurement & Geometry</a></li>
-            <li><a href="https://dmhprior.github.io/bert/statistics.html" class="game-button reasoning-button">Statistics</a></li>
-            <li><a href="https://dmhprior.github.io/bert/algebra-missing-values.html" class="game-button reasoning-button">Algebra & Missing Values</a></li>
-            <li><a href="https://dmhprior.github.io/bert/problem-solving.html" class="game-button reasoning-button" id="maths-review">Problem Solving & Reasoning</a></li>
-        </ul>
-        
-        <h2>English</h2>
-        <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/grammar-word-classes.html" class="game-button english-button" id="word-classes">Word Classes</a></li>
-            <li><a href="https://dmhprior.github.io/bert/sentence-structure.html" class="game-button english-button" id="grammar-sentence-structure">Grammar and Sentence Structure</a></li>
-            <li><a href="https://dmhprior.github.io/bert/tenses-verb-forms.html" class="game-button english-button" id="tenses-verb-forms">Tenses and Verb Forms</a></li>
-            <li><a href="https://dmhprior.github.io/bert/punctuation-enhanced.html" class="game-button english-button" id="punctuation">Punctuation</a></li>
-            <li><a href="https://dmhprior.github.io/bert/spelling-word-formation.html" class="game-button english-button" id="spelling-word-formation">Spelling and Word Formation</a></li>
-            <li><a href="https://dmhprior.github.io/bert/vocabulary-meaning.html" class="game-button english-button" id="vocabulary-meaning">Vocabulary and Meaning</a></li>
-        </ul>
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 Bert Prior. All rights reserved.</p>
-    </footer>
+
+        <div class="study-tips">
+            <h2>Study Tips</h2>
+            <ul>
+                <li>Aim to spend about 20-30 minutes on each set</li>
+                <li>Take short breaks between sets</li>
+                <li>Review any challenging questions</li>
+                <li>Celebrate progress daily</li>
+                <li>Make note of topics that need extra attention</li>
+            </ul>
+            <p><strong>Good luck with the SATs exams!</strong></p>
+        </div>
+    </div>
 </body>
 </html>
