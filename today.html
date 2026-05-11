@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bert's Revision — Today</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+  :root {
+    --bg: #07090f; --card: #0f1520; --card2: #141d2e;
+    --border: #1e2d45; --text: #eef4ff; --muted: #5a7a9a;
+    --accent: #3b82f6; --green: #4ade80; --red: #f87171;
+    --yellow: #fbbf24; --radius: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 17px; line-height: 1.6; }
+
+  .header {
+    background: linear-gradient(160deg, #050810 0%, #0a1628 100%);
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .header h1 { font-family: 'Nunito', sans-serif; font-size: 1.5rem; font-weight: 900; color: #fff; }
+  .home-link { color: var(--muted); font-size: 0.82rem; text-decoration: none; font-weight: 700; border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; }
+  .home-link:hover { color: var(--text); border-color: var(--accent); }
+  .date-str { font-size: 0.85rem; color: var(--muted); }
+
+  /* PROGRESS BAR */
+  .progress-section { padding: 16px 20px 0; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
+  .progress-label span { color: var(--text); }
+  .progress-track { height: 10px; background: var(--card2); border-radius: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 10px; transition: width 0.5s ease; }
+
+  /* TOPIC CARDS */
+  .topics-section { padding: 20px 16px 8px; }
+  .section-label { font-family: 'Nunito', sans-serif; font-size: 0.72rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+
+  .topic-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .topic-card.done { border-color: var(--green); background: #4ade8008; }
+
+  .topic-main {
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .topic-check {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--card2);
+  }
+  .topic-card.done .topic-check { border-color: var(--green); background: var(--green); }
+
+  .topic-info { flex: 1; }
+  .topic-subject {
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 3px;
+  }
+  .topic-name { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; color: var(--text); }
+  .topic-card.done .topic-name { color: var(--green); }
+  .topic-exam { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  .topic-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .topic-go:active { transform: scale(0.97); }
+  .topic-card.done .topic-go { background: #4ade8030; color: var(--green); }
+
+  /* SCORE ENTRY */
+  .score-row {
+    border-top: 1px solid var(--border);
+    padding: 12px 18px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+  }
+  .topic-card.done .score-row { display: flex; }
+  .score-label { font-size: 0.82rem; color: var(--muted); font-weight: 700; flex-shrink: 0; }
+  .score-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .score-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--card2);
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .score-btn:hover { border-color: var(--accent); color: var(--text); }
+  .score-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .score-btn.selected-good { background: var(--green); border-color: var(--green); color: #07090f; }
+  .score-btn.selected-ok { background: var(--yellow); border-color: var(--yellow); color: #07090f; }
+  .score-btn.selected-bad { background: var(--red); border-color: var(--red); color: #fff; }
+
+  /* SHARE SECTION */
+  .share-section { padding: 0 16px 16px; display: none; }
+  .share-section.visible { display: block; }
+  .share-card {
+    background: var(--card);
+    border: 2px solid var(--green);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .share-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--green); margin-bottom: 8px; }
+  .share-summary { font-size: 0.88rem; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
+  .share-text {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 14px;
+    white-space: pre-wrap;
+    font-family: monospace;
+  }
+  .copy-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: #07090f;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .copy-btn:active { transform: scale(0.98); }
+  .copied-msg { text-align: center; color: var(--green); font-size: 0.85rem; font-weight: 700; margin-top: 8px; display: none; }
+
+  /* REST DAY */
+  .rest-card {
+    margin: 20px 16px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px 20px;
+    text-align: center;
+  }
+  .rest-emoji { font-size: 3rem; margin-bottom: 12px; display: block; }
+  .rest-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.3rem; color: var(--text); margin-bottom: 8px; }
+  .rest-msg { color: var(--muted); font-size: 0.9rem; }
+
+  /* NAV */
+  .nav-row { display: flex; gap: 10px; padding: 8px 16px 32px; }
+  .nav-btn { flex: 1; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; color: var(--muted); font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.85rem; cursor: pointer; text-align: center; }
+  .nav-btn:hover { border-color: var(--accent); color: var(--text); }
+  .nav-btn.today-btn { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* subject colours */
+  .subj-RE { color: #c084fc; }
+  .subj-Maths { color: #4ade80; }
+  .subj-Geography { color: #38bdf8; }
+  .subj-History { color: #f59e0b; }
+  .subj-Science { color: #00d4aa; }
+  .subj-English { color: #e879f9; }
+
+  .subj-dot-RE { background: #c084fc; }
+  .subj-dot-Maths { background: #4ade80; }
+  .subj-dot-Geography { background: #38bdf8; }
+  .subj-dot-History { background: #f59e0b; }
+  .subj-dot-Science { background: #00d4aa; }
+  .subj-dot-English { background: #e879f9; }
+
+  .subj-border-RE { border-color: #c084fc50 !important; }
+  .subj-border-Maths { border-color: #4ade8050 !important; }
+  .subj-border-Geography { border-color: #38bdf850 !important; }
+  .subj-border-History { border-color: #f59e0b50 !important; }
+  .subj-border-Science { border-color: #00d4aa50 !important; }
+  .subj-border-English { border-color: #e879f950 !important; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>📅 Today's Revision</h1>
+    <a href="index.html" class="home-link">← Home</a>
+  </div>
+  <div class="date-str" id="date-str">Loading...</div>
+</div>
+
+<div class="progress-section">
+  <div class="progress-label">
+    <span>Today's progress</span>
+    <span id="progress-text">0 / 0 done</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<div id="main-content"></div>
+
+<script>
+const SCHEDULE = [{"date":"2026-05-12","day":"Tuesday","date_str":"Tue 12 May","slots":3,"is_weekend":false,"topics":[{"subject":"RE","topic":"World Religions","file":"re.html","key":"religions","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Number System","file":"maths.html","key":"number","exam_date":"2026-06-16"},{"subject":"Geography","topic":"Sense of Place","file":"geography.html","key":"place","exam_date":"2026-06-17"}]},{"date":"2026-05-13","day":"Wednesday","date_str":"Wed 13 May","slots":3,"is_weekend":false,"topics":[{"subject":"RE","topic":"Does God Exist?","file":"re.html","key":"god","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Fractions & Decimals","file":"maths.html","key":"fractions","exam_date":"2026-06-16"},{"subject":"History","topic":"Romans","file":"history.html","key":"romans","exam_date":"2026-06-17"}]},{"date":"2026-05-14","day":"Thursday","date_str":"Thu 14 May","slots":3,"is_weekend":false,"topics":[{"subject":"RE","topic":"Ethics & Morality","file":"re.html","key":"ethics","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Adding & Subtracting","file":"maths.html","key":"addsubtract","exam_date":"2026-06-16"},{"subject":"Science","topic":"Cells & Microscopes","file":"science.html","key":"cells","exam_date":"2026-06-18"}]},{"date":"2026-05-15","day":"Friday","date_str":"Fri 15 May","slots":3,"is_weekend":false,"topics":[{"subject":"English","topic":"Rhetoric","file":"english.html","key":"rhetoric","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Settlement","file":"geography.html","key":"settlement","exam_date":"2026-06-17"},{"subject":"History","topic":"Anglo-Saxons","file":"history.html","key":"anglosaxons","exam_date":"2026-06-17"}]},{"date":"2026-05-16","day":"Saturday","date_str":"Sat 16 May","slots":4,"is_weekend":true,"topics":[{"subject":"Maths","topic":"Multiplying","file":"maths.html","key":"multiply","exam_date":"2026-06-16"},{"subject":"Science","topic":"Reproduction","file":"science.html","key":"reproduction","exam_date":"2026-06-18"},{"subject":"RE","topic":"Sikhism","file":"re.html","key":"sikhism","exam_date":"2026-06-15"},{"subject":"English","topic":"Sentences & Punctuation","file":"english.html","key":"sentences","exam_date":"2026-06-18"}]},{"date":"2026-05-17","day":"Sunday","date_str":"Sun 17 May","slots":4,"is_weekend":true,"topics":[{"subject":"Science","topic":"States of Matter","file":"science.html","key":"particles","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Dividing","file":"maths.html","key":"divide","exam_date":"2026-06-16"},{"subject":"Geography","topic":"Ecosystems","file":"geography.html","key":"ecosystems","exam_date":"2026-06-17"},{"subject":"History","topic":"Normans & 1066","file":"history.html","key":"normans","exam_date":"2026-06-17"}]},{"date":"2026-05-18","day":"Monday","date_str":"Mon 18 May","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Separation","file":"science.html","key":"separation","exam_date":"2026-06-18"},{"subject":"RE","topic":"World Religions","file":"re.html","key":"religions","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Algebra","file":"maths.html","key":"algebra","exam_date":"2026-06-16"}]},{"date":"2026-05-19","day":"Tuesday","date_str":"Tue 19 May","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Elements & Compounds","file":"science.html","key":"elements","exam_date":"2026-06-18"},{"subject":"English","topic":"Vocabulary & Connectives","file":"english.html","key":"vocab","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Weather","file":"geography.html","key":"weather","exam_date":"2026-06-17"}]},{"date":"2026-05-20","day":"Wednesday","date_str":"Wed 20 May","slots":3,"is_weekend":false,"topics":[{"subject":"History","topic":"Medieval World","file":"history.html","key":"medieval","exam_date":"2026-06-17"},{"subject":"Science","topic":"Chemical Reactions","file":"science.html","key":"reactions","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Number System","file":"maths.html","key":"number","exam_date":"2026-06-16"}]},{"date":"2026-05-21","day":"Thursday","date_str":"Thu 21 May","slots":3,"is_weekend":false,"topics":[{"subject":"RE","topic":"Does God Exist?","file":"re.html","key":"god","exam_date":"2026-06-15"},{"subject":"Science","topic":"Forces","file":"science.html","key":"forces","exam_date":"2026-06-18"},{"subject":"English","topic":"Writing Devices","file":"english.html","key":"devices","exam_date":"2026-06-18"}]},{"date":"2026-05-22","day":"Friday","date_str":"Fri 22 May","slots":3,"is_weekend":false,"topics":[{"subject":"Maths","topic":"Fractions & Decimals","file":"maths.html","key":"fractions","exam_date":"2026-06-16"},{"subject":"Science","topic":"Energy","file":"science.html","key":"energy","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Sense of Place","file":"geography.html","key":"place","exam_date":"2026-06-17"}]},{"date":"2026-05-23","day":"Saturday","date_str":"Sat 23 May","slots":4,"is_weekend":true,"topics":[{"subject":"History","topic":"Romans","file":"history.html","key":"romans","exam_date":"2026-06-17"},{"subject":"Science","topic":"Light & Sound","file":"science.html","key":"lightsound","exam_date":"2026-06-18"},{"subject":"RE","topic":"Ethics & Morality","file":"re.html","key":"ethics","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Adding & Subtracting","file":"maths.html","key":"addsubtract","exam_date":"2026-06-16"}]},{"date":"2026-05-24","day":"Sunday","date_str":"Sun 24 May","slots":4,"is_weekend":true,"topics":[{"subject":"Science","topic":"Cells & Microscopes","file":"science.html","key":"cells","exam_date":"2026-06-18"},{"subject":"English","topic":"Rhetoric","file":"english.html","key":"rhetoric","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Settlement","file":"geography.html","key":"settlement","exam_date":"2026-06-17"},{"subject":"History","topic":"Anglo-Saxons","file":"history.html","key":"anglosaxons","exam_date":"2026-06-17"}]},{"date":"2026-05-25","day":"Monday","date_str":"Mon 25 May","slots":3,"is_weekend":false,"topics":[{"subject":"Maths","topic":"Multiplying","file":"maths.html","key":"multiply","exam_date":"2026-06-16"},{"subject":"Science","topic":"Reproduction","file":"science.html","key":"reproduction","exam_date":"2026-06-18"},{"subject":"RE","topic":"Sikhism","file":"re.html","key":"sikhism","exam_date":"2026-06-15"}]},{"date":"2026-05-26","day":"Tuesday","date_str":"Tue 26 May","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"States of Matter","file":"science.html","key":"particles","exam_date":"2026-06-18"},{"subject":"English","topic":"Sentences & Punctuation","file":"english.html","key":"sentences","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Dividing","file":"maths.html","key":"divide","exam_date":"2026-06-16"}]},{"date":"2026-05-27","day":"Wednesday","date_str":"Wed 27 May","slots":3,"is_weekend":false,"topics":[{"subject":"Geography","topic":"Ecosystems","file":"geography.html","key":"ecosystems","exam_date":"2026-06-17"},{"subject":"History","topic":"Normans & 1066","file":"history.html","key":"normans","exam_date":"2026-06-17"},{"subject":"Science","topic":"Separation","file":"science.html","key":"separation","exam_date":"2026-06-18"}]},{"date":"2026-05-28","day":"Thursday","date_str":"Thu 28 May","slots":3,"is_weekend":false,"topics":[{"subject":"RE","topic":"World Religions","file":"re.html","key":"religions","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Algebra","file":"maths.html","key":"algebra","exam_date":"2026-06-16"},{"subject":"Science","topic":"Elements & Compounds","file":"science.html","key":"elements","exam_date":"2026-06-18"}]},{"date":"2026-05-29","day":"Friday","date_str":"Fri 29 May","slots":3,"is_weekend":false,"topics":[{"subject":"English","topic":"Vocabulary & Connectives","file":"english.html","key":"vocab","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Weather","file":"geography.html","key":"weather","exam_date":"2026-06-17"},{"subject":"History","topic":"Medieval World","file":"history.html","key":"medieval","exam_date":"2026-06-17"}]},{"date":"2026-05-30","day":"Saturday","date_str":"Sat 30 May","slots":4,"is_weekend":true,"topics":[{"subject":"Science","topic":"Chemical Reactions","file":"science.html","key":"reactions","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Number System","file":"maths.html","key":"number","exam_date":"2026-06-16"},{"subject":"RE","topic":"Does God Exist?","file":"re.html","key":"god","exam_date":"2026-06-15"},{"subject":"English","topic":"Writing Devices","file":"english.html","key":"devices","exam_date":"2026-06-18"}]},{"date":"2026-05-31","day":"Sunday","date_str":"Sun 31 May","slots":4,"is_weekend":true,"topics":[{"subject":"Science","topic":"Forces","file":"science.html","key":"forces","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Fractions & Decimals","file":"maths.html","key":"fractions","exam_date":"2026-06-16"},{"subject":"Geography","topic":"Sense of Place","file":"geography.html","key":"place","exam_date":"2026-06-17"},{"subject":"History","topic":"Romans","file":"history.html","key":"romans","exam_date":"2026-06-17"}]},{"date":"2026-06-01","day":"Monday","date_str":"Mon 1 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Energy","file":"science.html","key":"energy","exam_date":"2026-06-18"},{"subject":"RE","topic":"Ethics & Morality","file":"re.html","key":"ethics","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Adding & Subtracting","file":"maths.html","key":"addsubtract","exam_date":"2026-06-16"}]},{"date":"2026-06-02","day":"Tuesday","date_str":"Tue 2 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Light & Sound","file":"science.html","key":"lightsound","exam_date":"2026-06-18"},{"subject":"English","topic":"Rhetoric","file":"english.html","key":"rhetoric","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Settlement","file":"geography.html","key":"settlement","exam_date":"2026-06-17"}]},{"date":"2026-06-03","day":"Wednesday","date_str":"Wed 3 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Cells & Microscopes","file":"science.html","key":"cells","exam_date":"2026-06-18"},{"subject":"History","topic":"Anglo-Saxons","file":"history.html","key":"anglosaxons","exam_date":"2026-06-17"},{"subject":"Maths","topic":"Multiplying","file":"maths.html","key":"multiply","exam_date":"2026-06-16"}]},{"date":"2026-06-04","day":"Thursday","date_str":"Thu 4 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Reproduction","file":"science.html","key":"reproduction","exam_date":"2026-06-18"},{"subject":"RE","topic":"Sikhism","file":"re.html","key":"sikhism","exam_date":"2026-06-15"},{"subject":"English","topic":"Sentences & Punctuation","file":"english.html","key":"sentences","exam_date":"2026-06-18"}]},{"date":"2026-06-05","day":"Friday","date_str":"Fri 5 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"States of Matter","file":"science.html","key":"particles","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Dividing","file":"maths.html","key":"divide","exam_date":"2026-06-16"},{"subject":"Geography","topic":"Ecosystems","file":"geography.html","key":"ecosystems","exam_date":"2026-06-17"}]},{"date":"2026-06-06","day":"Saturday","date_str":"Sat 6 Jun","slots":4,"is_weekend":true,"topics":[{"subject":"History","topic":"Normans & 1066","file":"history.html","key":"normans","exam_date":"2026-06-17"},{"subject":"Science","topic":"Separation","file":"science.html","key":"separation","exam_date":"2026-06-18"},{"subject":"RE","topic":"World Religions","file":"re.html","key":"religions","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Algebra","file":"maths.html","key":"algebra","exam_date":"2026-06-16"}]},{"date":"2026-06-07","day":"Sunday","date_str":"Sun 7 Jun","slots":4,"is_weekend":true,"topics":[{"subject":"Science","topic":"Elements & Compounds","file":"science.html","key":"elements","exam_date":"2026-06-18"},{"subject":"English","topic":"Vocabulary & Connectives","file":"english.html","key":"vocab","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Weather","file":"geography.html","key":"weather","exam_date":"2026-06-17"},{"subject":"History","topic":"Medieval World","file":"history.html","key":"medieval","exam_date":"2026-06-17"}]},{"date":"2026-06-08","day":"Monday","date_str":"Mon 8 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Chemical Reactions","file":"science.html","key":"reactions","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Number System","file":"maths.html","key":"number","exam_date":"2026-06-16"},{"subject":"RE","topic":"Does God Exist?","file":"re.html","key":"god","exam_date":"2026-06-15"}]},{"date":"2026-06-09","day":"Tuesday","date_str":"Tue 9 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Forces","file":"science.html","key":"forces","exam_date":"2026-06-18"},{"subject":"English","topic":"Writing Devices","file":"english.html","key":"devices","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Fractions & Decimals","file":"maths.html","key":"fractions","exam_date":"2026-06-16"}]},{"date":"2026-06-10","day":"Wednesday","date_str":"Wed 10 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Energy","file":"science.html","key":"energy","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Sense of Place","file":"geography.html","key":"place","exam_date":"2026-06-17"},{"subject":"History","topic":"Romans","file":"history.html","key":"romans","exam_date":"2026-06-17"}]},{"date":"2026-06-11","day":"Thursday","date_str":"Thu 11 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Light & Sound","file":"science.html","key":"lightsound","exam_date":"2026-06-18"},{"subject":"RE","topic":"Ethics & Morality","file":"re.html","key":"ethics","exam_date":"2026-06-15"},{"subject":"Maths","topic":"Adding & Subtracting","file":"maths.html","key":"addsubtract","exam_date":"2026-06-16"}]},{"date":"2026-06-12","day":"Friday","date_str":"Fri 12 Jun","slots":3,"is_weekend":false,"topics":[{"subject":"Science","topic":"Cells & Microscopes","file":"science.html","key":"cells","exam_date":"2026-06-18"},{"subject":"English","topic":"Rhetoric","file":"english.html","key":"rhetoric","exam_date":"2026-06-18"},{"subject":"Geography","topic":"Settlement","file":"geography.html","key":"settlement","exam_date":"2026-06-17"}]},{"date":"2026-06-13","day":"Saturday","date_str":"Sat 13 Jun","slots":4,"is_weekend":true,"topics":[{"subject":"History","topic":"Anglo-Saxons","file":"history.html","key":"anglosaxons","exam_date":"2026-06-17"},{"subject":"Maths","topic":"Multiplying","file":"maths.html","key":"multiply","exam_date":"2026-06-16"},{"subject":"Science","topic":"Reproduction","file":"science.html","key":"reproduction","exam_date":"2026-06-18"},{"subject":"RE","topic":"Sikhism","file":"re.html","key":"sikhism","exam_date":"2026-06-15"}]},{"date":"2026-06-14","day":"Sunday","date_str":"Sun 14 Jun","slots":4,"is_weekend":true,"topics":[{"subject":"Science","topic":"States of Matter","file":"science.html","key":"particles","exam_date":"2026-06-18"},{"subject":"English","topic":"Sentences & Punctuation","file":"english.html","key":"sentences","exam_date":"2026-06-18"},{"subject":"Maths","topic":"Dividing","file":"maths.html","key":"divide","exam_date":"2026-06-16"},{"subject":"Geography","topic":"Ecosystems","file":"geography.html","key":"ecosystems","exam_date":"2026-06-17"}]}];
+
+const SUBJECT_ICONS = {RE:'🙏',Maths:'➕',Geography:'🌍',History:'⚔️',Science:'🔬',English:'✍️'};
+const EXAM_DATES = {RE:'Mon 15 Jun',Maths:'Tue 16 Jun',Geography:'Wed 17 Jun',History:'Wed 17 Jun',Science:'Thu 18 Jun',English:'Thu 18 Jun'};
+
+function getTodayStr() {
+  const d = new Date();
+  return d.toISOString().split('T')[0];
+}
+
+function getStorageKey(date) { return 'bert_day_' + date; }
+
+function loadState(date) {
+  try {
+    const s = localStorage.getItem(getStorageKey(date));
+    return s ? JSON.parse(s) : {};
+  } catch(e) { return {}; }
+}
+
+function saveState(date, state) {
+  try { localStorage.setItem(getStorageKey(date), JSON.stringify(state)); } catch(e) {}
+}
+
+let viewingDate = getTodayStr();
+let state = {};
+
+function findDayData(dateStr) {
+  return SCHEDULE.find(d => d.date === dateStr) || null;
+}
+
+function formatExamDate(isoDate) {
+  const d = new Date(isoDate + 'T12:00:00');
+  return d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
+}
+
+function buildShareText(dayData, state) {
+  const lines = [`📚 Bert's revision — ${dayData.date_str}\n`];
+  dayData.topics.forEach((t, i) => {
+    const done = state[i]?.done;
+    const score = state[i]?.score;
+    const emoji = done ? '✅' : '⬜';
+    const scoreStr = score !== undefined ? ` — ${score}/8` : '';
+    lines.push(`${emoji} ${t.subject}: ${t.topic}${scoreStr}`);
+  });
+  const doneCount = dayData.topics.filter((_, i) => state[i]?.done).length;
+  lines.push(`\n${doneCount}/${dayData.topics.length} topics done 💪`);
+  return lines.join('\n');
+}
+
+function updateProgress(dayData) {
+  const total = dayData.topics.length;
+  const done = dayData.topics.filter((_, i) => state[i]?.done).length;
+  document.getElementById('progress-text').textContent = `${done} / ${total} done`;
+  document.getElementById('progress-fill').style.width = (done/total*100) + '%';
+
+  // show share section if all done
+  const shareSection = document.getElementById('share-section');
+  if (done === total && total > 0) {
+    shareSection.classList.add('visible');
+    document.getElementById('share-text').textContent = buildShareText(dayData, state);
+  } else {
+    shareSection.classList.remove('visible');
+  }
+}
+
+function toggleDone(idx, dayData) {
+  if (!state[idx]) state[idx] = {};
+  state[idx].done = !state[idx].done;
+  if (!state[idx].done) delete state[idx].score;
+  saveState(viewingDate, state);
+  render(dayData);
+}
+
+function setScore(idx, score, dayData) {
+  if (!state[idx]) state[idx] = {};
+  state[idx].score = score;
+  saveState(viewingDate, state);
+  render(dayData);
+}
+
+function render(dayData) {
+  const content = document.getElementById('main-content');
+
+  if (!dayData) {
+    const todayStr = getTodayStr();
+    if (todayStr < '2026-05-12') {
+      content.innerHTML = `<div class="rest-card"><span class="rest-emoji">🚀</span><div class="rest-title">Revision starts tomorrow!</div><div class="rest-msg">Your first session is Tuesday 12th May. See you then, Bert!</div></div>`;
+    } else if (todayStr >= '2026-06-15') {
+      content.innerHTML = `<div class="rest-card"><span class="rest-emoji">🎉</span><div class="rest-title">Exam week!</div><div class="rest-msg">Go smash it. You've done the work.</div></div>`;
+    } else {
+      content.innerHTML = `<div class="rest-card"><span class="rest-emoji">😴</span><div class="rest-title">Rest day</div><div class="rest-msg">Nothing scheduled today. Recharge for tomorrow!</div></div>`;
+    }
+    document.getElementById('progress-text').textContent = '—';
+    return;
+  }
+
+  // Date label
+  document.getElementById('date-str').textContent = dayData.date_str + (dayData.is_weekend ? ' · Weekend — 4 topics today' : ' · ' + dayData.slots + ' topics today');
+
+  let html = `<div class="topics-section"><div class="section-label">Today's topics</div>`;
+
+  dayData.topics.forEach((t, i) => {
+    const done = state[i]?.done;
+    const score = state[i]?.score;
+
+    // Score button classes
+    const scoreBtns = [1,2,3,4,5,6,7,8].map(n => {
+      let cls = 'score-btn';
+      if (score === n) {
+        if (n >= 6) cls += ' selected-good';
+        else if (n >= 4) cls += ' selected-ok';
+        else cls += ' selected-bad';
+      }
+      return `<button class="${cls}" onclick="setScore(${i},${n},currentDayData)">${n}</button>`;
+    }).join('');
+
+    html += `
+      <div class="topic-card ${done ? 'done' : ''} subj-border-${t.subject}" id="card-${i}">
+        <div class="topic-main">
+          <div class="topic-check" onclick="toggleDone(${i},currentDayData)">${done ? '✓' : ''}</div>
+          <div class="topic-info">
+            <div class="topic-subject subj-${t.subject}">${SUBJECT_ICONS[t.subject]} ${t.subject}</div>
+            <div class="topic-name">${t.topic}</div>
+            <div class="topic-exam">Exam: ${EXAM_DATES[t.subject]}</div>
+          </div>
+          <a href="${t.file}" class="topic-go">${done ? 'Again' : 'Go'} →</a>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Score:</span>
+          <div class="score-btns">${scoreBtns}</div>
+        </div>
+      </div>`;
+  });
+
+  html += `</div>`;
+
+  // Share section
+  html += `
+    <div class="share-section" id="share-section">
+      <div class="share-card">
+        <div class="share-title">🎉 All done today!</div>
+        <div class="share-summary">Copy this and send it to Dad on WhatsApp so he can see how you got on.</div>
+        <div class="share-text" id="share-text"></div>
+        <button class="copy-btn" onclick="copyShare()">📋 Copy to send to Dad</button>
+        <div class="copied-msg" id="copied-msg">Copied! Now paste it into WhatsApp ✅</div>
+      </div>
+    </div>`;
+
+  // Nav
+  const prevDate = getPrevDate(viewingDate);
+  const nextDate = getNextDate(viewingDate);
+  const isToday = viewingDate === getTodayStr();
+
+  html += `<div class="nav-row">
+    <button class="nav-btn" onclick="navigateDay('${prevDate}')">← ${prevDate ? new Date(prevDate+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric'}) : '—'}</button>
+    ${!isToday ? `<button class="nav-btn today-btn" onclick="navigateDay('${getTodayStr()}')">Today</button>` : ''}
+    <button class="nav-btn" onclick="navigateDay('${nextDate}')">→ ${nextDate ? new Date(nextDate+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric'}) : '—'}</button>
+  </div>`;
+
+  content.innerHTML = html;
+  updateProgress(dayData);
+}
+
+function getPrevDate(dateStr) {
+  const idx = SCHEDULE.findIndex(d => d.date === dateStr);
+  return idx > 0 ? SCHEDULE[idx-1].date : null;
+}
+function getNextDate(dateStr) {
+  const idx = SCHEDULE.findIndex(d => d.date === dateStr);
+  return idx >= 0 && idx < SCHEDULE.length-1 ? SCHEDULE[idx+1].date : null;
+}
+
+function navigateDay(dateStr) {
+  if (!dateStr) return;
+  viewingDate = dateStr;
+  state = loadState(viewingDate);
+  const dayData = findDayData(viewingDate);
+  window.currentDayData = dayData;
+  render(dayData);
+  window.scrollTo(0,0);
+}
+
+function copyShare() {
+  const text = document.getElementById('share-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('copied-msg').style.display = 'block';
+    setTimeout(() => { document.getElementById('copied-msg').style.display = 'none'; }, 3000);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    document.getElementById('copied-msg').style.display = 'block';
+  });
+}
+
+// Init
+state = loadState(viewingDate);
+const dayData = findDayData(viewingDate);
+window.currentDayData = dayData;
+
+const today = new Date();
+document.getElementById('date-str').textContent = today.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
+
+render(dayData);
+</script>
+</body>
+</html>
