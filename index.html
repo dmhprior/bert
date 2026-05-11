@@ -1,238 +1,376 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Bert Prior's SATs Games</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-            background-color: #f9f9f9;
-        }
-        header {
-            background: #ff0000;
-            padding: 30px;
-            text-align: center;
-            margin-bottom: 30px;
-            border-radius: 5px;
-            color: white;
-        }
-        h1 {
-            font-size: 48px;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            color: #777;
-            padding: 20px;
-            border-top: 1px solid #ddd;
-        }
-        img {
-            display: block;
-            margin: 0 auto;
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .button-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .button-list li {
-            margin-bottom: 12px;
-        }
-        .game-button {
-            display: block;
-            color: white;
-            padding: 14px 18px;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.3s;
-            font-weight: 500;
-            font-size: 18px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        .game-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .arithmetic-button {
-            background-color: #003366; /* Dark blue */
-        }
-        .arithmetic-button:hover {
-            background-color: #004c99;
-        }
-        .reasoning-button {
-            background-color: #006633; /* Dark green */
-        }
-        .reasoning-button:hover {
-            background-color: #008040;
-        }
-        .english-button {
-            background-color: #660033; /* Dark purple */
-        }
-        .english-button:hover {
-            background-color: #800040;
-        }
-        h2 {
-            border-bottom: 2px solid #ff0000;
-            padding-bottom: 10px;
-            margin-top: 30px;
-        }
-        .notice {
-            background-color: #fffbea;
-            border: 1px solid #ffc107;
-            padding: 10px;
-            margin: 15px 0;
-            border-radius: 5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bert's Revision Games 🎮</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+
+  :root {
+    --bg: #07090f;
+    --card: #0f1520;
+    --card2: #141d2e;
+    --border: #1e2d45;
+    --text: #eef4ff;
+    --muted: #5a7a9a;
+    --radius: 20px;
+    --y7: #3b82f6;
+    --sats: #10b981;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    background: linear-gradient(160deg, #050810 0%, #0a1628 50%, #060d1a 100%);
+    padding: 40px 20px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, #1d4ed822 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, #7c3aed18 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 3px solid #1e3a6e;
+    margin: 0 auto 16px;
+    display: block;
+    object-fit: cover;
+  }
+  .hero h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* ---- COUNTDOWN ---- */
+  .countdown-bar {
+    background: linear-gradient(90deg, #1e3a8a, #1e40af);
+    padding: 14px 20px;
+    text-align: center;
+  }
+  .countdown-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 2px; color: #93c5fd; font-weight: 800; }
+  .countdown-num { font-family: 'Nunito', sans-serif; font-size: 1.5rem; font-weight: 900; color: #fff; margin-top: 2px; }
+
+  /* ---- SECTIONS ---- */
+  .section { padding: 24px 16px 8px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .section-badge {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .badge-y7 { background: #1d4ed820; color: #60a5fa; border: 1px solid #1d4ed850; }
+  .badge-sats { background: #06523620; color: #34d399; border: 1px solid #06523650; }
+
+  .section-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: var(--text);
+  }
+  .section-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 14px; padding-left: 2px; }
+
+  /* ---- TIMETABLE ---- */
+  .timetable { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .t-day {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 12px 14px;
+    border-left: 4px solid;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .t-day.mon { border-color: #a78bfa; }
+  .t-day.tue { border-color: #4ade80; }
+  .t-day.wed { border-color: #f59e0b; }
+  .t-day.thu { border-color: #f87171; }
+  .t-label { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.82rem; min-width: 40px; padding-top: 2px; }
+  .t-label.mon { color: #a78bfa; }
+  .t-label.tue { color: #4ade80; }
+  .t-label.wed { color: #f59e0b; }
+  .t-label.thu { color: #f87171; }
+  .t-subjects { display: flex; flex-direction: column; gap: 2px; }
+  .t-subject { font-size: 0.88rem; font-weight: 700; }
+  .t-subject em { color: var(--muted); font-style: normal; font-weight: 600; font-size: 0.78rem; margin-left: 4px; }
+
+  /* ---- Y7 GRID ---- */
+  .y7-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+
+  .y7-card {
+    display: block;
+    text-decoration: none;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 12px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .y7-card:active { transform: scale(0.97); }
+  .y7-card .icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+  .y7-card .name { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.92rem; color: var(--text); line-height: 1.3; }
+  .y7-card .tag { font-size: 0.68rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; padding: 3px 9px; border-radius: 20px; display: inline-block; }
+  .y7-card .sub { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+
+  .y7-card.re:hover { border-color: #a78bfa; background: #a78bfa08; }
+  .y7-card.re .tag { background: #a78bfa20; color: #a78bfa; }
+  .y7-card.maths:hover { border-color: #4ade80; background: #4ade8008; }
+  .y7-card.maths .tag { background: #4ade8020; color: #4ade80; }
+  .y7-card.geo:hover { border-color: #38bdf8; background: #38bdf808; }
+  .y7-card.geo .tag { background: #38bdf820; color: #38bdf8; }
+  .y7-card.hist:hover { border-color: #f59e0b; background: #f59e0b08; }
+  .y7-card.hist .tag { background: #f59e0b20; color: #f59e0b; }
+  .y7-card.sci:hover { border-color: #00d4aa; background: #00d4aa08; }
+  .y7-card.sci .tag { background: #00d4aa20; color: #00d4aa; }
+  .y7-card.eng:hover { border-color: #e879f9; background: #e879f908; }
+  .y7-card.eng .tag { background: #e879f920; color: #e879f9; }
+
+  /* ---- SATS GRID ---- */
+  .sats-group { margin-bottom: 20px; }
+  .sats-group-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    padding-left: 2px;
+  }
+  .sats-links { display: flex; flex-direction: column; gap: 6px; }
+  .sats-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+  }
+  .sats-link:hover { border-color: var(--sats); background: #10b98108; }
+  .sats-link:active { transform: scale(0.98); }
+  .sats-link .s-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .sats-link .s-arrow { margin-left: auto; color: var(--muted); font-size: 0.85rem; }
+
+  /* ---- DIVIDER ---- */
+  .divider {
+    margin: 8px 16px 0;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    padding: 24px 16px 48px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+  .footer strong { color: var(--text); }
+</style>
 </head>
 <body>
-    <header>
-        <h1>Bert Prior's SATs Games</h1>
-    </header>
-    
-    <main>
-        <img src="bert-image.jpg" alt="Bert Prior" width="300">
-        
-        <!-- SATs Revision Timetable -->
-        <h2>SATs Revision Timetable</h2>
-        <h3>April 15th - May 11th, 2025</h3>
-        
-        <div class="notice">
-            <p><strong>Note:</strong> Each day's practice is divided into sets. When you click on a topic link, complete the specified set number for that day.</p>
-        </div>
-        
-        <p>This timetable ensures complete coverage of all BERT SATs practice sets before the exams begin on May 12th. Each day includes three different topics to maintain variety and interest.</p>
-        
-        <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-family: Arial, sans-serif;">
-            <tr style="background-color: #e6f2ff; font-weight: bold; text-align: center;">
-                <td colspan="2">Week 1: April 15th - April 20th</td>
-            </tr>
-            <tr style="background-color: #f2f2f2; font-weight: bold;">
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Day</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Topics</th>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">Tuesday, April 15th</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">
-                    <ul>
-                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction-enhanced.html" style="color: #0066cc; text-decoration: none;">Addition & Subtraction: Set 1</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/grammar-word-classes.html" style="color: #0066cc; text-decoration: none;">Word Classes: Set 1</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/spelling-word-formation.html" style="color: #0066cc; text-decoration: none;">Spelling and Word Formation: Set 1</a></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr style="background-color: #f9f9f9;">
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">Wednesday, April 16th</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">
-                    <ul>
-                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html" style="color: #0066cc; text-decoration: none;">Multiplication & Division: Set 1</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html" style="color: #0066cc; text-decoration: none;">Measurement & Geometry: Set 1</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/sentence-structure.html" style="color: #0066cc; text-decoration: none;">Grammar and Sentence Structure: Set 1</a></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">Thursday, April 17th</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">
-                    <ul>
-                        <li><a href="https://dmhprior.github.io/bert/fractions-enhanced.html" style="color: #0066cc; text-decoration: none;">Fractions: Set 1</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html" style="color: #0066cc; text-decoration: none;">Fractions, Decimals & Percentages: Set 1</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/vocabulary-meaning.html" style="color: #0066cc; text-decoration: none;">Vocabulary and Meaning: Set 1</a></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr style="background-color: #f9f9f9;">
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">Friday, April 18th</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">
-                    <ul>
-                        <li><a href="https://dmhprior.github.io/bert/addition-subtraction-enhanced.html" style="color: #0066cc; text-decoration: none;">Addition & Subtraction: Set 2</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/number-place-value.html" style="color: #0066cc; text-decoration: none;">Number & Place Value: Set 1</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/punctuation.html" style="color: #0066cc; text-decoration: none;">Punctuation: Set 1</a></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">Saturday, April 19th</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">
-                    <ul>
-                        <li><a href="https://dmhprior.github.io/bert/multiplication-division.html" style="color: #0066cc; text-decoration: none;">Multiplication & Division: Set 2</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html" style="color: #0066cc; text-decoration: none;">Measurement & Geometry: Set 2</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/spelling-word-formation.html" style="color: #0066cc; text-decoration: none;">Spelling and Word Formation: Set 2</a></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr style="background-color: #f9f9f9;">
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">Sunday, April 20th</td>
-                <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">
-                    <ul>
-                        <li><a href="https://dmhprior.github.io/bert/fractions-enhanced.html" style="color: #0066cc; text-decoration: none;">Fractions: Set 2</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html" style="color: #0066cc; text-decoration: none;">Fractions, Decimals & Percentages: Set 2</a></li>
-                        <li><a href="https://dmhprior.github.io/bert/sentence-structure.html" style="color: #0066cc; text-decoration: none;">Grammar and Sentence Structure: Set 2</a></li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
-        
-        <!-- View Full Timetable button -->
-        <p style="text-align: center; margin: 20px 0;">
-            <a href="timetable.html" style="background-color: #0066cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Full 4-Week Timetable</a>
-        </p>
-        
-        <div style="background-color: #f7f7f7; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <h3 style="margin-top: 0;">Study Tips</h3>
-            <ul>
-                <li>Aim to spend about 20-30 minutes on each set</li>
-                <li>Take short breaks between sets</li>
-                <li>Review any challenging questions</li>
-                <li>Celebrate progress daily</li>
-                <li>Make note of topics that need extra attention</li>
-            </ul>
-            <p><strong>Good luck with the SATs exams!</strong></p>
-        </div>
-        
-        <h2 id="addition-subtraction">Maths - Arithmetic</h2>
-        <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/addition-subtraction-enhanced.html" class="game-button arithmetic-button">Addition & Subtraction</a></li>
-            <li><a href="https://dmhprior.github.io/bert/multiplication-division.html" class="game-button arithmetic-button" id="multiplication-division">Multiplication & Division</a></li>
-            <li><a href="https://dmhprior.github.io/bert/fractions-enhanced.html" class="game-button arithmetic-button" id="fractions">Fractions</a></li>
-            <li><a href="https://dmhprior.github.io/bert/decimals-percentages.html" class="game-button arithmetic-button" id="decimals-percentages">Decimals & Percentages</a></li>
-            <li><a href="https://dmhprior.github.io/bert/order-operations.html" class="game-button arithmetic-button" id="order-of-operations">Order of Operations</a></li>
-            <li><a href="https://dmhprior.github.io/bert/missing-number-enhanced.html" class="game-button arithmetic-button" id="missing-number-problems">Missing Number Problems</a></li>
-        </ul>
-        
-        <h2>Maths - Reasoning</h2>
-        <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/number-place-value.html" class="game-button reasoning-button">Number & Place Value</a></li>
-            <li><a href="https://dmhprior.github.io/bert/fractions-decimals-percentages.html" class="game-button reasoning-button">Fractions, Decimals & Percentages</a></li>
-            <li><a href="https://dmhprior.github.io/bert/measurement-geometry.html" class="game-button reasoning-button">Measurement & Geometry</a></li>
-            <li><a href="https://dmhprior.github.io/bert/statistics.html" class="game-button reasoning-button">Statistics</a></li>
-            <li><a href="https://dmhprior.github.io/bert/algebra-missing-values.html" class="game-button reasoning-button">Algebra & Missing Values</a></li>
-            <li><a href="https://dmhprior.github.io/bert/problem-solving.html" class="game-button reasoning-button" id="maths-review">Problem Solving & Reasoning</a></li>
-        </ul>
-        
-        <h2>English</h2>
-        <ul class="button-list">
-            <li><a href="https://dmhprior.github.io/bert/grammar-word-classes.html" class="game-button english-button" id="word-classes">Word Classes</a></li>
-            <li><a href="https://dmhprior.github.io/bert/sentence-structure.html" class="game-button english-button" id="grammar-sentence-structure">Grammar and Sentence Structure</a></li>
-            <li><a href="https://dmhprior.github.io/bert/tenses-verb-forms.html" class="game-button english-button" id="tenses-verb-forms">Tenses and Verb Forms</a></li>
-            <li><a href="https://dmhprior.github.io/bert/punctuation.html" class="game-button english-button" id="punctuation">Punctuation</a></li>
-            <li><a href="https://dmhprior.github.io/bert/spelling-word-formation.html" class="game-button english-button" id="spelling-word-formation">Spelling and Word Formation</a></li>
-            <li><a href="https://dmhprior.github.io/bert/vocabulary-meaning.html" class="game-button english-button" id="vocabulary-meaning">Vocabulary and Meaning</a></li>
-        </ul>
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 Bert Prior. All rights reserved.</p>
-    </footer>
+
+<!-- HERO -->
+<div class="hero">
+  <img class="hero-avatar" src="https://dmhprior.github.io/bert/bert-image.jpg" alt="Bert" onerror="this.style.display='none'">
+  <h1>Bert's Revision Games 🎮</h1>
+  <p>Wellington School · Year 7 · June 2026</p>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="countdown-bar">
+  <div class="countdown-label">Days until Year 7 exams</div>
+  <div class="countdown-num" id="countdown">Loading...</div>
+</div>
+
+<!-- YEAR 7 SECTION -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-badge badge-y7">NEW</span>
+    <span class="section-title">Year 7 End-of-Year Exams</span>
+  </div>
+  <p class="section-sub">Exam week starts <strong style="color:var(--text)">15th June</strong>. Tap a subject to start — fresh questions every time.</p>
+
+  <!-- Timetable -->
+  <div class="timetable">
+    <div class="t-day mon">
+      <div class="t-label mon">Mon<br>15th</div>
+      <div class="t-subjects">
+        <div class="t-subject">🙏 RE <em>Period 2</em></div>
+        <div class="t-subject">🇫🇷 French / German <em>Period 1, 3, 4 or 5</em></div>
+      </div>
+    </div>
+    <div class="t-day tue">
+      <div class="t-label tue">Tue<br>16th</div>
+      <div class="t-subjects">
+        <div class="t-subject">➕ Maths <em>Period 5 · Non-Calculator</em></div>
+      </div>
+    </div>
+    <div class="t-day wed">
+      <div class="t-label wed">Wed<br>17th</div>
+      <div class="t-subjects">
+        <div class="t-subject">🌍 Geography <em>Period 2</em></div>
+        <div class="t-subject">⚔️ History <em>Period 5</em></div>
+      </div>
+    </div>
+    <div class="t-day thu">
+      <div class="t-label thu">Thu<br>18th</div>
+      <div class="t-subjects">
+        <div class="t-subject">🔬 Science <em>Period 2</em></div>
+        <div class="t-subject">✍️ English Writing <em>Period 5</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subject cards -->
+  <div class="y7-grid">
+    <a href="re.html" class="y7-card re">
+      <span class="icon">🙏</span>
+      <div class="name">RE</div>
+      <div class="tag">Mon 15th</div>
+      <div class="sub">Religions · God · Ethics · Sikhism</div>
+    </a>
+    <a href="maths.html" class="y7-card maths">
+      <span class="icon">➕</span>
+      <div class="name">Maths</div>
+      <div class="tag">Tue 16th</div>
+      <div class="sub">Number · Fractions · Algebra</div>
+    </a>
+    <a href="geography.html" class="y7-card geo">
+      <span class="icon">🌍</span>
+      <div class="name">Geography</div>
+      <div class="tag">Wed 17th</div>
+      <div class="sub">Maps · Settlement · Biomes · Weather</div>
+    </a>
+    <a href="history.html" class="y7-card hist">
+      <span class="icon">⚔️</span>
+      <div class="name">History</div>
+      <div class="tag">Wed 17th</div>
+      <div class="sub">Romans · Normans · Medieval</div>
+    </a>
+    <a href="science.html" class="y7-card sci">
+      <span class="icon">🔬</span>
+      <div class="name">Science</div>
+      <div class="tag">Thu 18th</div>
+      <div class="sub">Cells · Chemistry · Forces · Waves</div>
+    </a>
+    <a href="english.html" class="y7-card eng">
+      <span class="icon">✍️</span>
+      <div class="name">English</div>
+      <div class="tag">Thu 18th</div>
+      <div class="sub">Rhetoric · Devices · Vocabulary</div>
+    </a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SATS SECTION -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-badge badge-sats">SATs 2025</span>
+    <span class="section-title">Primary SATs Games</span>
+  </div>
+  <p class="section-sub">Your original revision games from Year 6. Still here if you want them.</p>
+
+  <div class="sats-group">
+    <div class="sats-group-title">Maths — Arithmetic</div>
+    <div class="sats-links">
+      <a href="addition-subtraction-enhanced.html" class="sats-link"><span class="s-icon">➕</span>Addition &amp; Subtraction<span class="s-arrow">→</span></a>
+      <a href="multiplication-division.html" class="sats-link"><span class="s-icon">✖️</span>Multiplication &amp; Division<span class="s-arrow">→</span></a>
+      <a href="fractions-enhanced.html" class="sats-link"><span class="s-icon">½</span>Fractions<span class="s-arrow">→</span></a>
+      <a href="decimals-percentages.html" class="sats-link"><span class="s-icon">%</span>Decimals &amp; Percentages<span class="s-arrow">→</span></a>
+      <a href="order-operations.html" class="sats-link"><span class="s-icon">🔢</span>Order of Operations<span class="s-arrow">→</span></a>
+      <a href="missing-number-enhanced.html" class="sats-link"><span class="s-icon">❓</span>Missing Number Problems<span class="s-arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="sats-group">
+    <div class="sats-group-title">Maths — Reasoning</div>
+    <div class="sats-links">
+      <a href="number-place-value.html" class="sats-link"><span class="s-icon">🔢</span>Number &amp; Place Value<span class="s-arrow">→</span></a>
+      <a href="fractions-decimals-percentages.html" class="sats-link"><span class="s-icon">½</span>Fractions, Decimals &amp; Percentages<span class="s-arrow">→</span></a>
+      <a href="measurement-geometry.html" class="sats-link"><span class="s-icon">📐</span>Measurement &amp; Geometry<span class="s-arrow">→</span></a>
+      <a href="statistics.html" class="sats-link"><span class="s-icon">📊</span>Statistics<span class="s-arrow">→</span></a>
+      <a href="algebra-missing-values.html" class="sats-link"><span class="s-icon">🔡</span>Algebra &amp; Missing Values<span class="s-arrow">→</span></a>
+      <a href="problem-solving.html" class="sats-link"><span class="s-icon">🧩</span>Problem Solving &amp; Reasoning<span class="s-arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="sats-group">
+    <div class="sats-group-title">English</div>
+    <div class="sats-links">
+      <a href="grammar-word-classes.html" class="sats-link"><span class="s-icon">📝</span>Word Classes<span class="s-arrow">→</span></a>
+      <a href="sentence-structure.html" class="sats-link"><span class="s-icon">✏️</span>Grammar &amp; Sentence Structure<span class="s-arrow">→</span></a>
+      <a href="tenses-verb-forms.html" class="sats-link"><span class="s-icon">⏱️</span>Tenses &amp; Verb Forms<span class="s-arrow">→</span></a>
+      <a href="punctuation.html" class="sats-link"><span class="s-icon">❗</span>Punctuation<span class="s-arrow">→</span></a>
+      <a href="spelling-word-formation.html" class="sats-link"><span class="s-icon">🔤</span>Spelling &amp; Word Formation<span class="s-arrow">→</span></a>
+      <a href="vocabulary-meaning.html" class="sats-link"><span class="s-icon">💬</span>Vocabulary &amp; Meaning<span class="s-arrow">→</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Built for <strong>Bert Prior</strong> · Wellington School, Timperley<br>Questions powered by Claude AI · Fresh every time 🤖</p>
+</div>
+
+<script>
+function updateCountdown() {
+  const exam = new Date('2026-06-15T00:00:00');
+  const now = new Date();
+  const days = Math.ceil((exam - now) / (1000 * 60 * 60 * 24));
+  const el = document.getElementById('countdown');
+  if (days > 1) el.textContent = days + ' days to go!';
+  else if (days === 1) el.textContent = 'Tomorrow! Good luck Bert 💪';
+  else if (days === 0) el.textContent = '🎯 Exam week starts TODAY!';
+  else el.textContent = '✅ Exams done — well done Bert!';
+}
+updateCountdown();
+</script>
+
 </body>
 </html>

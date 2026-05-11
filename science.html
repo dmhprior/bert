@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bert's Science Revision 🔬</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+  :root{--bg:#0f1923;--card:#1a2535;--card2:#1f2e42;--accent:#00d4aa;--accent2:#ff6b6b;--accent3:#ffd93d;--text:#e8f4f8;--muted:#7a9bb5;--radius:18px;--green:#4ade80;--red:#f87171;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:18px;line-height:1.6;letter-spacing:0.01em;}
+  .header{background:linear-gradient(135deg,#0d2137 0%,#1a3a5c 100%);padding:20px 20px 16px;text-align:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:10;}
+  .header h1{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent);}
+  .header p{font-size:0.85rem;color:var(--muted);margin-top:2px;}
+  #topic-screen{padding:20px 16px 40px;}
+  .section-label{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-left:4px;}
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .topic-btn{background:var(--card);border:2px solid transparent;border-radius:var(--radius);padding:18px 14px;cursor:pointer;text-align:center;transition:all 0.2s;}
+  .topic-btn:active{transform:scale(0.97);}
+  .topic-btn .icon{font-size:2rem;margin-bottom:8px;display:block;}
+  .topic-btn .name{font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;color:var(--text);line-height:1.3;}
+  .topic-btn .sub{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+  .topic-btn[data-color="teal"]{border-color:#00d4aa33;} .topic-btn[data-color="teal"]:hover{border-color:var(--accent);background:#00d4aa18;}
+  .topic-btn[data-color="pink"]{border-color:#ff6b6b33;} .topic-btn[data-color="pink"]:hover{border-color:var(--accent2);background:#ff6b6b18;}
+  .topic-btn[data-color="yellow"]{border-color:#ffd93d33;} .topic-btn[data-color="yellow"]:hover{border-color:var(--accent3);background:#ffd93d18;}
+  .topic-btn[data-color="purple"]{border-color:#a78bfa33;} .topic-btn[data-color="purple"]:hover{border-color:#a78bfa;background:#a78bfa18;}
+  .topic-btn[data-color="blue"]{border-color:#60a5fa33;} .topic-btn[data-color="blue"]:hover{border-color:#60a5fa;background:#60a5fa18;}
+  .topic-btn[data-color="orange"]{border-color:#fb923c33;} .topic-btn[data-color="orange"]:hover{border-color:#fb923c;background:#fb923c18;}
+  #game-screen{display:none;}
+  .game-header{background:var(--card);padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #ffffff10;}
+  .back-btn{background:none;border:2px solid var(--muted);border-radius:50%;width:38px;height:38px;font-size:1.1rem;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+  .back-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .game-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;flex:1;}
+  .score-badge{background:var(--accent);color:#0f1923;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.85rem;padding:4px 12px;border-radius:20px;flex-shrink:0;}
+  .progress-bar-wrap{height:6px;background:#ffffff10;}
+  .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),#00b8d4);border-radius:0 3px 3px 0;transition:width 0.4s ease;}
+  .q-area{padding:24px 20px 0;}
+  .q-number{font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .q-box{background:var(--card);border-radius:var(--radius);padding:22px 20px;margin-bottom:20px;min-height:100px;display:flex;align-items:center;border:2px solid #ffffff08;}
+  .q-text{font-family:'Nunito',sans-serif;font-weight:700;font-size:1.15rem;line-height:1.5;color:var(--text);}
+  .loading-dots{display:flex;gap:6px;align-items:center;}
+  .loading-dots span{width:10px;height:10px;background:var(--accent);border-radius:50%;animation:bounce 1.2s infinite;}
+  .loading-dots span:nth-child(2){animation-delay:0.2s;background:var(--accent3);}
+  .loading-dots span:nth-child(3){animation-delay:0.4s;background:var(--accent2);}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:0.4;}40%{transform:translateY(-10px);opacity:1;}}
+  .options-grid{display:flex;flex-direction:column;gap:10px;padding:0 20px 20px;}
+  .option-btn{background:var(--card2);border:2.5px solid #ffffff12;border-radius:var(--radius);padding:16px 18px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;color:var(--text);transition:all 0.15s;display:flex;align-items:center;gap:14px;line-height:1.4;}
+  .option-btn:hover:not(:disabled){border-color:var(--accent);background:#00d4aa12;}
+  .option-btn .opt-letter{width:32px;height:32px;border-radius:50%;background:#ffffff12;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;font-weight:900;}
+  .option-btn.correct{border-color:var(--green);background:#4ade8018;} .option-btn.correct .opt-letter{background:var(--green);color:#0f1923;}
+  .option-btn.wrong{border-color:var(--red);background:#f8717118;} .option-btn.wrong .opt-letter{background:var(--red);color:#0f1923;}
+  .option-btn:disabled{cursor:default;}
+  .feedback-box{margin:0 20px 20px;padding:16px 18px;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:700;font-size:0.95rem;line-height:1.5;display:none;}
+  .feedback-box.correct{background:#4ade8018;border:2px solid var(--green);color:#a7f3d0;}
+  .feedback-box.wrong{background:#f8717118;border:2px solid var(--red);color:#fca5a5;}
+  .feedback-emoji{font-size:1.4rem;margin-bottom:6px;display:block;}
+  .feedback-explain{color:var(--text);margin-top:8px;font-weight:600;font-size:0.9rem;}
+  .next-btn{display:none;margin:0 20px 30px;width:calc(100% - 40px);padding:18px;background:var(--accent);color:#0f1923;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;cursor:pointer;}
+  #end-screen{display:none;padding:40px 20px;text-align:center;}
+  .end-emoji{font-size:4rem;margin-bottom:16px;}
+  .end-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.8rem;color:var(--accent);margin-bottom:8px;}
+  .end-score{font-family:'Nunito',sans-serif;font-weight:800;font-size:3rem;margin:20px 0;color:var(--text);}
+  .end-score span{color:var(--muted);font-size:1.5rem;}
+  .end-msg{color:var(--muted);font-size:0.95rem;margin-bottom:30px;line-height:1.6;}
+  .retry-btn{display:block;width:100%;padding:18px;background:var(--accent);color:#0f1923;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;cursor:pointer;margin-bottom:12px;}
+  .menu-btn{display:block;width:100%;padding:18px;background:var(--card);color:var(--text);border:2px solid #ffffff20;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;}
+  .stars{color:var(--accent3);font-size:1.5rem;}
+  .error-box{margin:0 20px 20px;padding:16px;background:#ff6b6b18;border:2px solid var(--accent2);border-radius:var(--radius);color:#fca5a5;font-size:0.9rem;display:none;}
+</style>
+</head>
+<body>
+<div class="header"><h1>🔬 Science Revision</h1><p>Bert's Year 7 End-of-Year Prep</p></div>
+<div id="topic-screen">
+  <div style="padding:20px 16px 10px;">
+    <div class="section-label">Choose a topic</div>
+    <div class="topic-grid">
+      <button class="topic-btn" data-color="teal" onclick="startGame('cells')"><span class="icon">🦠</span><div class="name">Cells & Microscopes</div><div class="sub">B1 · Animal & plant cells</div></button>
+      <button class="topic-btn" data-color="pink" onclick="startGame('reproduction')"><span class="icon">🌸</span><div class="name">Reproduction</div><div class="sub">Plants & humans</div></button>
+      <button class="topic-btn" data-color="blue" onclick="startGame('particles')"><span class="icon">💧</span><div class="name">States of Matter</div><div class="sub">C1 · Particles & changes</div></button>
+      <button class="topic-btn" data-color="purple" onclick="startGame('separation')"><span class="icon">🧪</span><div class="name">Separation</div><div class="sub">C1 · Dissolving & filtering</div></button>
+      <button class="topic-btn" data-color="yellow" onclick="startGame('elements')"><span class="icon">⚗️</span><div class="name">Elements & Compounds</div><div class="sub">C2 · Periodic table</div></button>
+      <button class="topic-btn" data-color="orange" onclick="startGame('reactions')"><span class="icon">🔥</span><div class="name">Chemical Reactions</div><div class="sub">C3 · pH & acids</div></button>
+      <button class="topic-btn" data-color="teal" onclick="startGame('forces')"><span class="icon">⚡</span><div class="name">Forces</div><div class="sub">P · Speed & gravity</div></button>
+      <button class="topic-btn" data-color="pink" onclick="startGame('energy')"><span class="icon">🔋</span><div class="name">Energy</div><div class="sub">P · Stores & transfers</div></button>
+      <button class="topic-btn" data-color="blue" onclick="startGame('lightsound')"><span class="icon">🌈</span><div class="name">Light & Sound</div><div class="sub">P · Waves & the eye</div></button>
+    </div>
+    <div style="margin-top:16px;padding:14px 16px;background:var(--card);border-radius:14px;font-size:0.82rem;color:var(--muted);line-height:1.6;">💡 Each game gives you <strong style="color:var(--text)">8 questions</strong> with 4 choices. Try to beat your high score!</div>
+  </div>
+</div>
+<div id="game-screen">
+  <div class="game-header"><button class="back-btn" onclick="goHome()">←</button><div class="game-title" id="game-title">Topic</div><div class="score-badge" id="score-badge">0 / 0</div></div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="q-area"><div class="q-number" id="q-number">Question 1 of 8</div><div class="q-box" id="q-box"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-box" id="feedback-box"></div>
+  <div class="error-box" id="error-box">Hmm, couldn't load that question. Tap Next to try another.</div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next question →</button>
+</div>
+<div id="end-screen">
+  <div class="end-emoji" id="end-emoji">🎉</div><div class="end-title" id="end-title">Nice work!</div><div class="stars" id="end-stars">⭐⭐⭐</div>
+  <div class="end-score"><span id="final-score">0</span><span>/ 8</span></div><div class="end-msg" id="end-msg">Keep going!</div>
+  <button class="retry-btn" onclick="retryGame()">Play again 🔄</button><button class="menu-btn" onclick="goHome()">← Choose another topic</button>
+</div>
+<script>
+const TOPICS={
+  cells:{name:"Cells & Microscopes",context:`Year 7 Biology: Cells and Microscopes. Key facts: Cells are the building blocks of all living organisms. Animal cell parts: nucleus (controls cell/stores DNA), cell membrane (controls movement in/out), mitochondria (respiration), cytoplasm (jelly substance for reactions), ribosome (makes proteins). Plant cells also have: rigid cell wall, chloroplasts (absorbs light for photosynthesis), vacuole (filled with cell sap). MRS GREN = Movement, Respiration, Sensitivity, Growth, Reproduction, Excretion, Nutrition. Diffusion = movement of particles from high to low concentration. Photosynthesis: carbon dioxide + water → glucose + oxygen (sunlight + chlorophyll). Microscope parts: eyepiece, objective lens, stage, coarse focus, fine focus, light source, diaphragm, revolving nosepiece.`},
+  reproduction:{name:"Reproduction",context:`Year 7 Biology: Reproduction. Key facts: Flower parts: sepal (protects bud), petal (attracts insects), stamen (male: anther+filament), anther (produces pollen), stigma (collects pollen), ovary (produces ova), ovule, nectary. Insect-pollinated: large bright petals, scented, sticky spiky pollen, stigma inside. Wind-pollinated: small dull petals, no scent, smooth light pollen, feathery stigma outside. Seed dispersal: water, explosion, animal (sticky hooks or eaten in fruit), wind. Human reproduction: sperm (23 chromosomes) + egg (23 chromosomes) = zygote (46 chromosomes). Male: testes (make sperm), sperm duct, urethra, penis. Female: ovary (makes eggs), fallopian tube, uterus, cervix, vagina. Menstrual cycle 28 days; ovulation around day 10-14.`},
+  particles:{name:"States of Matter",context:`Year 7 Chemistry: Particle Theory and States of Matter. Key facts: Solid: regular arrangement, vibrate in fixed position, very close together. Liquid: random arrangement, move around each other, close. Gas: random arrangement, move quickly in all directions, far apart. Changes of state: melting (solid→liquid), freezing (liquid→solid), evaporating/boiling (liquid→gas), condensing (gas→liquid). During change of state, temperature does NOT change. Solids have strongest forces of attraction, gases have weakest. Gas pressure caused by particles colliding with container walls. Gas pressure increases by: raising temperature, adding more gas, compressing into smaller volume. Diffusion: spreading of particles from high to low concentration.`},
+  separation:{name:"Dissolving & Separation",context:`Year 7 Chemistry: Separation Techniques. Key facts: Dissolving: solvent (liquid) + solute (solid) = solution. Soluble = will dissolve. Insoluble = will NOT dissolve. Filtration: separates INSOLUBLE solid from liquid (solid too big for filter paper). Residue stays on paper, filtrate passes through. Decanting: pouring liquid from top of settled solid. Evaporation: separates SOLUBLE solid from liquid by heating. Crystallisation: heat until almost all water evaporated, leave to form crystals slowly. Chromatography: separates inks/dyes - pencil line, dot of colour, hang in water. Different inks move at different speeds due to different solubility. All separation methods depend on SOLUBILITY.`},
+  elements:{name:"Elements & Compounds",context:`Year 7 Chemistry: Substances and Properties. Key facts: Atom: smallest particle of any element. Element: contains only ONE type of atom. Molecule: two or more atoms bonded together. Compound: two or more types of atom CHEMICALLY bonded. Mixture: two or more elements/compounds NOT chemically bonded. Common formulas: O2 (oxygen), H2O (water), CO2 (carbon dioxide), NaCl (sodium chloride). Symbol rules: 1st letter always CAPITAL (N for nitrogen), 2nd letter always lowercase (Co for cobalt not CO). Mendeleev created first periodic table, arranged by atomic weight, left gaps for undiscovered elements. Periods = horizontal rows, groups = vertical columns, ordered by atomic number. Metals: good conductors, high density, high melting point, sonorous, malleable, ductile.`},
+  reactions:{name:"Chemical Reactions & pH",context:`Year 7 Chemistry: Simple Chemical Reactions. Key facts: Physical reactions: reversible, change of state. Chemical reactions: usually IRREVERSIBLE, produce new substances. Evidence for chemical reactions: colour change, bubbles of gas, temperature change, change in mass, precipitation. pH scale: 0-14. Below 7 = acidic, 7 = neutral, above 7 = alkaline. Indicators: litmus is red in acid, blue in alkali. Neutralisation: acid + base → salt + water. Indigestion: acid from stomach in oesophagus, treated with antacid (alkali). Hydrochloric acid makes chloride salts, sulfuric acid makes sulfate salts, nitric acid makes nitrate salts.`},
+  forces:{name:"Forces",context:`Year 7 Physics: Forces. Key facts: Force = push or pull, measured in Newtons (N), measured with newton meter. Speed formula: Speed (m/s) = Distance (m) ÷ Time (s). Objects travel at constant speed when forces are BALANCED. Resistive forces act OPPOSITE to movement (air resistance, friction, drag). Acceleration = getting faster; Deceleration = getting slower (both m/s²). Acceleration = (final speed - initial speed) ÷ time. Unbalanced forces cause acceleration. Weight (N) = mass (kg) × 10 on Earth. Mass does NOT change with gravity. Weight DOES change depending on planet. Gravity on Jupiter stronger than Earth; on Moon weaker. Resultant force = overall force on object.`},
+  energy:{name:"Energy",context:`Year 7 Physics: Energy. Key facts: Energy measured in Joules (J). Energy CANNOT be created or destroyed - only transferred between stores. Energy stores: chemical, thermal, kinetic, gravitational, elastic. Energy transfers: light, sound, electrical, thermal. Energy transfers always waste some energy as thermal (dissipated). GPE: when something is high up and not moving. KE: when something is moving. As something moves down, GPE converts to KE. GPE (J) = mass (kg) × g × height (m). On Earth g = 10 N/kg. Efficiency = (useful output energy ÷ total input energy) × 100%.`},
+  lightsound:{name:"Light & Sound",context:`Year 7 Physics: Light and Sound. LIGHT: We see objects because light REFLECTS off them into our eye. Light travels at 300,000,000 m/s. Law of reflection: angle of incidence = angle of reflection. 3 primary colours of light: red, blue, green. Light not reflected is ABSORBED. Refraction: light bends when passing from one material to another. Convex (converging) lens corrects long-sighted vision. Concave (diverging) lens corrects short-sighted vision. Eye parts: cornea, lens, iris, pupil, retina, optic nerve. SOUND: Sound produced by VIBRATING particles. Louder = larger amplitude. Quieter = smaller amplitude. Higher pitch = larger frequency. Lower pitch = smaller frequency. Ear: outer ear → ear canal → ear drum → 3 tiny bones → cochlea → auditory nerve. Ear defenders absorb vibrations, decrease amplitude.`}
+};
+let currentTopic=null,questions=[],currentQ=0,score=0,answered=false;
+const TOTAL_Q=8;
+function goHome(){document.getElementById('topic-screen').style.display='block';document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='none';}
+async function startGame(topicKey){currentTopic=topicKey;questions=[];currentQ=0;score=0;answered=false;document.getElementById('topic-screen').style.display='none';document.getElementById('end-screen').style.display='none';document.getElementById('game-screen').style.display='block';document.getElementById('game-title').textContent=TOPICS[topicKey].name;updateScoreBadge();updateProgress();await loadQuestion();}
+function updateScoreBadge(){document.getElementById('score-badge').textContent=`${score} / ${currentQ}`;}
+function updateProgress(){document.getElementById('progress-bar').style.width=(currentQ/TOTAL_Q*100)+'%';document.getElementById('q-number').textContent=`Question ${currentQ+1} of ${TOTAL_Q}`;}
+async function loadQuestion(){
+  answered=false;document.getElementById('feedback-box').style.display='none';document.getElementById('next-btn').style.display='none';document.getElementById('error-box').style.display='none';document.getElementById('options-grid').innerHTML='';document.getElementById('q-box').innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div>';
+  const topic=TOPICS[currentTopic];const previousQs=questions.map(q=>q.question).join(' | ');
+  const prompt=`You are a fun, encouraging quiz master helping 11-year-old Bert revise Year 7 Science. He is dyslexic so keep questions and answers SHORT and CLEAR.\n\nTopic context:\n${topic.context}\n\n${previousQs?`Do NOT repeat these questions: ${previousQs}`:''}\n\nGenerate ONE multiple choice question. Rules:\n- Question max 15 words\n- 4 answer options, each max 6 words\n- Only 1 correct answer\n- Wrong answers plausible\n- 1-sentence explanation max 20 words\n\nRespond ONLY with valid JSON:\n{"question":"...","options":["...","...","...","..."],"correct":0,"explanation":"..."}`;
+  try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});if(!res.ok)throw new Error();const data=await res.json();const q=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,''));questions.push(q);renderQuestion(q);}
+  catch(e){document.getElementById('q-box').innerHTML='<span class="q-text">Couldn\'t load — tap Next.</span>';document.getElementById('error-box').style.display='block';document.getElementById('next-btn').style.display='block';}
+}
+function renderQuestion(q){document.getElementById('q-box').innerHTML=`<span class="q-text">${q.question}</span>`;const grid=document.getElementById('options-grid');grid.innerHTML='';['A','B','C','D'].forEach((l,i)=>{const btn=document.createElement('button');btn.className='option-btn';btn.innerHTML=`<span class="opt-letter">${l}</span><span>${q.options[i]}</span>`;btn.onclick=()=>answer(i,q);grid.appendChild(btn);});}
+function answer(chosen,q){if(answered)return;answered=true;const buttons=document.getElementById('options-grid').querySelectorAll('.option-btn');const correct=q.correct;const isCorrect=chosen===correct;if(isCorrect)score++;buttons.forEach((btn,i)=>{btn.disabled=true;if(i===correct)btn.classList.add('correct');else if(i===chosen&&!isCorrect)btn.classList.add('wrong');});const fb=document.getElementById('feedback-box');fb.className='feedback-box '+(isCorrect?'correct':'wrong');fb.style.display='block';if(isCorrect)fb.innerHTML=`<span class="feedback-emoji">🎉</span><strong>Correct!</strong><div class="feedback-explain">${q.explanation}</div>`;else fb.innerHTML=`<span class="feedback-emoji">😬</span><strong>Not quite — answer was ${'ABCD'[correct]}: ${q.options[correct]}</strong><div class="feedback-explain">${q.explanation}</div>`;updateScoreBadge();const nb=document.getElementById('next-btn');nb.style.display='block';nb.textContent=currentQ+1<TOTAL_Q?'Next question →':'See my results 🏆';}
+async function nextQuestion(){currentQ++;if(currentQ>=TOTAL_Q){showEnd();return;}updateProgress();await loadQuestion();}
+function showEnd(){document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='block';const pct=score/TOTAL_Q;let emoji,title,msg,stars;if(pct===1){emoji='🏆';title='Perfect Score!';stars='⭐⭐⭐';msg='You nailed every single question!';}else if(pct>=0.75){emoji='🎉';title='Brilliant!';stars='⭐⭐⭐';msg='Really strong result. Review the ones you missed.';}else if(pct>=0.5){emoji='💪';title='Good effort!';stars='⭐⭐';msg='Solid work. Have another go to nail those tricky ones.';}else{emoji='📚';title='Keep practising!';stars='⭐';msg='Give it another try — you\'ll get there!';}document.getElementById('end-emoji').textContent=emoji;document.getElementById('end-title').textContent=title;document.getElementById('end-stars').textContent=stars;document.getElementById('final-score').textContent=score;document.getElementById('end-msg').textContent=msg;}
+function retryGame(){startGame(currentTopic);}
+</script>
+</body>
+</html>

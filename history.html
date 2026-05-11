@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bert's History Revision ⚔️</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+  :root{--bg:#1a1208;--card:#2b1e0a;--card2:#33250d;--accent:#f59e0b;--accent2:#ef4444;--accent3:#a78bfa;--text:#fef3e2;--muted:#a07840;--radius:18px;--green:#4ade80;--red:#f87171;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:18px;line-height:1.6;}
+  .header{background:linear-gradient(135deg,#110b00 0%,#2a1a00 100%);padding:20px 20px 16px;text-align:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:10;}
+  .header h1{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent);}
+  .header p{font-size:0.85rem;color:var(--muted);margin-top:2px;}
+  #topic-screen{padding:20px 16px 40px;}
+  .section-label{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-left:4px;}
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .topic-btn{background:var(--card);border:2px solid transparent;border-radius:var(--radius);padding:16px 12px;cursor:pointer;text-align:center;transition:all 0.2s;}
+  .topic-btn:active{transform:scale(0.97);}
+  .topic-btn .icon{font-size:1.8rem;margin-bottom:6px;display:block;}
+  .topic-btn .name{font-family:'Nunito',sans-serif;font-weight:800;font-size:0.88rem;color:var(--text);line-height:1.3;}
+  .topic-btn .sub{font-size:0.7rem;color:var(--muted);margin-top:3px;}
+  .topic-btn[data-color="gold"]{border-color:#f59e0b33;} .topic-btn[data-color="gold"]:hover{border-color:var(--accent);background:#f59e0b18;}
+  .topic-btn[data-color="red"]{border-color:#ef444433;} .topic-btn[data-color="red"]:hover{border-color:var(--accent2);background:#ef444418;}
+  .topic-btn[data-color="purple"]{border-color:#a78bfa33;} .topic-btn[data-color="purple"]:hover{border-color:var(--accent3);background:#a78bfa18;}
+  .topic-btn[data-color="brown"]{border-color:#92400e55;} .topic-btn[data-color="brown"]:hover{border-color:#d97706;background:#92400e18;}
+  .topic-btn[data-color="blue"]{border-color:#60a5fa33;} .topic-btn[data-color="blue"]:hover{border-color:#60a5fa;background:#60a5fa18;}
+  .topic-btn[data-color="green"]{border-color:#4ade8033;} .topic-btn[data-color="green"]:hover{border-color:#4ade80;background:#4ade8018;}
+  #game-screen{display:none;}
+  .game-header{background:var(--card);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #ffffff10;}
+  .back-btn{background:none;border:2px solid var(--muted);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .back-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .game-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;flex:1;}
+  .score-badge{background:var(--accent);color:#1a1208;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.85rem;padding:4px 12px;border-radius:20px;flex-shrink:0;}
+  .streak-bar{background:var(--card);padding:8px 20px;border-bottom:1px solid #ffffff08;display:flex;align-items:center;gap:10px;}
+  .streak-label{font-size:0.75rem;color:var(--muted);font-weight:700;flex-shrink:0;}
+  .streak-dots{display:flex;gap:5px;flex:1;}
+  .streak-dot{width:14px;height:14px;border-radius:50%;background:#ffffff15;transition:all 0.3s;flex-shrink:0;}
+  .streak-dot.hit{background:var(--green);}
+  .streak-dot.miss{background:var(--red);}
+  .finish-btn-small{background:none;border:1.5px solid var(--muted);border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:800;color:var(--muted);cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap;}
+  .finish-btn-small:hover{border-color:var(--accent);color:var(--accent);}
+  .q-area{padding:20px 20px 0;}
+  .q-number{font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .q-box{background:var(--card);border-radius:var(--radius);padding:20px 18px;margin-bottom:18px;min-height:90px;display:flex;align-items:center;border:2px solid #ffffff08;}
+  .q-text{font-family:'Nunito',sans-serif;font-weight:700;font-size:1.1rem;line-height:1.5;color:var(--text);}
+  .loading-dots{display:flex;gap:6px;align-items:center;}
+  .loading-dots span{width:10px;height:10px;background:var(--accent);border-radius:50%;animation:bounce 1.2s infinite;}
+  .loading-dots span:nth-child(2){animation-delay:0.2s;background:var(--accent2);}
+  .loading-dots span:nth-child(3){animation-delay:0.4s;background:var(--accent3);}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:0.4;}40%{transform:translateY(-10px);opacity:1;}}
+  .options-grid{display:flex;flex-direction:column;gap:10px;padding:0 20px 16px;}
+  .option-btn{background:var(--card2);border:2.5px solid #ffffff12;border-radius:var(--radius);padding:15px 16px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;color:var(--text);transition:all 0.15s;display:flex;align-items:center;gap:12px;line-height:1.4;}
+  .option-btn:hover:not(:disabled){border-color:var(--accent);background:#f59e0b12;}
+  .option-btn .opt-letter{width:30px;height:30px;border-radius:50%;background:#ffffff12;display:flex;align-items:center;justify-content:center;font-size:0.82rem;flex-shrink:0;font-weight:900;}
+  .option-btn.correct{border-color:var(--green);background:#4ade8018;} .option-btn.correct .opt-letter{background:var(--green);color:#1a1208;}
+  .option-btn.wrong{border-color:var(--red);background:#f8717118;} .option-btn.wrong .opt-letter{background:var(--red);color:#1a1208;}
+  .option-btn:disabled{cursor:default;}
+  .feedback-box{margin:0 20px 16px;padding:14px 16px;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:700;font-size:0.9rem;line-height:1.5;display:none;}
+  .feedback-box.correct{background:#4ade8018;border:2px solid var(--green);color:#a7f3d0;}
+  .feedback-box.wrong{background:#f8717118;border:2px solid var(--red);color:#fca5a5;}
+  .feedback-emoji{font-size:1.3rem;margin-bottom:4px;display:block;}
+  .feedback-explain{color:var(--text);margin-top:6px;font-weight:600;font-size:0.88rem;}
+  .next-btn{display:none;margin:0 20px 24px;width:calc(100% - 40px);padding:16px;background:var(--accent);color:#1a1208;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;cursor:pointer;}
+  #end-screen{display:none;padding:40px 20px;text-align:center;}
+  .end-emoji{font-size:4rem;margin-bottom:16px;}
+  .end-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.8rem;color:var(--accent);margin-bottom:8px;}
+  .end-score{font-family:'Nunito',sans-serif;font-weight:800;font-size:3rem;margin:20px 0;color:var(--text);}
+  .end-score span{color:var(--muted);font-size:1.5rem;}
+  .end-msg{color:var(--muted);font-size:0.95rem;margin-bottom:30px;line-height:1.6;}
+  .retry-btn{display:block;width:100%;padding:18px;background:var(--accent);color:#1a1208;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;cursor:pointer;margin-bottom:12px;}
+  .menu-btn{display:block;width:100%;padding:18px;background:var(--card);color:var(--text);border:2px solid #ffffff20;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;}
+  .stars{color:#facc15;font-size:1.5rem;}
+  .error-box{margin:0 20px 16px;padding:14px;background:#ef444418;border:2px solid var(--accent2);border-radius:var(--radius);color:#fca5a5;font-size:0.88rem;display:none;}
+  .tip-box{margin-top:16px;padding:14px 16px;background:var(--card);border-radius:14px;font-size:0.82rem;color:var(--muted);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="header"><h1>⚔️ History Revision</h1><p>Bert's Year 7 · Endless Mode</p></div>
+<div id="topic-screen">
+  <div style="padding:20px 16px 10px;">
+    <div class="section-label">Choose a topic</div>
+    <div class="topic-grid">
+      <button class="topic-btn" data-color="gold" onclick="startGame('romans1')"><span class="icon">🏛️</span><div class="name">Romans: Invasion</div><div class="sub">Caesar, Claudius, Boudicca</div></button>
+      <button class="topic-btn" data-color="red" onclick="startGame('romans2')"><span class="icon">🗡️</span><div class="name">Romans: Army & Legacy</div><div class="sub">Army, roads, Hadrian's Wall</div></button>
+      <button class="topic-btn" data-color="purple" onclick="startGame('anglosaxons')"><span class="icon">🛡️</span><div class="name">Anglo-Saxons</div><div class="sub">Kingdoms, Church, Vikings</div></button>
+      <button class="topic-btn" data-color="brown" onclick="startGame('normans1')"><span class="icon">🏰</span><div class="name">1066 & Hastings</div><div class="sub">Claimants, battle, outcome</div></button>
+      <button class="topic-btn" data-color="gold" onclick="startGame('normans2')"><span class="icon">👑</span><div class="name">Norman Control</div><div class="sub">Feudal system, Domesday</div></button>
+      <button class="topic-btn" data-color="blue" onclick="startGame('medieval1')"><span class="icon">🤴</span><div class="name">Medieval Monarchs</div><div class="sub">Power, Magna Carta</div></button>
+      <button class="topic-btn" data-color="red" onclick="startGame('medieval2')"><span class="icon">☠️</span><div class="name">Black Death & Crusades</div><div class="sub">Plague, impact, holy wars</div></button>
+      <button class="topic-btn" data-color="green" onclick="startGame('medieval3')"><span class="icon">🌍</span><div class="name">Silk Roads & Mansa Musa</div><div class="sub">Trade, Baghdad, Mali</div></button>
+    </div>
+    <div class="tip-box">💡 <strong style="color:var(--text)">Endless mode</strong> — keep going as long as you like, then tap "Finish" to see your score.</div>
+  </div>
+</div>
+<div id="game-screen">
+  <div class="game-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="game-title" id="game-title">Topic</div>
+    <div class="score-badge" id="score-badge">0 / 0</div>
+  </div>
+  <div class="streak-bar">
+    <div class="streak-label">Last 10:</div>
+    <div class="streak-dots" id="streak-dots"></div>
+    <button class="finish-btn-small" onclick="showEnd()">Finish ✓</button>
+  </div>
+  <div class="q-area">
+    <div class="q-number" id="q-number">Question 1</div>
+    <div class="q-box" id="q-box"><div class="loading-dots"><span></span><span></span><span></span></div></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-box" id="feedback-box"></div>
+  <div class="error-box" id="error-box">Couldn't load — tap Next to try again.</div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next question →</button>
+</div>
+<div id="end-screen">
+  <div class="end-emoji" id="end-emoji">🎉</div>
+  <div class="end-title" id="end-title">Session done!</div>
+  <div class="stars" id="end-stars">⭐⭐⭐</div>
+  <div class="end-score"><span id="final-score">0</span> <span>/ <span id="final-total">0</span></span></div>
+  <div class="end-msg" id="end-msg"></div>
+  <button class="retry-btn" onclick="retryGame()">Same topic again 🔄</button>
+  <button class="menu-btn" onclick="goHome()">← Choose another topic</button>
+</div>
+<script>
+const MAX_Q=50;
+const TOPICS={
+  romans1:{name:"Romans: Invasion",context:`Year 7 History: The Roman Invasion of Britain.
+753BC: Rome founded by Romulus. 55BC and 54BC: Julius Caesar attempts invasion of Britain — failed both times. 27BC: Augustus becomes first Roman Emperor. 43AD: Emperor Claudius orders successful Roman invasion of Britain. Why Romans invaded: wealth, resources, prestige, revenge for helping enemies. Britain before Romans: Celtic tribes, Iron Age hill forts, tribal chiefs. 60-61AD: Boudicca (Queen of the Iceni tribe) leads rebellion — destroyed Camulodunum (Colchester), Londinium (London), and Verulamium (St Albans). She was eventually defeated by Roman general Paulinus. 410AD: Last Romans leave Britain. Key vocabulary: invasion, rebellion, empire, conquest, source, chronology, cause, consequence, citizen (free adult male who could vote), slave.`},
+  romans2:{name:"Romans: Army & Legacy",context:`Year 7 History: Roman Army and Legacy in Britain.
+Roman army was disciplined and professional. Legionaries: trained soldiers. Auxiliaries: soldiers from conquered peoples. Testudo (tortoise) formation: shields locked together for protection. Soldiers trained daily and built camps wherever they stopped. 80AD: Coliseum built in Rome. 122AD: Hadrian's Wall built — 73 miles across northern England to keep out Picts/Scots. Roman legacy in Britain: straight roads (Watling Street, Fosse Way), towns (Londinium=London, Eboracum=York, Aquae Sulis=Bath), baths, underfloor heating (hypocaust), aqueducts, new foods (grapes, apples, rabbits), Latin language (basis of English/French/Spanish/Italian), Christianity became official religion 312AD. Town names ending in -chester/-caster/-cester come from Roman "castra" (military camp). Roman Empire collapsed due to: barbarian attacks, economic problems, weak emperors, over-stretching. Legacy = what you leave behind for future generations.`},
+  anglosaxons:{name:"Anglo-Saxons",context:`Year 7 History: Anglo-Saxon Britain.
+410AD: Romans leave, power vacuum created. Anglo-Saxons: Germanic peoples (Angles, Saxons, Jutes) from Denmark/Germany, settled Britain from ~450AD. 556AD: Seven Kingdoms (Heptarchy): Northumbria, Mercia, East Anglia, Essex, Sussex, Wessex, Kent. Anglo-Saxon society: thanes (nobles), ceorls (free peasants), slaves. Church central: Christianity spread, monks copied manuscripts, monasteries built. Witan: council of wise men advising the king. 865AD: Great Viking Army from Denmark invades — Danelaw established in north and east. 980AD: New Viking raids. 1014AD: King Canute of Denmark becomes King of England. 1042AD: Edward the Confessor becomes King — religious, no children → succession crisis. Silk Roads: trade network from China to Europe. What travelled: silk, spices, gold, ideas, religions, diseases. Medieval Baghdad: major trading hub, one of most advanced cities — libraries, hospitals, mathematics (algebra from Arabic). Key vocabulary: Witan, heir, monarch, heptarchy, Danelaw.`},
+  normans1:{name:"1066 & Battle of Hastings",context:`Year 7 History: 1066 and the Battle of Hastings.
+January 1066: Edward the Confessor dies, no clear heir. Three claimants: 1) Harold Godwinson (Earl of Wessex, named by Edward on deathbed) 2) Harald Hardrada (King of Norway) 3) William Duke of Normandy (claimed Edward had promised him throne, Harold had sworn oath of support). Harold crowned King Harold II immediately. September 1066: Harald Hardrada invades north with ~10,000 men. 25 September 1066: Battle of Stamford Bridge — Harold defeats and kills Hardrada. Harold's army then marches 300 miles south — exhausted. 14 October 1066: Battle of Hastings. Why Normans won: Harold's army exhausted; Normans had cavalry (none on English side); Normans had archers; Norman fake retreat drew English fighters off the defensive hill; Harold was killed (tradition: arrow in eye). Christmas Day 1066: William crowned King at Westminster Abbey. Key vocabulary: heir, claimant, cavalry, oath, infantry, tactics.`},
+  normans2:{name:"Norman Control of England",context:`Year 7 History: How William the Conqueror controlled England.
+William faced English resistance. Methods of control: 1) Motte and bailey castles — quick to build, visible symbol of power. 2) Harrying of the North (1069-70): William destroyed villages, crops and animals in northern England to crush rebellion — thousands died of famine. Very brutal. 3) Replaced English nobles with loyal Normans. 4) Gave land to followers in exchange for loyalty and military service. Feudal System: King (owns all land) → Barons/Lords (given land, provide knights and taxes) → Knights (given land, fight when needed) → Peasants/Serfs (work the land, give crops/labour to lords; could NOT leave without permission). 1086: Domesday Book — survey of all land in England, who owned what, how many animals, value. Used to calculate taxes. "Domesday" = no appeal possible, like the Day of Judgement. Norman influence: new words from French (beef from "boeuf"), stone castles, cathedrals. Key vocabulary: feudal system, Domesday Book, motte and bailey, serf, vassal, harrying.`},
+  medieval1:{name:"Medieval Monarchs & Power",context:`Year 7 History: Medieval Monarchs and Limits to Power.
+Medieval kings had enormous but not unlimited power. The Church was very powerful — Pope in Rome had authority over all Christians including kings. Excommunication: thrown out of the Church — even kings feared this. Thomas Becket: Archbishop of Canterbury, murdered 1170 on Henry II's orders, made into a saint — showed limits of royal power over the Church. King John (1199-1216): unpopular — lost wars, taxed heavily, quarrelled with Pope and barons. 1215: Magna Carta signed (barons forced John at Runnymede): limited royal power — king could not imprison nobles without fair trial; had to consult barons before raising taxes. Foundation of democracy. Life for medieval peasants: worked lord's land several days a week; paid taxes and tithes (10% to Church); could not leave the village; short difficult lives. Power of kings gradually declined over medieval period — important change and continuity. Key vocabulary: Magna Carta, excommunication, baron, serf, tithe, significance, change, continuity.`},
+  medieval2:{name:"Black Death & Crusades",context:`Year 7 History: The Black Death and the Crusades.
+BLACK DEATH: 1347-1353, bubonic plague swept Europe (reached Britain 1348). Caused by bacterium spread by fleas on rats. Symptoms: painful buboes (swellings in armpits/groin), fever, black skin patches, death within days. Killed ~1/3 of Europe's population (~25 million people). Spread along trade routes from Central Asia. Consequences: labour shortage → peasants demanded higher wages; weakened feudal system; Peasants' Revolt 1381; people lost faith in the Church; great social change. THE CRUSADES: Religious wars launched by Christian Europe to capture Holy Land (Jerusalem) from Muslim rulers. Pope Urban II called First Crusade 1095. Crusaders believed fighting for God = guaranteed heaven. Jerusalem captured by Crusaders 1099 (with great violence). Saladin (Muslim leader) recaptured Jerusalem 1187. Several Crusades followed — mostly unsuccessful for Christians. Consequences: increased contact between Europe and Middle East; exchange of ideas, goods, diseases; increased distrust between Christians and Muslims. Key vocabulary: plague, epidemic, consequence, significance, Crusade, Holy Land, cause.`},
+  medieval3:{name:"Silk Roads & Mansa Musa",context:`Year 7 History: The Silk Roads, Medieval Baghdad, and Mansa Musa.
+SILK ROADS: Network of trade routes connecting China, Central Asia, Middle East, and Europe. Not one road — land and sea routes. What travelled: silk (from China), spices, gold, silver, glass, paper, ideas, religions (Islam, Buddhism, Christianity), diseases (Black Death). Ideas that spread: mathematics (algebra from Arabic "al-jabr"), astronomy, medicine, philosophy. MEDIEVAL BAGHDAD: Capital of Abbasid Caliphate, founded 762AD. One of largest most advanced cities in medieval world (over 1 million people). House of Wisdom: great library and learning centre — translated Greek texts, advanced mathematics, medicine, astronomy. Shows medieval world was NOT just European. MANSA MUSA: Emperor of Mali Empire in West Africa (~1312-1337). Controls vast gold and salt mines — possibly richest person who ever lived. 1324: Famous Hajj (pilgrimage) to Mecca with ~60,000 people and enormous amounts of gold — gave gold away freely, causing gold prices to crash across Middle East and Mediterranean for years (inflation). Built mosques, schools, libraries across Mali. His empire included Timbuktu — major centre of Islamic learning. Significance: shows powerful, wealthy, sophisticated empires existed in Africa — challenges idea that only Europe mattered in medieval history. Key vocabulary: trade route, significance, empire, pilgrimage, inflation, Hajj, Timbuktu.`}
+};
+
+let currentTopic=null,questions=[],currentQ=0,score=0,answered=false,recentResults=[];
+
+function goHome(){document.getElementById('topic-screen').style.display='block';document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='none';}
+async function startGame(k){currentTopic=k;questions=[];currentQ=0;score=0;answered=false;recentResults=[];document.getElementById('topic-screen').style.display='none';document.getElementById('end-screen').style.display='none';document.getElementById('game-screen').style.display='block';document.getElementById('game-title').textContent=TOPICS[k].name;updateScoreBadge();updateStreakDots();updateQNumber();await loadQuestion();}
+function updateScoreBadge(){document.getElementById('score-badge').textContent=`${score} / ${currentQ}`;}
+function updateQNumber(){document.getElementById('q-number').textContent=`Question ${currentQ+1}`;}
+function updateStreakDots(){const c=document.getElementById('streak-dots');c.innerHTML='';const s=recentResults.slice(-10);for(let i=0;i<10;i++){const d=document.createElement('div');d.className='streak-dot';if(i<s.length){if(s[i])d.classList.add('hit');else d.classList.add('miss');}c.appendChild(d);}}
+async function loadQuestion(){
+  answered=false;['feedback-box','error-box'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('next-btn').style.display='none';document.getElementById('options-grid').innerHTML='';document.getElementById('q-box').innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div>';
+  const t=TOPICS[currentTopic];const prev=questions.slice(-25).map(q=>q.question).join(' | ');
+  const prompt=`Friendly quiz master helping 11-year-old Bert (dyslexic) revise Year 7 History. Keep everything SHORT and CLEAR.\n\nContext:\n${t.context}\n\n${prev?`Do NOT repeat: ${prev}`:''}\n\nGenerate ONE multiple choice question. Vary types: dates, people, definitions, causes, consequences, vocabulary. 1 sentence max 15 words. 4 options max 8 words each. 1 correct answer. 1-sentence explanation max 20 words.\n\nJSON only: {"question":"...","options":["...","...","...","..."],"correct":0,"explanation":"..."}`;
+  try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})});if(!r.ok)throw 0;const d=await r.json();const q=JSON.parse(d.content[0].text.trim().replace(/```json|```/g,''));questions.push(q);renderQuestion(q);}
+  catch(e){document.getElementById('q-box').innerHTML='<span class="q-text">Couldn\'t load — tap Next.</span>';document.getElementById('error-box').style.display='block';document.getElementById('next-btn').style.display='block';}
+}
+function renderQuestion(q){document.getElementById('q-box').innerHTML=`<span class="q-text">${q.question}</span>`;const g=document.getElementById('options-grid');g.innerHTML='';['A','B','C','D'].forEach((l,i)=>{const b=document.createElement('button');b.className='option-btn';b.innerHTML=`<span class="opt-letter">${l}</span><span>${q.options[i]}</span>`;b.onclick=()=>answer(i,q);g.appendChild(b);});}
+function answer(chosen,q){if(answered)return;answered=true;const btns=document.getElementById('options-grid').querySelectorAll('.option-btn');const c=q.correct;const ok=chosen===c;if(ok)score++;recentResults.push(ok);btns.forEach((b,i)=>{b.disabled=true;if(i===c)b.classList.add('correct');else if(i===chosen&&!ok)b.classList.add('wrong');});const fb=document.getElementById('feedback-box');fb.className='feedback-box '+(ok?'correct':'wrong');fb.style.display='block';fb.innerHTML=ok?`<span class="feedback-emoji">🎉</span><strong>Correct!</strong><div class="feedback-explain">${q.explanation}</div>`:`<span class="feedback-emoji">😬</span><strong>Not quite — answer was ${'ABCD'[c]}: ${q.options[c]}</strong><div class="feedback-explain">${q.explanation}</div>`;updateScoreBadge();updateStreakDots();const nb=document.getElementById('next-btn');nb.style.display='block';nb.textContent=currentQ+1>=MAX_Q?'See results 🏆':'Next question →';}
+async function nextQuestion(){currentQ++;if(currentQ>=MAX_Q){showEnd();return;}updateQNumber();await loadQuestion();}
+function showEnd(){document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='block';const tot=currentQ;const pct=tot>0?score/tot:0;let e,t,m,s;if(pct>=0.9){e='🏆';t='Outstanding!';s='⭐⭐⭐';m=`${score}/${tot} — brilliant History knowledge, Bert!`;}else if(pct>=0.75){e='🎉';t='Brilliant!';s='⭐⭐⭐';m=`${score}/${tot}. Really strong. Review the ones you missed.`;}else if(pct>=0.6){e='💪';t='Good effort!';s='⭐⭐';m=`${score}/${tot}. Solid. Another round will sharpen you up.`;}else{e='📚';t='Keep going!';s='⭐';m=`${score}/${tot}. History takes practice — you'll get there!`;}document.getElementById('end-emoji').textContent=e;document.getElementById('end-title').textContent=t;document.getElementById('end-stars').textContent=s;document.getElementById('final-score').textContent=score;document.getElementById('final-total').textContent=tot;document.getElementById('end-msg').textContent=m;}
+function retryGame(){startGame(currentTopic);}
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bert's English Writing Revision ✍️</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+  :root{--bg:#0f0f18;--card:#191928;--card2:#1f1f35;--accent:#e879f9;--accent2:#06b6d4;--accent3:#fbbf24;--text:#f0e8ff;--muted:#7060a0;--radius:18px;--green:#4ade80;--red:#f87171;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:18px;line-height:1.6;}
+  .header{background:linear-gradient(135deg,#080810 0%,#1a0a2e 100%);padding:20px 20px 16px;text-align:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:10;}
+  .header h1{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent);}
+  .header p{font-size:0.85rem;color:var(--muted);margin-top:2px;}
+  #topic-screen{padding:20px 16px 40px;}
+  .section-label{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-left:4px;}
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .topic-btn{background:var(--card);border:2px solid transparent;border-radius:var(--radius);padding:16px 12px;cursor:pointer;text-align:center;transition:all 0.2s;}
+  .topic-btn:active{transform:scale(0.97);}
+  .topic-btn .icon{font-size:1.8rem;margin-bottom:6px;display:block;}
+  .topic-btn .name{font-family:'Nunito',sans-serif;font-weight:800;font-size:0.88rem;color:var(--text);line-height:1.3;}
+  .topic-btn .sub{font-size:0.7rem;color:var(--muted);margin-top:3px;}
+  .topic-btn[data-color="pink"]{border-color:#e879f933;} .topic-btn[data-color="pink"]:hover{border-color:var(--accent);background:#e879f918;}
+  .topic-btn[data-color="cyan"]{border-color:#06b6d433;} .topic-btn[data-color="cyan"]:hover{border-color:var(--accent2);background:#06b6d418;}
+  .topic-btn[data-color="yellow"]{border-color:#fbbf2433;} .topic-btn[data-color="yellow"]:hover{border-color:var(--accent3);background:#fbbf2418;}
+  .topic-btn[data-color="green"]{border-color:#4ade8033;} .topic-btn[data-color="green"]:hover{border-color:#4ade80;background:#4ade8018;}
+  .topic-btn[data-color="purple"]{border-color:#a78bfa33;} .topic-btn[data-color="purple"]:hover{border-color:#a78bfa;background:#a78bfa18;}
+  #game-screen{display:none;}
+  .game-header{background:var(--card);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #ffffff10;}
+  .back-btn{background:none;border:2px solid var(--muted);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .back-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .game-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;flex:1;}
+  .score-badge{background:var(--accent);color:#0f0f18;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.85rem;padding:4px 12px;border-radius:20px;flex-shrink:0;}
+  .streak-bar{background:var(--card);padding:8px 20px;border-bottom:1px solid #ffffff08;display:flex;align-items:center;gap:10px;}
+  .streak-label{font-size:0.75rem;color:var(--muted);font-weight:700;flex-shrink:0;}
+  .streak-dots{display:flex;gap:5px;flex:1;}
+  .streak-dot{width:14px;height:14px;border-radius:50%;background:#ffffff15;transition:all 0.3s;flex-shrink:0;}
+  .streak-dot.hit{background:var(--green);} .streak-dot.miss{background:var(--red);}
+  .finish-btn-small{background:none;border:1.5px solid var(--muted);border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:800;color:var(--muted);cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap;}
+  .finish-btn-small:hover{border-color:var(--accent);color:var(--accent);}
+  .q-area{padding:20px 20px 0;}
+  .q-number{font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .q-box{background:var(--card);border-radius:var(--radius);padding:20px 18px;margin-bottom:18px;min-height:90px;display:flex;align-items:center;border:2px solid #ffffff08;}
+  .q-text{font-family:'Nunito',sans-serif;font-weight:700;font-size:1.1rem;line-height:1.5;color:var(--text);}
+  .loading-dots{display:flex;gap:6px;align-items:center;}
+  .loading-dots span{width:10px;height:10px;background:var(--accent);border-radius:50%;animation:bounce 1.2s infinite;}
+  .loading-dots span:nth-child(2){animation-delay:0.2s;background:var(--accent2);}
+  .loading-dots span:nth-child(3){animation-delay:0.4s;background:var(--accent3);}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:0.4;}40%{transform:translateY(-10px);opacity:1;}}
+  .options-grid{display:flex;flex-direction:column;gap:10px;padding:0 20px 16px;}
+  .option-btn{background:var(--card2);border:2.5px solid #ffffff12;border-radius:var(--radius);padding:15px 16px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;color:var(--text);transition:all 0.15s;display:flex;align-items:center;gap:12px;line-height:1.4;}
+  .option-btn:hover:not(:disabled){border-color:var(--accent);background:#e879f912;}
+  .option-btn .opt-letter{width:30px;height:30px;border-radius:50%;background:#ffffff12;display:flex;align-items:center;justify-content:center;font-size:0.82rem;flex-shrink:0;font-weight:900;}
+  .option-btn.correct{border-color:var(--green);background:#4ade8018;} .option-btn.correct .opt-letter{background:var(--green);color:#0f0f18;}
+  .option-btn.wrong{border-color:var(--red);background:#f8717118;} .option-btn.wrong .opt-letter{background:var(--red);color:#0f0f18;}
+  .option-btn:disabled{cursor:default;}
+  .feedback-box{margin:0 20px 16px;padding:14px 16px;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:700;font-size:0.9rem;line-height:1.5;display:none;}
+  .feedback-box.correct{background:#4ade8018;border:2px solid var(--green);color:#a7f3d0;}
+  .feedback-box.wrong{background:#f8717118;border:2px solid var(--red);color:#fca5a5;}
+  .feedback-emoji{font-size:1.3rem;margin-bottom:4px;display:block;}
+  .feedback-explain{color:var(--text);margin-top:6px;font-weight:600;font-size:0.88rem;}
+  .next-btn{display:none;margin:0 20px 24px;width:calc(100% - 40px);padding:16px;background:var(--accent);color:#0f0f18;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;cursor:pointer;}
+  #end-screen{display:none;padding:40px 20px;text-align:center;}
+  .end-emoji{font-size:4rem;margin-bottom:16px;}
+  .end-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.8rem;color:var(--accent);margin-bottom:8px;}
+  .end-score{font-family:'Nunito',sans-serif;font-weight:800;font-size:3rem;margin:20px 0;color:var(--text);}
+  .end-score span{color:var(--muted);font-size:1.5rem;}
+  .end-msg{color:var(--muted);font-size:0.95rem;margin-bottom:30px;line-height:1.6;}
+  .retry-btn{display:block;width:100%;padding:18px;background:var(--accent);color:#0f0f18;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;cursor:pointer;margin-bottom:12px;}
+  .menu-btn{display:block;width:100%;padding:18px;background:var(--card);color:var(--text);border:2px solid #ffffff20;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;}
+  .stars{color:#facc15;font-size:1.5rem;}
+  .error-box{margin:0 20px 16px;padding:14px;background:#e879f918;border:2px solid var(--accent);border-radius:var(--radius);color:#f0abfc;font-size:0.88rem;display:none;}
+  .tip-box{margin-top:16px;padding:14px 16px;background:var(--card);border-radius:14px;font-size:0.82rem;color:var(--muted);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="header"><h1>✍️ English Writing Revision</h1><p>Bert's Year 7 · Endless Mode</p></div>
+<div id="topic-screen">
+  <div style="padding:20px 16px 10px;">
+    <div class="section-label">Choose a topic</div>
+    <div class="topic-grid">
+      <button class="topic-btn" data-color="pink" onclick="startGame('rhetoric')"><span class="icon">🎤</span><div class="name">Rhetoric</div><div class="sub">Persuasive techniques, DAFOREST</div></button>
+      <button class="topic-btn" data-color="cyan" onclick="startGame('sentences')"><span class="icon">📝</span><div class="name">Sentence Types</div><div class="sub">Simple, compound, complex</div></button>
+      <button class="topic-btn" data-color="yellow" onclick="startGame('punctuation')"><span class="icon">❕</span><div class="name">Punctuation</div><div class="sub">Colons, semicolons, apostrophes</div></button>
+      <button class="topic-btn" data-color="green" onclick="startGame('devices')"><span class="icon">🔮</span><div class="name">Literary Devices</div><div class="sub">Metaphor, simile, personification</div></button>
+      <button class="topic-btn" data-color="purple" onclick="startGame('vocab')"><span class="icon">💬</span><div class="name">Vocabulary & Connectives</div><div class="sub">Tier 2/3 words, linking phrases</div></button>
+      <button class="topic-btn" data-color="cyan" onclick="startGame('structure')"><span class="icon">🏗️</span><div class="name">Structure & Form</div><div class="sub">Paragraphs, openings, endings</div></button>
+    </div>
+    <div class="tip-box">💡 The exam is a <strong style="color:var(--text)">writing task</strong> — knowing these tools will make your writing more powerful. Endless mode.</div>
+  </div>
+</div>
+<div id="game-screen">
+  <div class="game-header"><button class="back-btn" onclick="goHome()">←</button><div class="game-title" id="game-title">Topic</div><div class="score-badge" id="score-badge">0 / 0</div></div>
+  <div class="streak-bar"><div class="streak-label">Last 10:</div><div class="streak-dots" id="streak-dots"></div><button class="finish-btn-small" onclick="showEnd()">Finish ✓</button></div>
+  <div class="q-area"><div class="q-number" id="q-number">Question 1</div><div class="q-box" id="q-box"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-box" id="feedback-box"></div>
+  <div class="error-box" id="error-box">Couldn't load — tap Next to try again.</div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next question →</button>
+</div>
+<div id="end-screen">
+  <div class="end-emoji" id="end-emoji">🎉</div><div class="end-title" id="end-title">Session done!</div><div class="stars" id="end-stars">⭐⭐⭐</div>
+  <div class="end-score"><span id="final-score">0</span> <span>/ <span id="final-total">0</span></span></div><div class="end-msg" id="end-msg"></div>
+  <button class="retry-btn" onclick="retryGame()">Same topic again 🔄</button><button class="menu-btn" onclick="goHome()">← Choose another topic</button>
+</div>
+<script>
+const MAX_Q=50;
+const TOPICS={
+  rhetoric:{name:"Rhetoric & Persuasion",context:`Year 7 English Writing: Rhetoric and Persuasive Techniques. Rhetoric = art of using language to persuade. DAFOREST mnemonic: Direct address (using "you"), Alliteration (repeated sounds), Facts (statistics, data), Opinion (stated as if fact), Rhetorical question (question with no expected answer), Emotive language (words triggering feelings), Statistics (numbers for credibility), Triples/Rule of three (three words/phrases for impact). Key techniques: Rule of three: "blood, sweat and tears" — rhythmic and memorable. Rhetorical question: "Can we really afford to wait?" — makes reader think. Repetition: "We will fight, we will never surrender" — builds intensity. Alliteration: "Peter Piper picked" — memorable and musical. Emotive language: "heartbreaking", "devastating", "innocent victims" — creates emotional response. Direct address: "You need to act now" — involves reader personally. Hyperbole: deliberate exaggeration ("I've told you a million times"). Anecdote: short personal story making point feel real. Counter-argument then rebuttal: acknowledge opposing view then knock it down. Logos: appeal to logic/reason. Ethos: appeal to trust/authority ("experts say..."). Pathos: appeal to emotion. Forms using rhetoric: speeches, letters, editorial articles, persuasive essays, advertisements. Structure: hook/dramatic opening → arguments with evidence → counter-argument → rebuttal → call to action → strong conclusion.`},
+  sentences:{name:"Sentence Types",context:`Year 7 English Writing: Types of Sentences. Simple sentence: ONE main clause with a subject and verb. Complete thought. (e.g. "The dog barked." "She ran quickly.") Compound sentence: TWO or more main clauses joined by a COORDINATING conjunction. FANBOYS: For, And, Nor, But, Or, Yet, So. (e.g. "The dog barked and the cat ran away." "It was cold but she didn't wear a coat.") Complex sentence: A MAIN clause + at least one SUBORDINATE clause joined by a SUBORDINATING conjunction. The subordinate clause CANNOT stand alone. (e.g. "Although it was raining, we went outside." "She studied hard because she wanted to pass."). Subordinating conjunctions (make complex sentences): although, because, when, while, since, unless, if, even though, as, until, before, after, wherever, whenever, as soon as. Fronted adverbial: phrase at the START of a sentence (describing when/where/how), followed by a COMMA. (e.g. "In the dark forest, the wolf prowled." "After the battle, silence fell."). Short sentences: create impact, tension, dramatic effect. ("He stopped. He listened. He ran."). Long sentences: build detail, create atmosphere, show complexity. Fragment: incomplete sentence — missing subject or verb. Avoid in formal writing. Writing with varied sentence types makes writing more interesting and shows skill.`},
+  punctuation:{name:"Punctuation",context:`Year 7 English Writing: Punctuation Marks and Their Uses. Full stop (.): ends a sentence. Always needed. Comma (,): separates items in a list (red, white and blue); after a fronted adverbial (In the morning, she left.); to separate clauses in complex sentences; before coordinating conjunctions in compound sentences. Colon (:): introduces a list or explanation. What follows explains or expands what came before. (e.g. "He had one aim: to win." "She bought three things: bread, milk and eggs."). Semicolon (;): joins two related INDEPENDENT clauses — stronger than a comma, weaker than a full stop. (e.g. "It was dark; the street was empty." "She loved reading; he preferred sport."). Apostrophe for possession ('): add 's for singular nouns (Bert's book, the dog's lead). For plural nouns ending in s, just add ' (the dogs' leads, the teachers' staffroom). Apostrophe for contraction ('): shows where letters have been removed (can't=cannot, it's=it is, I'm=I am, they're=they are, we're=we are, you're=you are). NB: its (possessive, no apostrophe) vs it's (it is, apostrophe). Speech marks (" "): surround direct speech — what someone actually says. ("Come here," she said.). Exclamation mark (!): strong emotion, command or surprise. Question mark (?): ends a direct question. Dash (—): adds emphasis or an aside. Ellipsis (...): creates suspense or trailing off ("He opened the door and saw...").`},
+  devices:{name:"Literary Devices",context:`Year 7 English Writing: Literary and Stylistic Devices. Simile: comparing two things using "like" or "as". (e.g. "Her eyes were like stars", "as brave as a lion", "it was as if the world had ended"). Metaphor: saying something IS something else — more powerful than simile. (e.g. "The classroom was a zoo", "Life is a journey", "He is a rock"). Extended metaphor: metaphor continued throughout a piece of writing. Personification: giving human qualities to non-human things. (e.g. "The wind whispered secrets", "The sun smiled down on us", "The trees groaned"). Alliteration: repeating the same CONSONANT sound at start of nearby words. (e.g. "silent snake slithered", "Peter Piper picked"). Sibilance: repeated 's' sounds — creates hissing/whispering effect. Onomatopoeia: words that SOUND like what they describe. (e.g. bang, crash, sizzle, whisper, murmur, hiss). Hyperbole: exaggeration for effect — not literally true. (e.g. "I've been waiting forever", "she's the most beautiful person in the world"). Oxymoron: two contradictory words together. (e.g. "deafening silence", "bittersweet", "living death"). Pathetic fallacy: using weather/environment to reflect mood. (e.g. stormy weather during conflict, sunshine during happy scenes). Foreshadowing: hinting at what will happen later. Rule of three/tricolon: three words or phrases for rhythm and impact. (e.g. "blood, sweat and tears"). Anaphora: repeating a word/phrase at start of consecutive sentences for emphasis. (e.g. "We shall fight on the beaches, we shall fight on the landing grounds, we shall fight in the fields...").`},
+  vocab:{name:"Vocabulary & Connectives",context:`Year 7 English Writing: Vocabulary and Connectives. CONNECTIVES by level: Level 1 (basic): because, unless, after, while, before, until, since, when, as, as long as, as soon as, despite, though. Level 2 (better): although, now that, just as, as much as, wherever, whereas, whether, whenever, whoever, whatever, as a result of, rather than. Level 3 (sophisticated): even though, in order to, in order that, in case of, so that, provided that. Simile connectives: like, it was as if, as if, as though, if only, even if. TIER 2 VOCABULARY (useful across all subjects): abrupt, despite, exhaust, blatant, ambiguity, evade, feeble, wary, vivid, obscure, elaborate, bizarre, drastic, peculiar, underlying, sufficient, hazardous, catastrophe, exceptional, decline, circumstances, distraught, conflict, precise, antagonize, simultaneous, dominant, blunder, critical, crucial, harsh, anticipate, diverse, deterioration, genuine, demolish, gradual, problematic, contradiction, consequences, sophisticated, painstaking, persistent, hesitate, discrimination, fragile, prejudice, tension, hostile, rebellious, momentum, turmoil, dormant, remote. TIER 3 (English-specific): protagonist, antagonist, narrator, omniscient narrator, unreliable narrator, rhetoric, metaphor, simile, personification, alliteration, onomatopoeia, pathetic fallacy, foreshadowing, motif, theme, tone, mood, atmosphere, structure, form, technique, device. Formal writing: no contractions (cannot not can't), sophisticated vocabulary, complex sentences, third person. Informal: contractions OK, conversational tone, first/second person.`},
+  structure:{name:"Structure & Form",context:`Year 7 English Writing: Structure, Form and Organisation. Paragraph: groups related ideas together. TPEEL structure: Topic sentence (what this paragraph is about), Point (make your argument/description), Evidence (quote or example), Explain (analyse the evidence), Link (connect back to title or to next point). New paragraph for each new: idea, time shift, place shift, speaker (in dialogue), or change of perspective. Writing forms: Narrative (story): uses past tense, descriptive language, character, dialogue, plot structure. Descriptive: creates vivid picture using all senses, figurative language. Persuasive: rhetoric, DAFOREST, clear argument structure, counter-arguments. Discursive (argue both sides): balanced argument, connectives showing contrast (however, on the other hand, although). Informative: factual, clear, organised with headings. Speech: direct address, rhetoric, tripling, emotional appeal, clear structure. Letter: formal or informal, correct layout (address, date, greeting, body, sign-off). Editorial/article: balanced views, headline, columns, quotes. Openings that work: In medias res (starting in middle of action), dramatic short sentences, a question, a powerful image, an interesting fact or statistic. Endings: return to opening (circular structure), memorable final image, resolve all threads (stories), powerful call to action (persuasion), rhetorical question leaving reader thinking. Cliffhanger: ending chapter/section on tense moment — reader wants to continue. Flashback: going back in time to give context or create contrast.`}
+};
+let currentTopic=null,questions=[],currentQ=0,score=0,answered=false,recentResults=[];
+function goHome(){document.getElementById('topic-screen').style.display='block';document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='none';}
+async function startGame(k){currentTopic=k;questions=[];currentQ=0;score=0;answered=false;recentResults=[];document.getElementById('topic-screen').style.display='none';document.getElementById('end-screen').style.display='none';document.getElementById('game-screen').style.display='block';document.getElementById('game-title').textContent=TOPICS[k].name;updateScoreBadge();updateStreakDots();updateQNumber();await loadQuestion();}
+function updateScoreBadge(){document.getElementById('score-badge').textContent=`${score} / ${currentQ}`;}
+function updateQNumber(){document.getElementById('q-number').textContent=`Question ${currentQ+1}`;}
+function updateStreakDots(){const c=document.getElementById('streak-dots');c.innerHTML='';const s=recentResults.slice(-10);for(let i=0;i<10;i++){const d=document.createElement('div');d.className='streak-dot';if(i<s.length){if(s[i])d.classList.add('hit');else d.classList.add('miss');}c.appendChild(d);}}
+async function loadQuestion(){
+  answered=false;['feedback-box','error-box'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('next-btn').style.display='none';document.getElementById('options-grid').innerHTML='';document.getElementById('q-box').innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div>';
+  const t=TOPICS[currentTopic];const prev=questions.slice(-25).map(q=>q.question).join(' | ');
+  const prompt=`Friendly quiz master helping 11-year-old Bert (dyslexic) revise Year 7 English Writing. SHORT and CLEAR.\n\nContext:\n${t.context}\n\n${prev?`Do NOT repeat: ${prev}`:''}\n\nGenerate ONE multiple choice question about writing techniques/grammar/vocabulary. Sometimes give an example sentence and ask which device it uses. 1-2 sentences max 20 words. 4 options max 8 words each. 1 correct. 1-sentence explanation max 20 words.\n\nJSON only: {"question":"...","options":["...","...","...","..."],"correct":0,"explanation":"..."}`;
+  try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})});if(!r.ok)throw 0;const d=await r.json();const q=JSON.parse(d.content[0].text.trim().replace(/```json|```/g,''));questions.push(q);renderQuestion(q);}
+  catch(e){document.getElementById('q-box').innerHTML='<span class="q-text">Couldn\'t load — tap Next.</span>';document.getElementById('error-box').style.display='block';document.getElementById('next-btn').style.display='block';}
+}
+function renderQuestion(q){document.getElementById('q-box').innerHTML=`<span class="q-text">${q.question}</span>`;const g=document.getElementById('options-grid');g.innerHTML='';['A','B','C','D'].forEach((l,i)=>{const b=document.createElement('button');b.className='option-btn';b.innerHTML=`<span class="opt-letter">${l}</span><span>${q.options[i]}</span>`;b.onclick=()=>answer(i,q);g.appendChild(b);});}
+function answer(chosen,q){if(answered)return;answered=true;const btns=document.getElementById('options-grid').querySelectorAll('.option-btn');const c=q.correct;const ok=chosen===c;if(ok)score++;recentResults.push(ok);btns.forEach((b,i)=>{b.disabled=true;if(i===c)b.classList.add('correct');else if(i===chosen&&!ok)b.classList.add('wrong');});const fb=document.getElementById('feedback-box');fb.className='feedback-box '+(ok?'correct':'wrong');fb.style.display='block';fb.innerHTML=ok?`<span class="feedback-emoji">🎉</span><strong>Correct!</strong><div class="feedback-explain">${q.explanation}</div>`:`<span class="feedback-emoji">😬</span><strong>Not quite — answer was ${'ABCD'[c]}: ${q.options[c]}</strong><div class="feedback-explain">${q.explanation}</div>`;updateScoreBadge();updateStreakDots();const nb=document.getElementById('next-btn');nb.style.display='block';nb.textContent=currentQ+1>=MAX_Q?'See results 🏆':'Next question →';}
+async function nextQuestion(){currentQ++;if(currentQ>=MAX_Q){showEnd();return;}updateQNumber();await loadQuestion();}
+function showEnd(){document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='block';const tot=currentQ;const pct=tot>0?score/tot:0;let e,t,m,s;if(pct>=0.9){e='🏆';t='Outstanding!';s='⭐⭐⭐';m=`${score}/${tot} — brilliant English, Bert!`;}else if(pct>=0.75){e='🎉';t='Brilliant!';s='⭐⭐⭐';m=`${score}/${tot}. Really strong.`;}else if(pct>=0.6){e='💪';t='Good effort!';s='⭐⭐';m=`${score}/${tot}. Another round will sharpen you up.`;}else{e='📚';t='Keep going!';s='⭐';m=`${score}/${tot}. Keep practising — you'll get it!`;}document.getElementById('end-emoji').textContent=e;document.getElementById('end-title').textContent=t;document.getElementById('end-stars').textContent=s;document.getElementById('final-score').textContent=score;document.getElementById('final-total').textContent=tot;document.getElementById('end-msg').textContent=m;}
+function retryGame(){startGame(currentTopic);}
+</script>
+</body>
+</html>

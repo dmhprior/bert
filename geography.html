@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bert's Geography Revision 🌍</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+  :root{--bg:#0d1a2a;--card:#162338;--card2:#1b2d47;--accent:#38bdf8;--accent2:#fb923c;--accent3:#a78bfa;--text:#e8f4ff;--muted:#6a90b5;--radius:18px;--green:#4ade80;--red:#f87171;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:18px;line-height:1.6;}
+  .header{background:linear-gradient(135deg,#0a1220 0%,#0d2340 100%);padding:20px 20px 16px;text-align:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:10;}
+  .header h1{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent);}
+  .header p{font-size:0.85rem;color:var(--muted);margin-top:2px;}
+  #topic-screen{padding:20px 16px 40px;}
+  .section-label{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-left:4px;}
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .topic-btn{background:var(--card);border:2px solid transparent;border-radius:var(--radius);padding:16px 12px;cursor:pointer;text-align:center;transition:all 0.2s;}
+  .topic-btn:active{transform:scale(0.97);}
+  .topic-btn .icon{font-size:1.8rem;margin-bottom:6px;display:block;}
+  .topic-btn .name{font-family:'Nunito',sans-serif;font-weight:800;font-size:0.88rem;color:var(--text);line-height:1.3;}
+  .topic-btn .sub{font-size:0.7rem;color:var(--muted);margin-top:3px;}
+  .topic-btn[data-color="blue"]{border-color:#38bdf833;} .topic-btn[data-color="blue"]:hover{border-color:var(--accent);background:#38bdf818;}
+  .topic-btn[data-color="orange"]{border-color:#fb923c33;} .topic-btn[data-color="orange"]:hover{border-color:var(--accent2);background:#fb923c18;}
+  .topic-btn[data-color="purple"]{border-color:#a78bfa33;} .topic-btn[data-color="purple"]:hover{border-color:var(--accent3);background:#a78bfa18;}
+  .topic-btn[data-color="green"]{border-color:#4ade8033;} .topic-btn[data-color="green"]:hover{border-color:#4ade80;background:#4ade8018;}
+  .topic-btn[data-color="teal"]{border-color:#2dd4bf33;} .topic-btn[data-color="teal"]:hover{border-color:#2dd4bf;background:#2dd4bf18;}
+  .topic-btn[data-color="yellow"]{border-color:#facc1533;} .topic-btn[data-color="yellow"]:hover{border-color:#facc15;background:#facc1518;}
+  #game-screen{display:none;}
+  .game-header{background:var(--card);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #ffffff10;}
+  .back-btn{background:none;border:2px solid var(--muted);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .back-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .game-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;flex:1;}
+  .score-badge{background:var(--accent);color:#0d1a2a;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.85rem;padding:4px 12px;border-radius:20px;flex-shrink:0;}
+  .streak-bar{background:var(--card);padding:8px 20px;border-bottom:1px solid #ffffff08;display:flex;align-items:center;gap:10px;}
+  .streak-label{font-size:0.75rem;color:var(--muted);font-weight:700;flex-shrink:0;}
+  .streak-dots{display:flex;gap:5px;flex:1;}
+  .streak-dot{width:14px;height:14px;border-radius:50%;background:#ffffff15;transition:all 0.3s;flex-shrink:0;}
+  .streak-dot.hit{background:var(--green);} .streak-dot.miss{background:var(--red);}
+  .finish-btn-small{background:none;border:1.5px solid var(--muted);border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:800;color:var(--muted);cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap;}
+  .finish-btn-small:hover{border-color:var(--accent);color:var(--accent);}
+  .q-area{padding:20px 20px 0;}
+  .q-number{font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .q-box{background:var(--card);border-radius:var(--radius);padding:20px 18px;margin-bottom:18px;min-height:90px;display:flex;align-items:center;border:2px solid #ffffff08;}
+  .q-text{font-family:'Nunito',sans-serif;font-weight:700;font-size:1.1rem;line-height:1.5;color:var(--text);}
+  .loading-dots{display:flex;gap:6px;align-items:center;}
+  .loading-dots span{width:10px;height:10px;background:var(--accent);border-radius:50%;animation:bounce 1.2s infinite;}
+  .loading-dots span:nth-child(2){animation-delay:0.2s;background:var(--accent2);}
+  .loading-dots span:nth-child(3){animation-delay:0.4s;background:var(--accent3);}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:0.4;}40%{transform:translateY(-10px);opacity:1;}}
+  .options-grid{display:flex;flex-direction:column;gap:10px;padding:0 20px 16px;}
+  .option-btn{background:var(--card2);border:2.5px solid #ffffff12;border-radius:var(--radius);padding:15px 16px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;color:var(--text);transition:all 0.15s;display:flex;align-items:center;gap:12px;line-height:1.4;}
+  .option-btn:hover:not(:disabled){border-color:var(--accent);background:#38bdf812;}
+  .option-btn .opt-letter{width:30px;height:30px;border-radius:50%;background:#ffffff12;display:flex;align-items:center;justify-content:center;font-size:0.82rem;flex-shrink:0;font-weight:900;}
+  .option-btn.correct{border-color:var(--green);background:#4ade8018;} .option-btn.correct .opt-letter{background:var(--green);color:#0d1a2a;}
+  .option-btn.wrong{border-color:var(--red);background:#f8717118;} .option-btn.wrong .opt-letter{background:var(--red);color:#0d1a2a;}
+  .option-btn:disabled{cursor:default;}
+  .feedback-box{margin:0 20px 16px;padding:14px 16px;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:700;font-size:0.9rem;line-height:1.5;display:none;}
+  .feedback-box.correct{background:#4ade8018;border:2px solid var(--green);color:#a7f3d0;}
+  .feedback-box.wrong{background:#f8717118;border:2px solid var(--red);color:#fca5a5;}
+  .feedback-emoji{font-size:1.3rem;margin-bottom:4px;display:block;}
+  .feedback-explain{color:var(--text);margin-top:6px;font-weight:600;font-size:0.88rem;}
+  .next-btn{display:none;margin:0 20px 24px;width:calc(100% - 40px);padding:16px;background:var(--accent);color:#0d1a2a;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;cursor:pointer;}
+  #end-screen{display:none;padding:40px 20px;text-align:center;}
+  .end-emoji{font-size:4rem;margin-bottom:16px;}
+  .end-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.8rem;color:var(--accent);margin-bottom:8px;}
+  .end-score{font-family:'Nunito',sans-serif;font-weight:800;font-size:3rem;margin:20px 0;color:var(--text);}
+  .end-score span{color:var(--muted);font-size:1.5rem;}
+  .end-msg{color:var(--muted);font-size:0.95rem;margin-bottom:30px;line-height:1.6;}
+  .retry-btn{display:block;width:100%;padding:18px;background:var(--accent);color:#0d1a2a;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;cursor:pointer;margin-bottom:12px;}
+  .menu-btn{display:block;width:100%;padding:18px;background:var(--card);color:var(--text);border:2px solid #ffffff20;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;}
+  .stars{color:#facc15;font-size:1.5rem;}
+  .error-box{margin:0 20px 16px;padding:14px;background:#fb923c18;border:2px solid var(--accent2);border-radius:var(--radius);color:#fdba74;font-size:0.88rem;display:none;}
+  .tip-box{margin-top:16px;padding:14px 16px;background:var(--card);border-radius:14px;font-size:0.82rem;color:var(--muted);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="header"><h1>🌍 Geography Revision</h1><p>Bert's Year 7 · Endless Mode</p></div>
+<div id="topic-screen">
+  <div style="padding:20px 16px 10px;">
+    <div class="section-label">Choose a topic</div>
+    <div class="topic-grid">
+      <button class="topic-btn" data-color="blue" onclick="startGame('continents')"><span class="icon">🗺️</span><div class="name">Continents & Oceans</div><div class="sub">7 continents, 5 oceans, Europe</div></button>
+      <button class="topic-btn" data-color="orange" onclick="startGame('mapskills')"><span class="icon">📏</span><div class="name">Map Skills</div><div class="sub">Grid refs, contours, scale</div></button>
+      <button class="topic-btn" data-color="purple" onclick="startGame('latlong')"><span class="icon">🧭</span><div class="name">Latitude & Longitude</div><div class="sub">Coordinates, hemispheres, UK</div></button>
+      <button class="topic-btn" data-color="green" onclick="startGame('settlement1')"><span class="icon">🏘️</span><div class="name">Settlement Types</div><div class="sub">Hamlet to city, site, situation</div></button>
+      <button class="topic-btn" data-color="orange" onclick="startGame('settlement2')"><span class="icon">🏙️</span><div class="name">Urban Zones & Change</div><div class="sub">Burgess model, regeneration</div></button>
+      <button class="topic-btn" data-color="teal" onclick="startGame('ecosystems1')"><span class="icon">🌿</span><div class="name">Food Chains & Biomes</div><div class="sub">Producers, consumers, biomes</div></button>
+      <button class="topic-btn" data-color="yellow" onclick="startGame('ecosystems2')"><span class="icon">🌴</span><div class="name">Rainforests & Deserts</div><div class="sub">Adaptations, deforestation</div></button>
+      <button class="topic-btn" data-color="blue" onclick="startGame('weather')"><span class="icon">⛅</span><div class="name">Weather & Climate</div><div class="sub">Pressure systems, rainfall types</div></button>
+    </div>
+    <div class="tip-box">💡 <strong style="color:var(--text)">Endless mode</strong> — keep going as long as you like, then tap "Finish" to see your score.</div>
+  </div>
+</div>
+<div id="game-screen">
+  <div class="game-header"><button class="back-btn" onclick="goHome()">←</button><div class="game-title" id="game-title">Topic</div><div class="score-badge" id="score-badge">0 / 0</div></div>
+  <div class="streak-bar"><div class="streak-label">Last 10:</div><div class="streak-dots" id="streak-dots"></div><button class="finish-btn-small" onclick="showEnd()">Finish ✓</button></div>
+  <div class="q-area"><div class="q-number" id="q-number">Question 1</div><div class="q-box" id="q-box"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-box" id="feedback-box"></div>
+  <div class="error-box" id="error-box">Couldn't load — tap Next to try again.</div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next question →</button>
+</div>
+<div id="end-screen">
+  <div class="end-emoji" id="end-emoji">🎉</div><div class="end-title" id="end-title">Session done!</div><div class="stars" id="end-stars">⭐⭐⭐</div>
+  <div class="end-score"><span id="final-score">0</span> <span>/ <span id="final-total">0</span></span></div><div class="end-msg" id="end-msg"></div>
+  <button class="retry-btn" onclick="retryGame()">Same topic again 🔄</button><button class="menu-btn" onclick="goHome()">← Choose another topic</button>
+</div>
+<script>
+const MAX_Q=50;
+const TOPICS={
+  continents:{name:"Continents & Oceans",context:`Year 7 Geography: Continents, Oceans and Europe.
+7 continents: North America, South America, Africa, Asia, Antarctica, Europe, Oceania/Australasia. 5 oceans: Indian, Pacific, Atlantic, Southern, Arctic. The largest ocean is the Pacific. The smallest is the Arctic. Europe: located in Northern Hemisphere, mostly in Eastern Hemisphere. Bordered by: Arctic Ocean (north), Atlantic Ocean (west), Mediterranean Sea (south). Europe is NOT a large continent — it is relatively small. UK main mountain ranges: Cambrian mountains (Wales), Pennines (northern England, "backbone of England"), Scottish Highlands (Grampian, Southern Uplands, North West Highlands). Main UK cities by population: London, Birmingham, Manchester, Glasgow, Leeds, Liverpool, Newcastle. Greater Manchester is a county made up of 10 boroughs. Trafford is one of those boroughs. Physical geography: study of natural processes (climate, rivers, tectonic plates, mountains). Human geography: study of people's impact and behaviour. Environmental geography: interaction between humans and natural environment.`},
+  mapskills:{name:"Map Skills",context:`Year 7 Geography: Map Skills - Grid References, Contours and Scale.
+4-figure grid reference: "along the corridor then up the stairs" — read easting first (horizontal), then northing (vertical). Gives a grid square. 6-figure grid reference: same but estimate tenths within each grid square. Example: easting 423, northing 576 = 423576. Contours: lines on a map joining places of equal height above sea level. Close contours = steep slope. Widely spaced contours = gentle slope. Circular/oval contours = hill or peak. Spot height: exact height of a specific point (shown as a dot with a number). Layer colouring: bands of different colours showing different heights — green for low, brown/white for high. Scale: comparison between map distance and real distance. Use string for winding routes, ruler for straight routes, then compare to scale bar. Compass: 8 points — North, NE, East, SE, South, SW, West, NW. GIS: Geographic Information System — computer system presenting geographical data in different ways. OS maps use standard symbols (e.g. church with tower, picnic site, campsite, viewpoint). Northing: horizontal lines on an OS map (go up). Easting: vertical lines (go across).`},
+  latlong:{name:"Latitude & Longitude",context:`Year 7 Geography: Latitude, Longitude and Location.
+Latitude: imaginary horizontal lines around the Earth. Measured 0-90° north or south of the Equator. Lines of latitude are HORIZONTAL (like rungs of a ladder). Equator = 0° latitude, divides Earth into Northern and Southern hemispheres. North Pole = 90°N, South Pole = 90°S. Key lines of latitude: Equator (0°), Tropic of Cancer (23.5°N), Tropic of Capricorn (23.5°S), Arctic Circle (66.5°N), Antarctic Circle (66.5°S). Longitude: imaginary vertical lines. Measured 0-180° east or west of the Prime Meridian. Lines of longitude are VERTICAL (like orange segments). Prime Meridian = 0° longitude, runs through Greenwich, London. Divides Earth into Eastern and Western hemispheres. To give a location: write latitude first, then longitude (e.g. 51°N, 0°W = London). The UK is: approximately 50-60°N latitude, 2-5°W longitude. Greater Manchester is approximately 53°N, 2°W. Deserts found along Tropics of Cancer and Capricorn. Tropical rainforests found near the Equator (hot, wet all year).`},
+  settlement1:{name:"Settlement Types",context:`Year 7 Geography: Settlement Types, Site and Situation.
+Site: the actual place where a settlement is located (e.g. on a hill, in a valley, next to a river). Situation: where a settlement is relative to surrounding area and other places. Early settlers needed: water supply (river or spring), flat land (easier to build and farm), building materials (wood or stone), shelter from wind, protection from attack, not too much water (can't flood or be marshy), easy crossing point (ford or bridge). Settlement sizes from smallest to largest: isolated dwelling → hamlet (small cluster of homes) → village (has services e.g. post office, church) → small town → large town → city (widest range of services, historically had a cathedral) → conurbation (cities merged together). Settlement patterns: nucleated (clustered together, often around a crossroads or church), linear (strung along a road or river), dispersed (spread out over a wide area). A conurbation is where several towns or cities have grown and merged together — e.g. Greater Manchester.`},
+  settlement2:{name:"Urban Zones & Change",context:`Year 7 Geography: The Burgess Model, Urban Zones and Regeneration.
+Burgess Model: shows how land use is arranged in zones from city centre outward. Zones from centre: 1) CBD (Central Business District): shops, offices, entertainment — highest land values. 2) Inner city (old industry): old factories from Industrial Revolution, now being redeveloped — gentrification. 3) Inner suburbs: older terraced housing, close to factories. 4) Outer suburbs: semi-detached houses, built as cities grew outward. 5) Rural-urban fringe: edge of city, large detached homes, some countryside. Urban sprawl: unplanned growth of urban areas into surrounding countryside — often problematic. Urban greening: increasing open spaces, parks and gardens in cities — benefits health and environment. Regeneration: reviving old run-down parts of a city. Manchester's inner city (e.g. Salford Quays, Ancoats) has been regenerated. Problems of old inner-city areas: overcrowding, poor housing quality, traffic congestion, lack of green space. Good urban areas need: to be clean, well-lit, have green space, be close to services, be safe. Urban furniture (fountains, seating) makes areas attractive.`},
+  ecosystems1:{name:"Food Chains & Biomes",context:`Year 7 Geography: Food Chains, Food Webs and Biomes.
+Food chain: series of organisms each dependent on the next as food source. Arrow shows direction of energy flow ("is eaten by"). Producer: makes its own food from sunlight (plants, via photosynthesis) — always at start of chain. Consumer: eats other organisms. Primary consumer: eats plants. Secondary consumer: eats primary consumers. Predator: animal that hunts and eats others. Prey: animal that is eaten. Food web: multiple interconnected food chains. If one species decreases, it affects others throughout the web. Biome: a large naturally occurring ecosystem defined by its climate and characteristic plants and animals. Main biomes: tropical rainforest, desert, polar/tundra, grassland (savanna), temperate forest (like UK), coniferous forest (taiga). Climate determines biome location — temperature and rainfall are key. Tropical rainforests: near Equator (hot, wet all year). Deserts: along Tropics of Cancer and Capricorn (very hot and dry OR cold and dry). Polar: near poles (cold and dry all year). Biodiversity: the variety of living things in an area. Tropical rainforests have the HIGHEST biodiversity. Deserts and polar regions have LOW biodiversity.`},
+  ecosystems2:{name:"Rainforests & Deserts",context:`Year 7 Geography: Tropical Rainforests, Deserts and Polar Biomes.
+TROPICAL RAINFORESTS: Located in South America (Amazon), Africa (Congo), South East Asia (Indonesia/Malaysia). Temperature 21-30°C all year. Rainfall high all year (2000mm+). Four layers: emergent, canopy, understorey, forest floor. Very high biodiversity. Why being cut down (deforestation): 1) sell the timber 2) clear for building/farming land 3) find minerals in the ground 4) cattle farming (agriculture). Effects of deforestation: indigenous people lose homes, animals lose habitat, unique plants lost forever, less CO2 absorbed (contributes to global warming), soil erosion. DESERTS: Along Tropic of Cancer and Tropic of Capricorn. Largest hot desert = Sahara (Africa). Very low rainfall (<250mm/year). Very little biodiversity due to harsh climate. Temperature: can exceed 40°C in day, drop below 0°C at night. Plant adaptations: spines (lose less water than leaves, stop animals eating), waxy skin (reduces water loss by transpiration), long roots (reach water deep underground), store water in stems (cacti). POLAR (ANTARCTICA): Cold and dry all year. 99% covered by ice. 5th largest continent, 25% larger than Europe. Antarctic Treaty 1961 — controls human activity, resolves territorial disputes. Emperor penguins live there. Polar bears do NOT (they live in Arctic). Low biodiversity. Adaptation = process of becoming better suited to environment. Sustainable = meeting today's needs without harming future generations.`},
+  weather:{name:"Weather & Climate",context:`Year 7 Geography: Weather, Climate and Rainfall Types.
+Weather: condition of the atmosphere over a SHORT period of time (hours/days). Includes: wind speed and direction, cloud cover, temperature, visibility, humidity, precipitation. Climate: average weather of a place calculated over 30 years. Meteorology: study of weather. Precipitation: moisture falling from sky — rain, snow, hail, sleet. Air pressure: weight of air pressing down on Earth's surface, measured in millibars. Wind: movement of air from HIGH pressure to LOW pressure. Britain's weather: north is colder than south (sun warms south more, mountains reduce temperature); west is wetter than east (prevailing wind from Atlantic brings moisture, mountains force air up). North Atlantic Drift: warm ocean current that raises temperatures in western UK. Mountains reduce temperature by approximately 1°C per 100m. THREE TYPES OF RAINFALL: 1) Frontal rainfall: warm air mass meets cold air mass at a front → warm air forced up → cools → condenses → rains. 2) Relief (orographic) rainfall: moist air forced up over mountains → cools → condenses → rains on windward side (rain shadow on leeward side). 3) Convectional rainfall: sun heats ground → air above heats and rises rapidly → cools → condenses → heavy rain (often thunderstorms). Low pressure (depression): air rises, cools, forms clouds and rain. High pressure (anticyclone): air sinks, warms, creates clear skies. Microclimate: climate of a small area different to surroundings — buildings create shelter, dark surfaces retain heat. Weather instruments: wind vane (direction), anemometer (speed), rain gauge (precipitation in mm), thermometer (temperature).`}
+};
+
+let currentTopic=null,questions=[],currentQ=0,score=0,answered=false,recentResults=[];
+function goHome(){document.getElementById('topic-screen').style.display='block';document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='none';}
+async function startGame(k){currentTopic=k;questions=[];currentQ=0;score=0;answered=false;recentResults=[];document.getElementById('topic-screen').style.display='none';document.getElementById('end-screen').style.display='none';document.getElementById('game-screen').style.display='block';document.getElementById('game-title').textContent=TOPICS[k].name;updateScoreBadge();updateStreakDots();updateQNumber();await loadQuestion();}
+function updateScoreBadge(){document.getElementById('score-badge').textContent=`${score} / ${currentQ}`;}
+function updateQNumber(){document.getElementById('q-number').textContent=`Question ${currentQ+1}`;}
+function updateStreakDots(){const c=document.getElementById('streak-dots');c.innerHTML='';const s=recentResults.slice(-10);for(let i=0;i<10;i++){const d=document.createElement('div');d.className='streak-dot';if(i<s.length){if(s[i])d.classList.add('hit');else d.classList.add('miss');}c.appendChild(d);}}
+async function loadQuestion(){
+  answered=false;['feedback-box','error-box'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('next-btn').style.display='none';document.getElementById('options-grid').innerHTML='';document.getElementById('q-box').innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div>';
+  const t=TOPICS[currentTopic];const prev=questions.slice(-25).map(q=>q.question).join(' | ');
+  const prompt=`Friendly quiz master helping 11-year-old Bert (dyslexic) revise Year 7 Geography. Short and clear.\n\nContext:\n${t.context}\n\n${prev?`Do NOT repeat: ${prev}`:''}\n\nGenerate ONE multiple choice question. Vary types: definitions, locations, reasons, examples, comparisons. 1 sentence max 15 words. 4 options max 8 words each. 1 correct. 1-sentence explanation max 20 words.\n\nJSON only: {"question":"...","options":["...","...","...","..."],"correct":0,"explanation":"..."}`;
+  try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})});if(!r.ok)throw 0;const d=await r.json();const q=JSON.parse(d.content[0].text.trim().replace(/```json|```/g,''));questions.push(q);renderQuestion(q);}
+  catch(e){document.getElementById('q-box').innerHTML='<span class="q-text">Couldn\'t load — tap Next.</span>';document.getElementById('error-box').style.display='block';document.getElementById('next-btn').style.display='block';}
+}
+function renderQuestion(q){document.getElementById('q-box').innerHTML=`<span class="q-text">${q.question}</span>`;const g=document.getElementById('options-grid');g.innerHTML='';['A','B','C','D'].forEach((l,i)=>{const b=document.createElement('button');b.className='option-btn';b.innerHTML=`<span class="opt-letter">${l}</span><span>${q.options[i]}</span>`;b.onclick=()=>answer(i,q);g.appendChild(b);});}
+function answer(chosen,q){if(answered)return;answered=true;const btns=document.getElementById('options-grid').querySelectorAll('.option-btn');const c=q.correct;const ok=chosen===c;if(ok)score++;recentResults.push(ok);btns.forEach((b,i)=>{b.disabled=true;if(i===c)b.classList.add('correct');else if(i===chosen&&!ok)b.classList.add('wrong');});const fb=document.getElementById('feedback-box');fb.className='feedback-box '+(ok?'correct':'wrong');fb.style.display='block';fb.innerHTML=ok?`<span class="feedback-emoji">🎉</span><strong>Correct!</strong><div class="feedback-explain">${q.explanation}</div>`:`<span class="feedback-emoji">😬</span><strong>Not quite — answer was ${'ABCD'[c]}: ${q.options[c]}</strong><div class="feedback-explain">${q.explanation}</div>`;updateScoreBadge();updateStreakDots();const nb=document.getElementById('next-btn');nb.style.display='block';nb.textContent=currentQ+1>=MAX_Q?'See results 🏆':'Next question →';}
+async function nextQuestion(){currentQ++;if(currentQ>=MAX_Q){showEnd();return;}updateQNumber();await loadQuestion();}
+function showEnd(){document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='block';const tot=currentQ;const pct=tot>0?score/tot:0;let e,t,m,s;if(pct>=0.9){e='🏆';t='Outstanding!';s='⭐⭐⭐';m=`${score}/${tot} — brilliant Geography, Bert!`;}else if(pct>=0.75){e='🎉';t='Brilliant!';s='⭐⭐⭐';m=`${score}/${tot}. Really strong. Review the misses.`;}else if(pct>=0.6){e='💪';t='Good effort!';s='⭐⭐';m=`${score}/${tot}. Solid. Another round will sharpen you up.`;}else{e='📚';t='Keep going!';s='⭐';m=`${score}/${tot}. Geography takes practice — keep at it!`;}document.getElementById('end-emoji').textContent=e;document.getElementById('end-title').textContent=t;document.getElementById('end-stars').textContent=s;document.getElementById('final-score').textContent=score;document.getElementById('final-total').textContent=tot;document.getElementById('end-msg').textContent=m;}
+function retryGame(){startGame(currentTopic);}
+</script>
+</body>
+</html>

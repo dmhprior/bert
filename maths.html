@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bert's Maths Revision ➕</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
+  :root{--bg:#0f1a0f;--card:#1a2b1a;--card2:#1f331f;--accent:#4ade80;--accent2:#f97316;--accent3:#facc15;--text:#e8f4e8;--muted:#6a9b6a;--radius:18px;--green:#4ade80;--red:#f87171;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:18px;line-height:1.6;}
+  .header{background:linear-gradient(135deg,#0a1a0a 0%,#1a3a1a 100%);padding:20px 20px 16px;text-align:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:10;}
+  .header h1{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent);}
+  .header p{font-size:0.85rem;color:var(--muted);margin-top:2px;}
+  #topic-screen{padding:20px 16px 40px;}
+  .section-label{font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-left:4px;}
+  .topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .topic-btn{background:var(--card);border:2px solid transparent;border-radius:var(--radius);padding:16px 12px;cursor:pointer;text-align:center;transition:all 0.2s;}
+  .topic-btn:active{transform:scale(0.97);}
+  .topic-btn .icon{font-size:1.8rem;margin-bottom:6px;display:block;}
+  .topic-btn .name{font-family:'Nunito',sans-serif;font-weight:800;font-size:0.88rem;color:var(--text);line-height:1.3;}
+  .topic-btn .sub{font-size:0.7rem;color:var(--muted);margin-top:3px;}
+  .topic-btn[data-color="green"]{border-color:#4ade8033;} .topic-btn[data-color="green"]:hover{border-color:#4ade80;background:#4ade8018;}
+  .topic-btn[data-color="orange"]{border-color:#f9731633;} .topic-btn[data-color="orange"]:hover{border-color:var(--accent2);background:#f9731618;}
+  .topic-btn[data-color="yellow"]{border-color:#facc1533;} .topic-btn[data-color="yellow"]:hover{border-color:var(--accent3);background:#facc1518;}
+  .topic-btn[data-color="blue"]{border-color:#60a5fa33;} .topic-btn[data-color="blue"]:hover{border-color:#60a5fa;background:#60a5fa18;}
+  .topic-btn[data-color="pink"]{border-color:#f472b633;} .topic-btn[data-color="pink"]:hover{border-color:#f472b6;background:#f472b618;}
+  #game-screen{display:none;}
+  .game-header{background:var(--card);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #ffffff10;}
+  .back-btn{background:none;border:2px solid var(--muted);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .back-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .game-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;flex:1;}
+  .score-badge{background:var(--accent);color:#0f1a0f;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.85rem;padding:4px 12px;border-radius:20px;flex-shrink:0;}
+  .streak-bar{background:var(--card);padding:8px 20px;border-bottom:1px solid #ffffff08;display:flex;align-items:center;gap:10px;}
+  .streak-label{font-size:0.75rem;color:var(--muted);font-weight:700;flex-shrink:0;}
+  .streak-dots{display:flex;gap:5px;flex:1;}
+  .streak-dot{width:14px;height:14px;border-radius:50%;background:#ffffff15;transition:all 0.3s;flex-shrink:0;}
+  .streak-dot.hit{background:var(--green);} .streak-dot.miss{background:var(--red);}
+  .finish-btn-small{background:none;border:1.5px solid var(--muted);border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:800;color:var(--muted);cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap;}
+  .finish-btn-small:hover{border-color:var(--accent);color:var(--accent);}
+  .q-area{padding:20px 20px 0;}
+  .q-number{font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+  .q-box{background:var(--card);border-radius:var(--radius);padding:20px 18px;margin-bottom:18px;min-height:90px;display:flex;align-items:center;border:2px solid #ffffff08;}
+  .q-text{font-family:'Nunito',sans-serif;font-weight:700;font-size:1.1rem;line-height:1.5;color:var(--text);}
+  .loading-dots{display:flex;gap:6px;align-items:center;}
+  .loading-dots span{width:10px;height:10px;background:var(--accent);border-radius:50%;animation:bounce 1.2s infinite;}
+  .loading-dots span:nth-child(2){animation-delay:0.2s;background:var(--accent3);}
+  .loading-dots span:nth-child(3){animation-delay:0.4s;background:var(--accent2);}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:0.4;}40%{transform:translateY(-10px);opacity:1;}}
+  .options-grid{display:flex;flex-direction:column;gap:10px;padding:0 20px 16px;}
+  .option-btn{background:var(--card2);border:2.5px solid #ffffff12;border-radius:var(--radius);padding:15px 16px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;color:var(--text);transition:all 0.15s;display:flex;align-items:center;gap:12px;line-height:1.4;}
+  .option-btn:hover:not(:disabled){border-color:var(--accent);background:#4ade8012;}
+  .option-btn .opt-letter{width:30px;height:30px;border-radius:50%;background:#ffffff12;display:flex;align-items:center;justify-content:center;font-size:0.82rem;flex-shrink:0;font-weight:900;}
+  .option-btn.correct{border-color:var(--green);background:#4ade8018;} .option-btn.correct .opt-letter{background:var(--green);color:#0f1a0f;}
+  .option-btn.wrong{border-color:var(--red);background:#f8717118;} .option-btn.wrong .opt-letter{background:var(--red);color:#0f1a0f;}
+  .option-btn:disabled{cursor:default;}
+  .feedback-box{margin:0 20px 16px;padding:14px 16px;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:700;font-size:0.9rem;line-height:1.5;display:none;}
+  .feedback-box.correct{background:#4ade8018;border:2px solid var(--green);color:#a7f3d0;}
+  .feedback-box.wrong{background:#f8717118;border:2px solid var(--red);color:#fca5a5;}
+  .feedback-emoji{font-size:1.3rem;margin-bottom:4px;display:block;}
+  .feedback-explain{color:var(--text);margin-top:6px;font-weight:600;font-size:0.88rem;}
+  .next-btn{display:none;margin:0 20px 24px;width:calc(100% - 40px);padding:16px;background:var(--accent);color:#0f1a0f;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.05rem;cursor:pointer;}
+  #end-screen{display:none;padding:40px 20px;text-align:center;}
+  .end-emoji{font-size:4rem;margin-bottom:16px;}
+  .end-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.8rem;color:var(--accent);margin-bottom:8px;}
+  .end-score{font-family:'Nunito',sans-serif;font-weight:800;font-size:3rem;margin:20px 0;color:var(--text);}
+  .end-score span{color:var(--muted);font-size:1.5rem;}
+  .end-msg{color:var(--muted);font-size:0.95rem;margin-bottom:30px;line-height:1.6;}
+  .retry-btn{display:block;width:100%;padding:18px;background:var(--accent);color:#0f1a0f;border:none;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;cursor:pointer;margin-bottom:12px;}
+  .menu-btn{display:block;width:100%;padding:18px;background:var(--card);color:var(--text);border:2px solid #ffffff20;border-radius:var(--radius);font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;}
+  .stars{color:#facc15;font-size:1.5rem;}
+  .error-box{margin:0 20px 16px;padding:14px;background:#f9731618;border:2px solid var(--accent2);border-radius:var(--radius);color:#fdba74;font-size:0.88rem;display:none;}
+  .tip-box{margin-top:16px;padding:14px 16px;background:var(--card);border-radius:14px;font-size:0.82rem;color:var(--muted);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="header"><h1>➕ Maths Revision</h1><p>Bert's Year 7 · Non-Calculator · Endless Mode</p></div>
+<div id="topic-screen">
+  <div style="padding:20px 16px 10px;">
+    <div class="section-label">Choose a topic</div>
+    <div class="topic-grid">
+      <button class="topic-btn" data-color="green" onclick="startGame('primes')"><span class="icon">🔢</span><div class="name">Primes & Factors</div><div class="sub">Primes, HCF, LCM</div></button>
+      <button class="topic-btn" data-color="orange" onclick="startGame('fractions')"><span class="icon">½</span><div class="name">Fractions</div><div class="sub">Equivalence, add, multiply</div></button>
+      <button class="topic-btn" data-color="yellow" onclick="startGame('decimals')"><span class="icon">📊</span><div class="name">Decimals & Place Value</div><div class="sub">Powers of 10, converting</div></button>
+      <button class="topic-btn" data-color="blue" onclick="startGame('negatives')"><span class="icon">➖</span><div class="name">Negative Numbers</div><div class="sub">Add, subtract, multiply, divide</div></button>
+      <button class="topic-btn" data-color="green" onclick="startGame('algebra')"><span class="icon">🔡</span><div class="name">Algebra</div><div class="sub">Terms, expressions, solving</div></button>
+      <button class="topic-btn" data-color="orange" onclick="startGame('shapes')"><span class="icon">📐</span><div class="name">Area & Perimeter</div><div class="sub">Rectangles, triangles</div></button>
+      <button class="topic-btn" data-color="yellow" onclick="startGame('multiply')"><span class="icon">✖️</span><div class="name">Multiplying</div><div class="sub">Methods, distributive law</div></button>
+      <button class="topic-btn" data-color="pink" onclick="startGame('divide')"><span class="icon">➗</span><div class="name">Dividing</div><div class="sub">Methods, remainders, fractions</div></button>
+    </div>
+    <div class="tip-box">💡 The exam is <strong style="color:var(--text)">Non-Calculator</strong>. Endless mode — tap "Finish" whenever you're done.</div>
+  </div>
+</div>
+<div id="game-screen">
+  <div class="game-header"><button class="back-btn" onclick="goHome()">←</button><div class="game-title" id="game-title">Topic</div><div class="score-badge" id="score-badge">0 / 0</div></div>
+  <div class="streak-bar"><div class="streak-label">Last 10:</div><div class="streak-dots" id="streak-dots"></div><button class="finish-btn-small" onclick="showEnd()">Finish ✓</button></div>
+  <div class="q-area"><div class="q-number" id="q-number">Question 1</div><div class="q-box" id="q-box"><div class="loading-dots"><span></span><span></span><span></span></div></div></div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-box" id="feedback-box"></div>
+  <div class="error-box" id="error-box">Couldn't load — tap Next to try again.</div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next question →</button>
+</div>
+<div id="end-screen">
+  <div class="end-emoji" id="end-emoji">🎉</div><div class="end-title" id="end-title">Session done!</div><div class="stars" id="end-stars">⭐⭐⭐</div>
+  <div class="end-score"><span id="final-score">0</span> <span>/ <span id="final-total">0</span></span></div><div class="end-msg" id="end-msg"></div>
+  <button class="retry-btn" onclick="retryGame()">Same topic again 🔄</button><button class="menu-btn" onclick="goHome()">← Choose another topic</button>
+</div>
+<script>
+const MAX_Q=50;
+const TOPICS={
+  primes:{name:"Primes & Factors",context:`Year 7 Maths - Number System (Non-Calculator). Factor: divides exactly into another number (factors of 12: 1,2,3,4,6,12). Multiple: result of multiplying (multiples of 4: 4,8,12,16,20...). Prime number: only divisible by 1 and itself (2,3,5,7,11,13,17,19,23,29,31,37,41,43,47). 1 is NOT prime. 2 is the only even prime. Prime factors: writing a number as a product of primes (12=2×2×3, written as 2²×3). Factor tree method to find prime factors. HCF (Highest Common Factor): largest factor shared by two numbers. HCF of 12 and 18: factors of 12={1,2,3,4,6,12}, factors of 18={1,2,3,6,9,18}, HCF=6. LCM (Lowest Common Multiple): smallest multiple shared by two numbers. LCM of 4 and 6: multiples of 4={4,8,12,16...}, multiples of 6={6,12,18...}, LCM=12. Square numbers: 1,4,9,16,25,36,49,64,81,100. Cube numbers: 1,8,27,64,125.`},
+  fractions:{name:"Fractions",context:`Year 7 Maths - Fractions (Non-Calculator). Equivalent fractions: same value (1/2=2/4=3/6=4/8=50/100). Simplify by dividing top and bottom by HCF (12/18 ÷6 = 2/3). Comparing fractions: find common denominator then compare numerators. Adding fractions: MUST have same denominator first (1/3+1/4=4/12+3/12=7/12). Subtracting fractions: same denominator needed (3/4-1/3=9/12-4/12=5/12). Multiplying fractions: top×top, bottom×bottom (2/3×3/4=6/12=1/2). Dividing fractions: flip second fraction then multiply (2/3÷1/4=2/3×4/1=8/3). Mixed numbers: 2½=5/2. Fraction of an amount: divide by denominator then multiply by numerator (3/4 of 20 = 20÷4×3=15). Key equivalents: 1/2=0.5=50%, 1/4=0.25=25%, 3/4=0.75=75%, 1/5=0.2=20%, 1/10=0.1=10%, 1/3≈0.333≈33%. To convert fraction to decimal: divide numerator by denominator (3÷4=0.75).`},
+  decimals:{name:"Decimals & Place Value",context:`Year 7 Maths - Decimals and Place Value (Non-Calculator). Place value columns: millions, hundred-thousands, ten-thousands, thousands, hundreds, tens, units (ones), tenths, hundredths, thousandths. Multiplying by 10: digits shift ONE place LEFT (becomes larger). Multiplying by 100: digits shift TWO places left. Dividing by 10: digits shift one place RIGHT (becomes smaller). Dividing by 100: digits shift two places right. e.g. 3.4×10=34, 34÷100=0.34. Metric lengths: 1km=1000m, 1m=100cm, 1cm=10mm. Metric mass: 1kg=1000g. Metric volume: 1 litre=1000ml. Converting fractions to decimals: divide (3/4=0.75). Converting decimals to fractions: e.g. 0.3=3/10, 0.75=75/100=3/4. Ordering decimals: line up decimal points, compare digit by digit from left. Adding decimals: line up decimal points carefully. Rounding: look at next digit — 5 or more, round up; 4 or less, round down.`},
+  negatives:{name:"Negative Numbers",context:`Year 7 Maths - Negative Numbers (Non-Calculator). Negative numbers are less than zero. On a number line, negatives are to the LEFT of zero. Ordering: -5<-3<-1<0<1<3<5. Adding a negative: move LEFT on number line (5+(-3)=5-3=2). Subtracting a negative: move RIGHT — two negatives make a positive (5-(-3)=5+3=8). Rule: when two signs are next to each other: same signs → positive (+)(+)=+ or (-)(-) =+. Different signs → negative (+)(-)=- or (-)(+)=-. Multiplying negatives: negative×negative=positive (-3×-4=12). Positive×negative=negative (3×-4=-12). Dividing negatives: same rules as multiplying (−12÷−3=4, 12÷−3=−4). Temperature examples: -5°C is COLDER than -2°C. Difference between -3 and 5 = 8 (count the gap). Adding several numbers: positives together, negatives together, then combine.`},
+  algebra:{name:"Algebra",context:`Year 7 Maths - Algebra (Non-Calculator). Variable: letter representing an unknown number (x, y, n, a). Term: single number or variable (3x, 5, -2y, x²). Expression: terms combined without equals sign (3x+2, 5y-1). Equation: has equals sign, can be solved (3x+2=11). Like terms: same variable AND same power — can be collected (3x+5x=8x, 4y²+2y²=6y²). Unlike terms: CANNOT be combined (3x+2y stays as 3x+2y). Substitution: replace variable with number (if x=3: 2x+1=2×3+1=7). Expanding brackets: multiply each term inside by term outside (4(x+3)=4x+12, 3(2x-1)=6x-3). Solving equations — do same to both sides: 3x=12 → x=4; 2x+3=11 → 2x=8 → x=4; x/4=3 → x=12. Algebraic multiplication: 3×2x=6x, x×x=x², 3x×2y=6xy. Algebraic division: 6x÷2=3x, 12x²÷4x=3x.`},
+  shapes:{name:"Area & Perimeter",context:`Year 7 Maths - Area and Perimeter (Non-Calculator). Perimeter: total distance AROUND a shape (add all sides). Rectangle perimeter: 2×(length+width) or 2l+2w. Square perimeter: 4×side. Triangle perimeter: add all three sides. Area: amount of space INSIDE a shape (measured in cm², m², mm²). Rectangle area: length×width. Square area: side×side = side². Triangle area: base×height÷2 (height must be perpendicular/vertical). Compound shapes: split into rectangles/triangles, find each area, add together. Important: perimeter is a LENGTH (cm, m), area is measured in SQUARE units (cm², m²). Converting areas: 1m²=10,000cm² (NOT 100). Units matter — always write them. Parallelogram area: base×height (vertical height, not slant). If a question gives extra information you don't need, ignore it!`},
+  multiply:{name:"Multiplying",context:`Year 7 Maths - Multiplying (Non-Calculator). Distributive law: a×(b+c)=a×b+a×c. Use to multiply large numbers: 6×23=6×20+6×3=120+18=138. Grid method: split numbers into parts (e.g. 23×14: (20+3)×(10+4)). Long multiplication: for 2-digit × 2-digit numbers. Multiplying by multiples of 10: 4×30=4×3×10=120. Multiplying decimals: ignore decimal point, multiply as integers, then count total decimal places and put point back (2.3×4: 23×4=92, one decimal place, answer=9.2). Multiplying fractions: top×top ÷ bottom×bottom (2/3×3/4=6/12=1/2). Expanding brackets: 3(x+4)=3x+12. Negatives: negative×negative=positive, positive×negative=negative. Squares: 1²=1, 2²=4, 3²=9, 4²=16, 5²=25, 6²=36, 7²=49, 8²=64, 9²=81, 10²=100, 11²=121, 12²=144. Equivalent calculations: 4×25=100, 2×50=100, useful for mental maths shortcuts.`},
+  divide:{name:"Dividing",context:`Year 7 Maths - Dividing (Non-Calculator). Division is the inverse (opposite) of multiplication. Short division (bus stop method) for larger numbers. Distributive law for division: 84÷4=(80÷4)+(4÷4)=20+1=21. Remainder: what's left over after dividing (17÷5=3 remainder 2). Converting remainder to decimal: continue dividing past the decimal point. Dividing decimals: e.g. 4.8÷4=1.2 (decimal stays in same position). Dividing by 10: shift digits one place RIGHT. Dividing by 100: shift two places right. Dividing fractions: flip the second fraction and multiply (2/3÷1/4=2/3×4/1=8/3). Fraction of an amount uses division: 1/4 of 36=36÷4=9, 3/4 of 36=36÷4×3=27. Dividing negatives: negative÷negative=positive (−12÷−3=4). Positive÷negative=negative (12÷−3=−4). Algebraic division: 6x÷2=3x, 12x²÷4x=3x. Checking: multiplication is inverse (if 84÷4=21, check: 21×4=84).`}
+};
+let currentTopic=null,questions=[],currentQ=0,score=0,answered=false,recentResults=[];
+function goHome(){document.getElementById('topic-screen').style.display='block';document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='none';}
+async function startGame(k){currentTopic=k;questions=[];currentQ=0;score=0;answered=false;recentResults=[];document.getElementById('topic-screen').style.display='none';document.getElementById('end-screen').style.display='none';document.getElementById('game-screen').style.display='block';document.getElementById('game-title').textContent=TOPICS[k].name;updateScoreBadge();updateStreakDots();updateQNumber();await loadQuestion();}
+function updateScoreBadge(){document.getElementById('score-badge').textContent=`${score} / ${currentQ}`;}
+function updateQNumber(){document.getElementById('q-number').textContent=`Question ${currentQ+1}`;}
+function updateStreakDots(){const c=document.getElementById('streak-dots');c.innerHTML='';const s=recentResults.slice(-10);for(let i=0;i<10;i++){const d=document.createElement('div');d.className='streak-dot';if(i<s.length){if(s[i])d.classList.add('hit');else d.classList.add('miss');}c.appendChild(d);}}
+async function loadQuestion(){
+  answered=false;['feedback-box','error-box'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('next-btn').style.display='none';document.getElementById('options-grid').innerHTML='';document.getElementById('q-box').innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div>';
+  const t=TOPICS[currentTopic];const prev=questions.slice(-25).map(q=>q.question).join(' | ');
+  const prompt=`Friendly quiz master helping 11-year-old Bert (dyslexic) revise Year 7 Maths. Non-calculator exam. SHORT and CLEAR.\n\nContext:\n${t.context}\n\n${prev?`Do NOT repeat: ${prev}`:''}\n\nGenerate ONE multiple choice question with actual numbers to work with. Vary difficulty. 1-2 sentences max 20 words. 4 options (numbers or short phrases) max 8 words each. 1 correct. Include common mistakes as wrong answers. 1-sentence explanation max 20 words.\n\nJSON only: {"question":"...","options":["...","...","...","..."],"correct":0,"explanation":"..."}`;
+  try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})});if(!r.ok)throw 0;const d=await r.json();const q=JSON.parse(d.content[0].text.trim().replace(/```json|```/g,''));questions.push(q);renderQuestion(q);}
+  catch(e){document.getElementById('q-box').innerHTML='<span class="q-text">Couldn\'t load — tap Next.</span>';document.getElementById('error-box').style.display='block';document.getElementById('next-btn').style.display='block';}
+}
+function renderQuestion(q){document.getElementById('q-box').innerHTML=`<span class="q-text">${q.question}</span>`;const g=document.getElementById('options-grid');g.innerHTML='';['A','B','C','D'].forEach((l,i)=>{const b=document.createElement('button');b.className='option-btn';b.innerHTML=`<span class="opt-letter">${l}</span><span>${q.options[i]}</span>`;b.onclick=()=>answer(i,q);g.appendChild(b);});}
+function answer(chosen,q){if(answered)return;answered=true;const btns=document.getElementById('options-grid').querySelectorAll('.option-btn');const c=q.correct;const ok=chosen===c;if(ok)score++;recentResults.push(ok);btns.forEach((b,i)=>{b.disabled=true;if(i===c)b.classList.add('correct');else if(i===chosen&&!ok)b.classList.add('wrong');});const fb=document.getElementById('feedback-box');fb.className='feedback-box '+(ok?'correct':'wrong');fb.style.display='block';fb.innerHTML=ok?`<span class="feedback-emoji">🎉</span><strong>Correct!</strong><div class="feedback-explain">${q.explanation}</div>`:`<span class="feedback-emoji">😬</span><strong>Not quite — answer was ${'ABCD'[c]}: ${q.options[c]}</strong><div class="feedback-explain">${q.explanation}</div>`;updateScoreBadge();updateStreakDots();const nb=document.getElementById('next-btn');nb.style.display='block';nb.textContent=currentQ+1>=MAX_Q?'See results 🏆':'Next question →';}
+async function nextQuestion(){currentQ++;if(currentQ>=MAX_Q){showEnd();return;}updateQNumber();await loadQuestion();}
+function showEnd(){document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='block';const tot=currentQ;const pct=tot>0?score/tot:0;let e,t,m,s;if(pct>=0.9){e='🏆';t='Outstanding!';s='⭐⭐⭐';m=`${score}/${tot} — brilliant Maths, Bert!`;}else if(pct>=0.75){e='🎉';t='Brilliant!';s='⭐⭐⭐';m=`${score}/${tot}. Really strong. Review the misses.`;}else if(pct>=0.6){e='💪';t='Good effort!';s='⭐⭐';m=`${score}/${tot}. Solid. Another round will sharpen you up.`;}else{e='📚';t='Keep going!';s='⭐';m=`${score}/${tot}. Maths takes practice — you'll get there!`;}document.getElementById('end-emoji').textContent=e;document.getElementById('end-title').textContent=t;document.getElementById('end-stars').textContent=s;document.getElementById('final-score').textContent=score;document.getElementById('final-total').textContent=tot;document.getElementById('end-msg').textContent=m;}
+function retryGame(){startGame(currentTopic);}
+</script>
+</body>
+</html>
