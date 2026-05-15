@@ -35,21 +35,40 @@
   .topic-go{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:10px 16px;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.85rem;cursor:pointer;text-decoration:none;flex-shrink:0;transition:all 0.2s;}
   .topic-go:active{transform:scale(0.97);}
   .topic-card.done .topic-go{background:#4ade8030;color:var(--green);}
-  .score-row{border-top:1px solid var(--border);padding:12px 18px;display:none;align-items:center;gap:10px;flex-wrap:wrap;}
+  .score-row{border-top:1px solid var(--border);padding:12px 18px;display:none;flex-direction:column;gap:10px;}
   .topic-card.done .score-row{display:flex;}
-  .score-label{font-size:0.82rem;color:var(--muted);font-weight:700;flex-shrink:0;}
+  .score-label{font-size:0.82rem;color:var(--muted);font-weight:700;flex-shrink:0;margin-bottom:2px;}
+  .score-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .score-btns{display:flex;gap:6px;flex-wrap:wrap;}
   .score-btn{width:34px;height:34px;border-radius:50%;border:2px solid var(--border);background:var(--card2);color:var(--muted);font-family:'Nunito',sans-serif;font-weight:900;font-size:0.82rem;cursor:pointer;transition:all 0.15s;}
   .score-btn:hover{border-color:var(--accent);color:var(--text);}
+  .score-btn.sel-total{background:var(--accent);border-color:var(--accent);color:#fff;}
   .score-btn.sel-good{background:var(--green);border-color:var(--green);color:#07090f;}
   .score-btn.sel-ok{background:var(--yellow);border-color:var(--yellow);color:#07090f;}
   .score-btn.sel-bad{background:var(--red);border-color:var(--red);color:#fff;}
   .share-section{padding:0 16px 16px;display:none;}
   .share-section.visible{display:block;}
-  .share-card{background:var(--card);border:2px solid var(--green);border-radius:var(--radius);padding:20px;}
-  .share-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;color:var(--green);margin-bottom:8px;}
-  .share-summary{font-size:0.88rem;color:var(--muted);margin-bottom:14px;line-height:1.6;}
-  .share-text{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:0.85rem;color:var(--text);line-height:1.8;margin-bottom:14px;white-space:pre-wrap;font-family:monospace;}
+  /* SCORECARD */
+  .scorecard{background:linear-gradient(160deg,#0a1628 0%,#0d1f3a 100%);border:2px solid var(--green);border-radius:var(--radius);padding:22px 20px;margin-bottom:14px;}
+  .scorecard-header{text-align:center;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid #ffffff15;}
+  .scorecard-emoji{font-size:2.2rem;display:block;margin-bottom:6px;}
+  .scorecard-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.3rem;color:#fff;margin-bottom:2px;}
+  .scorecard-date{font-size:0.8rem;color:var(--muted);font-weight:600;}
+  .scorecard-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+  .scorecard-row{display:flex;align-items:center;gap:12px;background:#ffffff08;border-radius:12px;padding:12px 14px;}
+  .sc-icon{font-size:1.2rem;flex-shrink:0;width:28px;text-align:center;}
+  .sc-info{flex:1;}
+  .sc-subject{font-family:'Nunito',sans-serif;font-weight:900;font-size:0.78rem;letter-spacing:1px;text-transform:uppercase;}
+  .sc-topic{font-size:0.88rem;color:#c8d8ee;font-weight:600;margin-top:1px;}
+  .sc-score{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;flex-shrink:0;text-align:right;}
+  .sc-score.great{color:var(--green);}
+  .sc-score.ok{color:var(--yellow);}
+  .sc-score.bad{color:var(--red);}
+  .sc-score.none{color:var(--muted);}
+  .scorecard-footer{text-align:center;padding-top:14px;border-top:1px solid #ffffff15;}
+  .sc-total{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;color:#fff;margin-bottom:4px;}
+  .sc-brand{font-size:0.72rem;color:var(--muted);}
+  .screenshot-hint{text-align:center;font-size:0.8rem;color:var(--muted);margin-bottom:12px;padding:8px 14px;background:var(--card);border-radius:10px;border:1px dashed var(--border);}
   .copy-btn{width:100%;padding:14px;background:var(--green);color:#07090f;border:none;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;}
   .copy-btn:active{transform:scale(0.98);}
   .copied-msg{text-align:center;color:var(--green);font-size:0.85rem;font-weight:700;margin-top:8px;display:none;}
@@ -95,14 +114,44 @@ function getNext(dt){const i=SCHEDULE.findIndex(d=>d.date===dt);return i>=0&&i<S
 function buildShareText(day,state){
   const lines=[`📚 Bert's revision — ${day.date_str}\n`];
   day.topics.forEach((t,i)=>{
-    const done=state[i]?.done;const score=state[i]?.score;
+    const done=state[i]?.done;
+    const correct=state[i]?.correct;
+    const total=state[i]?.total;
     const emoji=done?'✅':'⬜';
-    const sc=score!==undefined?` — ${score} questions`:' ';
+    const sc=(correct!==undefined&&total!==undefined)?` — ${correct}/${total} correct`:'';
     lines.push(`${emoji} ${t.subject}: ${t.topic}${sc}`);
   });
   const doneCount=day.topics.filter((_,i)=>state[i]?.done).length;
-  lines.push(`\n${doneCount}/${day.topics.length} done 💪`);
+  lines.push(`\n${doneCount}/${day.topics.length} topics done 💪`);
   return lines.join('\n');
+}
+
+function buildScorecard(day,state){
+  const ICONS={RE:'🙏',Maths:'➕',Geography:'🌍',History:'⚔️',Science:'🔬',English:'✍️'};
+  document.getElementById('sc-date').textContent=day.date_str;
+  const rows=document.getElementById('sc-rows');
+  rows.innerHTML='';
+  let totalCorrect=0,totalDone=0;
+  day.topics.forEach((t,i)=>{
+    const correct=state[i]?.correct;
+    const total=state[i]?.total;
+    if(correct!==undefined)totalCorrect+=correct;
+    if(total!==undefined)totalDone+=total;
+    const pct=total>0?correct/total:null;
+    const cls=pct===null?'none':pct>=0.75?'great':pct>=0.5?'ok':'bad';
+    const scoreStr=(correct!==undefined&&total!==undefined)?`${correct}/${total}`:'✓';
+    const row=document.createElement('div');
+    row.className='scorecard-row';
+    row.innerHTML=`<div class="sc-icon">${ICONS[t.subject]}</div>
+      <div class="sc-info">
+        <div class="sc-subject subj-${t.subject}">${t.subject}</div>
+        <div class="sc-topic">${t.topic}</div>
+      </div>
+      <div class="sc-score ${cls}">${scoreStr}</div>`;
+    rows.appendChild(row);
+  });
+  const summary=totalDone>0?`${totalCorrect}/${totalDone} correct today 💪`:'All 5 topics done! 💪';
+  document.getElementById('sc-total').textContent=summary;
 }
 
 function updateProgress(day){
@@ -111,20 +160,29 @@ function updateProgress(day){
   document.getElementById('progress-text').textContent=`${done} / ${total} done`;
   document.getElementById('progress-fill').style.width=(done/total*100)+'%';
   const ss=document.getElementById('share-section');
-  if(done===total&&total>0){ss.classList.add('visible');document.getElementById('share-text').textContent=buildShareText(day,state);}
-  else ss.classList.remove('visible');
+  if(done===total&&total>0){
+    ss.classList.add('visible');
+    buildScorecard(day,state);
+  } else {
+    ss.classList.remove('visible');
+  }
 }
 
 function toggleDone(idx,day){
   if(!state[idx])state[idx]={};
   state[idx].done=!state[idx].done;
-  if(!state[idx].done)delete state[idx].score;
+  if(!state[idx].done){delete state[idx].total;delete state[idx].correct;}
   saveState(viewingDate,state);render(day);
 }
 
-function setScore(idx,score,day){
+function setTotal(idx,val,day){
   if(!state[idx])state[idx]={};
-  state[idx].score=score;
+  state[idx].total=val;
+  saveState(viewingDate,state);render(day);
+}
+function setCorrect(idx,val,day){
+  if(!state[idx])state[idx]={};
+  state[idx].correct=val;
   saveState(viewingDate,state);render(day);
 }
 
@@ -143,11 +201,18 @@ function render(day){
   document.getElementById('date-str').textContent=day.date_str+' · 5 topics today (~50 mins)';
   let html='<div class="topics-section"><div class="section-label">Today\'s topics</div>';
   day.topics.forEach((t,i)=>{
-    const done=state[i]?.done;const score=state[i]?.score;
-    const scoreBtns=[5,6,7,8,9,10,15,20].map(n=>{
+    const done=state[i]?.done;
+    const totalVal=state[i]?.total;
+    const correctVal=state[i]?.correct;
+    const totalBtns=[5,6,7,8,9,10,12,15,20].map(n=>{
+      const cls='score-btn'+(totalVal===n?' sel-total':'');
+      return `<button class="${cls}" onclick="setTotal(${i},${n},currentDay)">${n}</button>`;
+    }).join('');
+    const maxCorrect=totalVal||20;
+    const correctBtns=Array.from({length:maxCorrect+1},(_,n)=>n).map(n=>{
       let cls='score-btn';
-      if(score===n){cls+=(n>=8?' sel-good':n>=5?' sel-ok':' sel-bad');}
-      return `<button class="${cls}" onclick="setScore(${i},${n},currentDay)">${n}</button>`;
+      if(correctVal===n){cls+=(n>=Math.ceil(maxCorrect*0.75)?' sel-good':n>=Math.ceil(maxCorrect*0.5)?' sel-ok':' sel-bad');}
+      return `<button class="${cls}" onclick="setCorrect(${i},${n},currentDay)">${n}</button>`;
     }).join('');
     html+=`<div class="topic-card ${done?'done':''} subj-border-${t.subject}" id="card-${i}">
       <div class="topic-main">
@@ -160,20 +225,34 @@ function render(day){
         <a href="${t.file}" class="topic-go">${done?'Again':'Go'} →</a>
       </div>
       <div class="score-row">
-        <span class="score-label">Questions done:</span>
-        <div class="score-btns">${scoreBtns}</div>
+        <div>
+          <div class="score-label">How many questions did you do?</div>
+          <div class="score-btns">${totalBtns}</div>
+        </div>
+        ${totalVal?`<div>
+          <div class="score-label">How many did you get right?</div>
+          <div class="score-btns">${correctBtns}</div>
+        </div>`:''}
       </div>
     </div>`;
   });
   html+='</div>';
   html+=`<div class="share-section" id="share-section">
-    <div class="share-card">
-      <div class="share-title">🎉 All done today!</div>
-      <div class="share-summary">Copy this and send it to Dad on WhatsApp.</div>
-      <div class="share-text" id="share-text"></div>
-      <button class="copy-btn" onclick="copyShare()">📋 Copy to send to Dad</button>
-      <div class="copied-msg" id="copied-msg">Copied! Paste it into WhatsApp ✅</div>
+    <div class="scorecard" id="scorecard-card">
+      <div class="scorecard-header">
+        <span class="scorecard-emoji">🏆</span>
+        <div class="scorecard-title">Today's Scorecard</div>
+        <div class="scorecard-date" id="sc-date"></div>
+      </div>
+      <div class="scorecard-rows" id="sc-rows"></div>
+      <div class="scorecard-footer">
+        <div class="sc-total" id="sc-total"></div>
+        <div class="sc-brand">dmhprior.github.io/bert</div>
+      </div>
     </div>
+    <div class="screenshot-hint">📸 Screenshot this and send it to Dad!</div>
+    <button class="copy-btn" onclick="copyShare()">📋 Copy as text instead</button>
+    <div class="copied-msg" id="copied-msg">Copied! Paste it into WhatsApp ✅</div>
   </div>`;
   const prev=getPrev(viewingDate);const next=getNext(viewingDate);const isToday=viewingDate===getTodayStr();
   html+=`<div class="nav-row">
@@ -188,7 +267,7 @@ function render(day){
 function navigateDay(dt){if(!dt)return;viewingDate=dt;state=loadState(dt);const day=findDay(dt);window.currentDay=day;render(day);window.scrollTo(0,0);}
 
 function copyShare(){
-  const text=document.getElementById('share-text').textContent;
+  const text=buildShareText(window.currentDay,state);
   navigator.clipboard.writeText(text).then(()=>{
     document.getElementById('copied-msg').style.display='block';
     setTimeout(()=>{document.getElementById('copied-msg').style.display='none';},3000);
