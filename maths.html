@@ -8,7 +8,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap');
   :root{--bg:#0f1a0f;--card:#1a2b1a;--card2:#1f331f;--accent:#4ade80;--accent2:#f97316;--accent3:#facc15;--text:#e8f4e8;--muted:#6a9b6a;--radius:18px;--green:#4ade80;--red:#f87171;}
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:18px;line-height:1.6;}
+  body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:18px;line-height:1.6;letter-spacing:0.01em;}
   .header{background:linear-gradient(135deg,#0a1a0a 0%,#1a3a1a 100%);padding:20px 20px 16px;text-align:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:10;}
   .header h1{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent);}
   .header p{font-size:0.85rem;color:var(--muted);margin-top:2px;}
@@ -25,6 +25,7 @@
   .topic-btn[data-color="yellow"]{border-color:#facc1533;} .topic-btn[data-color="yellow"]:hover{border-color:var(--accent3);background:#facc1518;}
   .topic-btn[data-color="blue"]{border-color:#60a5fa33;} .topic-btn[data-color="blue"]:hover{border-color:#60a5fa;background:#60a5fa18;}
   .topic-btn[data-color="pink"]{border-color:#f472b633;} .topic-btn[data-color="pink"]:hover{border-color:#f472b6;background:#f472b618;}
+  .topic-btn[data-color="teal"]{border-color:#2dd4bf33;} .topic-btn[data-color="teal"]:hover{border-color:#2dd4bf;background:#2dd4bf18;}
   #game-screen{display:none;}
   .game-header{background:var(--card);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #ffffff10;}
   .back-btn{background:none;border:2px solid var(--muted);border-radius:50%;width:36px;height:36px;font-size:1rem;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -79,16 +80,16 @@
   <div style="padding:20px 16px 10px;">
     <div class="section-label">Choose a topic</div>
     <div class="topic-grid">
-      <button class="topic-btn" data-color="green" onclick="startGame('primes')"><span class="icon">🔢</span><div class="name">Primes & Factors</div><div class="sub">Primes, HCF, LCM</div></button>
-      <button class="topic-btn" data-color="orange" onclick="startGame('fractions')"><span class="icon">½</span><div class="name">Fractions</div><div class="sub">Equivalence, add, multiply</div></button>
-      <button class="topic-btn" data-color="yellow" onclick="startGame('decimals')"><span class="icon">📊</span><div class="name">Decimals & Place Value</div><div class="sub">Powers of 10, converting</div></button>
-      <button class="topic-btn" data-color="blue" onclick="startGame('negatives')"><span class="icon">➖</span><div class="name">Negative Numbers</div><div class="sub">Add, subtract, multiply, divide</div></button>
-      <button class="topic-btn" data-color="green" onclick="startGame('algebra')"><span class="icon">🔡</span><div class="name">Algebra</div><div class="sub">Terms, expressions, solving</div></button>
-      <button class="topic-btn" data-color="orange" onclick="startGame('shapes')"><span class="icon">📐</span><div class="name">Area & Perimeter</div><div class="sub">Rectangles, triangles</div></button>
-      <button class="topic-btn" data-color="yellow" onclick="startGame('multiply')"><span class="icon">✖️</span><div class="name">Multiplying</div><div class="sub">Methods, distributive law</div></button>
-      <button class="topic-btn" data-color="pink" onclick="startGame('divide')"><span class="icon">➗</span><div class="name">Dividing</div><div class="sub">Methods, remainders, fractions</div></button>
+      <button class="topic-btn" data-color="green" onclick="startGame('primes')"><span class="icon">🔢</span><div class="name">Primes & Factors</div><div class="sub">Factors, primes, HCF, LCM, prime factors</div></button>
+      <button class="topic-btn" data-color="orange" onclick="startGame('fractions')"><span class="icon">½</span><div class="name">Fractions</div><div class="sub">Equivalent, simplify, add, subtract, multiply</div></button>
+      <button class="topic-btn" data-color="yellow" onclick="startGame('decimals')"><span class="icon">📊</span><div class="name">Decimals & Place Value</div><div class="sub">Place value, ×÷ by 10/100, converting</div></button>
+      <button class="topic-btn" data-color="blue" onclick="startGame('negatives')"><span class="icon">➖</span><div class="name">Negative Numbers</div><div class="sub">Add, subtract, multiply, divide negatives</div></button>
+      <button class="topic-btn" data-color="green" onclick="startGame('algebra')"><span class="icon">🔡</span><div class="name">Algebra</div><div class="sub">Simplify, expand, substitute, solve</div></button>
+      <button class="topic-btn" data-color="orange" onclick="startGame('shapes')"><span class="icon">📐</span><div class="name">Area & Perimeter</div><div class="sub">Rectangles, triangles, compound shapes</div></button>
+      <button class="topic-btn" data-color="yellow" onclick="startGame('multiply')"><span class="icon">✖️</span><div class="name">Multiplying</div><div class="sub">Integers, decimals, fractions, algebra</div></button>
+      <button class="topic-btn" data-color="pink" onclick="startGame('divide')"><span class="icon">➗</span><div class="name">Dividing</div><div class="sub">Integers, decimals, fractions, remainders</div></button>
     </div>
-    <div class="tip-box">💡 The exam is <strong style="color:var(--text)">Non-Calculator</strong>. Endless mode — tap "Finish" whenever you're done.</div>
+    <div class="tip-box">💡 <strong style="color:var(--text)">Non-Calculator exam</strong> — all working in your head or on paper. Tap Finish ✓ whenever you're done.</div>
   </div>
 </div>
 <div id="game-screen">
@@ -102,21 +103,94 @@
 </div>
 <div id="end-screen">
   <div class="end-emoji" id="end-emoji">🎉</div><div class="end-title" id="end-title">Session done!</div><div class="stars" id="end-stars">⭐⭐⭐</div>
-  <div class="end-score"><span id="final-score">0</span> <span>/ <span id="final-total">0</span></span></div><div class="end-msg" id="end-msg"></div>
+  <div class="end-score"><span id="final-score">0</span><span>/ <span id="final-total">0</span></span></div><div class="end-msg" id="end-msg"></div>
   <button class="retry-btn" onclick="retryGame()">Same topic again 🔄</button><button class="menu-btn" onclick="goHome()">← Choose another topic</button>
 </div>
 <script>
-const MAX_Q=50;
 const TOPICS={
-  primes:{name:"Primes & Factors",context:`Year 7 Maths - Number System (Non-Calculator). Factor: divides exactly into another number (factors of 12: 1,2,3,4,6,12). Multiple: result of multiplying (multiples of 4: 4,8,12,16,20...). Prime number: only divisible by 1 and itself (2,3,5,7,11,13,17,19,23,29,31,37,41,43,47). 1 is NOT prime. 2 is the only even prime. Prime factors: writing a number as a product of primes (12=2×2×3, written as 2²×3). Factor tree method to find prime factors. HCF (Highest Common Factor): largest factor shared by two numbers. HCF of 12 and 18: factors of 12={1,2,3,4,6,12}, factors of 18={1,2,3,6,9,18}, HCF=6. LCM (Lowest Common Multiple): smallest multiple shared by two numbers. LCM of 4 and 6: multiples of 4={4,8,12,16...}, multiples of 6={6,12,18...}, LCM=12. Square numbers: 1,4,9,16,25,36,49,64,81,100. Cube numbers: 1,8,27,64,125.`},
-  fractions:{name:"Fractions",context:`Year 7 Maths - Fractions (Non-Calculator). Equivalent fractions: same value (1/2=2/4=3/6=4/8=50/100). Simplify by dividing top and bottom by HCF (12/18 ÷6 = 2/3). Comparing fractions: find common denominator then compare numerators. Adding fractions: MUST have same denominator first (1/3+1/4=4/12+3/12=7/12). Subtracting fractions: same denominator needed (3/4-1/3=9/12-4/12=5/12). Multiplying fractions: top×top, bottom×bottom (2/3×3/4=6/12=1/2). Dividing fractions: flip second fraction then multiply (2/3÷1/4=2/3×4/1=8/3). Mixed numbers: 2½=5/2. Fraction of an amount: divide by denominator then multiply by numerator (3/4 of 20 = 20÷4×3=15). Key equivalents: 1/2=0.5=50%, 1/4=0.25=25%, 3/4=0.75=75%, 1/5=0.2=20%, 1/10=0.1=10%, 1/3≈0.333≈33%. To convert fraction to decimal: divide numerator by denominator (3÷4=0.75).`},
-  decimals:{name:"Decimals & Place Value",context:`Year 7 Maths - Decimals and Place Value (Non-Calculator). Place value columns: millions, hundred-thousands, ten-thousands, thousands, hundreds, tens, units (ones), tenths, hundredths, thousandths. Multiplying by 10: digits shift ONE place LEFT (becomes larger). Multiplying by 100: digits shift TWO places left. Dividing by 10: digits shift one place RIGHT (becomes smaller). Dividing by 100: digits shift two places right. e.g. 3.4×10=34, 34÷100=0.34. Metric lengths: 1km=1000m, 1m=100cm, 1cm=10mm. Metric mass: 1kg=1000g. Metric volume: 1 litre=1000ml. Converting fractions to decimals: divide (3/4=0.75). Converting decimals to fractions: e.g. 0.3=3/10, 0.75=75/100=3/4. Ordering decimals: line up decimal points, compare digit by digit from left. Adding decimals: line up decimal points carefully. Rounding: look at next digit — 5 or more, round up; 4 or less, round down.`},
-  negatives:{name:"Negative Numbers",context:`Year 7 Maths - Negative Numbers (Non-Calculator). Negative numbers are less than zero. On a number line, negatives are to the LEFT of zero. Ordering: -5<-3<-1<0<1<3<5. Adding a negative: move LEFT on number line (5+(-3)=5-3=2). Subtracting a negative: move RIGHT — two negatives make a positive (5-(-3)=5+3=8). Rule: when two signs are next to each other: same signs → positive (+)(+)=+ or (-)(-) =+. Different signs → negative (+)(-)=- or (-)(+)=-. Multiplying negatives: negative×negative=positive (-3×-4=12). Positive×negative=negative (3×-4=-12). Dividing negatives: same rules as multiplying (−12÷−3=4, 12÷−3=−4). Temperature examples: -5°C is COLDER than -2°C. Difference between -3 and 5 = 8 (count the gap). Adding several numbers: positives together, negatives together, then combine.`},
-  algebra:{name:"Algebra",context:`Year 7 Maths - Algebra (Non-Calculator). Variable: letter representing an unknown number (x, y, n, a). Term: single number or variable (3x, 5, -2y, x²). Expression: terms combined without equals sign (3x+2, 5y-1). Equation: has equals sign, can be solved (3x+2=11). Like terms: same variable AND same power — can be collected (3x+5x=8x, 4y²+2y²=6y²). Unlike terms: CANNOT be combined (3x+2y stays as 3x+2y). Substitution: replace variable with number (if x=3: 2x+1=2×3+1=7). Expanding brackets: multiply each term inside by term outside (4(x+3)=4x+12, 3(2x-1)=6x-3). Solving equations — do same to both sides: 3x=12 → x=4; 2x+3=11 → 2x=8 → x=4; x/4=3 → x=12. Algebraic multiplication: 3×2x=6x, x×x=x², 3x×2y=6xy. Algebraic division: 6x÷2=3x, 12x²÷4x=3x.`},
-  shapes:{name:"Area & Perimeter",context:`Year 7 Maths - Area and Perimeter (Non-Calculator). Perimeter: total distance AROUND a shape (add all sides). Rectangle perimeter: 2×(length+width) or 2l+2w. Square perimeter: 4×side. Triangle perimeter: add all three sides. Area: amount of space INSIDE a shape (measured in cm², m², mm²). Rectangle area: length×width. Square area: side×side = side². Triangle area: base×height÷2 (height must be perpendicular/vertical). Compound shapes: split into rectangles/triangles, find each area, add together. Important: perimeter is a LENGTH (cm, m), area is measured in SQUARE units (cm², m²). Converting areas: 1m²=10,000cm² (NOT 100). Units matter — always write them. Parallelogram area: base×height (vertical height, not slant). If a question gives extra information you don't need, ignore it!`},
-  multiply:{name:"Multiplying",context:`Year 7 Maths - Multiplying (Non-Calculator). Distributive law: a×(b+c)=a×b+a×c. Use to multiply large numbers: 6×23=6×20+6×3=120+18=138. Grid method: split numbers into parts (e.g. 23×14: (20+3)×(10+4)). Long multiplication: for 2-digit × 2-digit numbers. Multiplying by multiples of 10: 4×30=4×3×10=120. Multiplying decimals: ignore decimal point, multiply as integers, then count total decimal places and put point back (2.3×4: 23×4=92, one decimal place, answer=9.2). Multiplying fractions: top×top ÷ bottom×bottom (2/3×3/4=6/12=1/2). Expanding brackets: 3(x+4)=3x+12. Negatives: negative×negative=positive, positive×negative=negative. Squares: 1²=1, 2²=4, 3²=9, 4²=16, 5²=25, 6²=36, 7²=49, 8²=64, 9²=81, 10²=100, 11²=121, 12²=144. Equivalent calculations: 4×25=100, 2×50=100, useful for mental maths shortcuts.`},
-  divide:{name:"Dividing",context:`Year 7 Maths - Dividing (Non-Calculator). Division is the inverse (opposite) of multiplication. Short division (bus stop method) for larger numbers. Distributive law for division: 84÷4=(80÷4)+(4÷4)=20+1=21. Remainder: what's left over after dividing (17÷5=3 remainder 2). Converting remainder to decimal: continue dividing past the decimal point. Dividing decimals: e.g. 4.8÷4=1.2 (decimal stays in same position). Dividing by 10: shift digits one place RIGHT. Dividing by 100: shift two places right. Dividing fractions: flip the second fraction and multiply (2/3÷1/4=2/3×4/1=8/3). Fraction of an amount uses division: 1/4 of 36=36÷4=9, 3/4 of 36=36÷4×3=27. Dividing negatives: negative÷negative=positive (−12÷−3=4). Positive÷negative=negative (12÷−3=−4). Algebraic division: 6x÷2=3x, 12x²÷4x=3x. Checking: multiplication is inverse (if 84÷4=21, check: 21×4=84).`}
+  primes:{name:"Primes & Factors",context:`Year 7 Maths - The Number System (Non-Calculator exam). Exact topics from revision pack:
+FACTORS: A factor divides exactly into a number with no remainder. List all factors of a number systematically in pairs (e.g. factors of 12: 1×12, 2×6, 3×4 → {1,2,3,4,6,12}). 
+PRIME NUMBERS: Only divisible by 1 and itself. Primes up to 50: 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47. 1 is NOT prime. 2 is the only even prime. To check if prime: try dividing by primes up to its square root.
+PRIME FACTORS: Writing a number as a product of prime factors. Use a factor tree. E.g. 72=8×9=2³×3²=2×2×2×3×3. 40=2³×5. 70=2×5×7. Written using index notation.
+HCF (Highest Common Factor): Largest factor shared by two numbers. Method 1: list factors of both, find largest common. Method 2: use prime factor trees then multiply shared prime factors. HCF(12,18)=6. HCF(42,90)=6.
+LCM (Lowest Common Multiple): Smallest multiple shared by two numbers. Method: list multiples of both until you find a match. OR use prime factors: take all prime factors at their highest power. LCM(4,6)=12. LCM(6,8)=24. LCM(40,66)=1320.
+SQUARE NUMBERS: 1,4,9,16,25,36,49,64,81,100,121,144. Square root of 144=12. Square root of 169=13. Square root of 225=15.
+APPLYING THESE: Two lighthouses flash every 8s and 15s - when do they flash together? Find LCM(8,15)=120 seconds.`},
+
+  fractions:{name:"Fractions",context:`Year 7 Maths - Equivalence and Fractions (Non-Calculator exam). Exact topics from revision pack:
+EQUIVALENT FRACTIONS: Same value, different numbers. Multiply or divide top and bottom by same number. 3/12=1/4 (÷3). 8/24=1/3 (÷8). 15/20=3/4 (÷5). 21/28=3/4 (÷7).
+SIMPLIFYING: Divide top and bottom by HCF. 40/64: HCF=8, so 5/8. 9/36=1/4. 80/200=2/5. 132/150=22/25.
+COMPARING FRACTIONS: Find common denominator then compare numerators. 2/5 vs 1/2: 4/10 vs 5/10, so 1/2 is bigger.
+IMPROPER FRACTIONS to MIXED NUMBERS: 9/2=4½. 4/3=1⅓. 5/3=1⅔.
+MIXED NUMBERS to IMPROPER: 1⅗=8/5. 4½=9/2. 2¼=9/4.
+ADDING FRACTIONS: Find common denominator first. 1/3+1/2=2/6+3/6=5/6. 3/4+2/3=9/12+8/12=17/12=1 5/12. 5/8+1/4=5/8+2/8=7/8.
+SUBTRACTING FRACTIONS: 5/6-1/2=5/6-3/6=2/6=1/3. 8/9-3/4=32/36-27/36=5/36.
+MIXED NUMBER ADDING/SUBTRACTING: 1½+1⅓=1 3/6+1 2/6=2 5/6. 2½-1⅝=2 4/8-1 5/8=7/8.
+MULTIPLYING FRACTIONS: Top×top, bottom×bottom. 2/3×3/4=6/12=1/2. 1/5×15=3. 3/7×4/5=12/35. 6/7×3/8=18/56=9/28.
+FRACTION OF AMOUNT: 3/4 of 20=20÷4×3=15. 1/8×32=4. 7/8×16=14.
+FRACTIONS AS DECIMALS: 3/25=0.12. 3/20=0.15. 3/500=0.006. 1/4=0.25. 7/20=0.35.`},
+
+  decimals:{name:"Decimals & Place Value",context:`Year 7 Maths - Place Value and Decimals (Non-Calculator exam). Exact topics from revision pack:
+PLACE VALUE: Columns: millions, hundred-thousands, ten-thousands, thousands, hundreds, tens, units, tenths, hundredths, thousandths. In 723: the 2 is in the tens column (value=20). In 8335: the first 3 is hundreds (value=300).
+MULTIPLYING/DIVIDING BY POWERS OF 10: ×10: digits shift one place LEFT (larger). ×100: two places left. ÷10: digits shift one place RIGHT (smaller). ÷100: two places right. E.g. 3.4×10=34. 0.56×100=56. 34÷10=3.4. 8.21÷100=0.0821.
+EQUIVALENT CALCULATIONS: 9×2=18, so 9×0.2=1.8, 9×20=180, 0.9×2=1.8, 0.9×20=18, 90×0.2=18, 0.9×0.2=0.18.
+METRIC CONVERSIONS: 1km=1000m, 1m=100cm, 1cm=10mm, 1kg=1000g, 1 litre=1000ml.
+DECIMALS AS FRACTIONS: 0.4=4/10=2/5. 0.08=8/100=2/25. 0.006=6/1000=3/500. 0.048=48/1000=6/125.
+ADDING DECIMALS: Line up decimal points. 0.3+0.6=0.9. 0.42+0.11=0.53. 6.7+3.6=10.3. 17.2+0.42=17.62. 18.14+3.2=21.34.
+SUBTRACTING DECIMALS: 0.7-0.2=0.5. 1.3-0.1=1.2. 19.24-8.3=10.94. 15.2-3.46=11.74.
+REAL LIFE: Ben needs a £114.99 bike, has £98. How much more? £114.99-£98=£16.99.
+ORDERING DECIMALS: Compare digit by digit from left. 0.87<0.884<0.89.`},
+
+  negatives:{name:"Negative Numbers",context:`Year 7 Maths - Negative Numbers (Non-Calculator exam). Exact topics from revision pack:
+ADDING NEGATIVES: Move left on number line. -4+6=2. -5+8=3. 2+(-3)=2-3=-1. -1+(-4)=-5.
+SUBTRACTING NEGATIVES: Two negatives make positive. 3-(-4)=3+4=7. 5-(-6)=5+6=11. -4-(-1)=-4+1=-3. -4-(-4)=0.
+BASIC SUBTRACTION: 4-6=-2. 5-7=-2. -1-1=-2. -3-2=-5. 4-9=-5.
+MULTIPLYING NEGATIVES: neg×neg=POSITIVE. pos×neg=NEGATIVE. (-7)×2=-14. (-4)×8=-32. (-2)×(-5)=10. (-6)×(-3)=18. (-3)×7=-21. (-10)×(-4)=40. (-4)×(-5)=20. (-7)×0=0. 8×(-5)=-40.
+DIVIDING NEGATIVES: Same rules as multiplying. neg÷neg=positive. pos÷neg=negative. -12÷-3=4. 12÷-3=-4. -20÷4=-5. -18÷-6=3.
+KEY RULES: (+)(+)=+. (-)(-)=+. (+)(-)=-. (-)(+)=-.
+ORDERING: -5<-3<-1<0<1<3<5. Difference between -3 and 5 = 8 (count the gap on number line).`},
+
+  algebra:{name:"Algebra",context:`Year 7 Maths - Algebra (Non-Calculator exam). Exact topics from revision pack:
+SIMPLIFYING (COLLECTING LIKE TERMS): Like terms have same variable and power. 2a+3a=5a. 5b+8b=13b. 6c-4c=2c. 5d+4d+7d=16d. 6e+9e-5e=10e. 8f+6f-13f=f. 9g+7g-8g-2g-6g=0. 5p+2h cannot simplify (unlike terms). 3a+4b-2a=a+4b. 6x+3y-2x-y=4x+2y.
+SIMPLIFYING WITH POWERS: 2x²+3x+4x²+5x=6x²+8x. x²+6x+4x+x²=2x²+10x. 5x²-x-6x²+8x=-x²+7x.
+MULTIPLYING TERMS (SIMPLIFY): 3a×b=3ab. 3a×2b=6ab. 4y×5x=20xy. 5g×2h×4=40gh. 2a×2b×c=4abc. -3a×-2b=6ab. 3²×2t×2s=18ts. x×x=x². a²×a³=a⁵. -3a³×2a²=-6a⁵.
+EXPANDING BRACKETS: Multiply each term inside by term outside. 4(x+6)=4x+24. 3(x-4)=3x-12. 5(2x+6)=10x+30. 7(3x-4)=21x-28. x(x+y)=x²+xy. x(4y-3x)=4xy-3x². 2x(2x+3y)=4x²+6xy. 5x(2y-1)=10xy-5x.
+SUBSTITUTION: Replace letter with number. If x=3: 2x+1=7. If a=2,b=3: 3a+4b-2a=a+4b=2+12=14.
+SOLVING EQUATIONS: Do same to both sides. 3x=12→x=4. 2x+3=11→2x=8→x=4. x/4=3→x=12.`},
+
+  shapes:{name:"Area & Perimeter",context:`Year 7 Maths - Area and Perimeter (Non-Calculator exam). Exact topics from revision pack:
+PERIMETER: Total distance around a shape. Add ALL sides. Rectangle perimeter=2(l+w) or 2l+2w. Square perimeter=4s. Triangle: add all three sides. Units: cm, m, mm (length units).
+AREA: Space inside a shape. Units always SQUARED: cm², m², mm².
+RECTANGLE AREA: length×width. E.g. 4cm×3cm=12cm².
+SQUARE AREA: side². E.g. 5cm²=25cm².
+TRIANGLE AREA: base×height÷2. The height must be PERPENDICULAR (vertical), not the slant side. E.g. base=6cm, height=4cm: area=6×4÷2=12cm².
+COMPOUND SHAPES: Split into rectangles/triangles. Find area of each part. Add (or subtract) them.
+MULTIPLYING FRACTIONS WITH AREAS: A rectangle 2m by 3/8m: area=2×3/8=6/8=3/4 m². A rectangle 3m by 5/6m: area=3×5/6=15/6=5/2=2½ m².
+IMPORTANT FACTS: Perimeter is a LENGTH (cm, m). Area is in SQUARE UNITS (cm², m²). 1m²=10,000cm² (NOT 100cm²). Always include units in your answer.
+SQUARE ROOTS APPLIED: Square with area 81cm²: sides=√81=9cm. Perimeter=4×9=36cm. Square with area 196cm²: sides=√196=14cm. Perimeter=56cm.`},
+
+  multiply:{name:"Multiplying",context:`Year 7 Maths - Multiplying (Non-Calculator exam). Exact topics from revision pack:
+INTEGERS - LONG MULTIPLICATION: 88×12=1056. 42×17=714. 42×21=882. 37×31=1147. Method: split e.g. 42×17=(42×10)+(42×7)=420+294=714.
+DISTRIBUTIVE LAW: a(b+c)=ab+ac. Use to multiply: 93×7=(90×7)+(3×7)=630+21=651. 6×23=6×20+6×3=138.
+MULTIPLYING DECIMALS: Ignore decimal, multiply as integers, count total decimal places. 4.2×8=33.6 (42×8=336, 1 decimal place). 32×1.7=54.4 (32×17=544, 1dp). 3.2×2.4=7.68 (32×24=768, 2dp). 8.7×0.5=4.35 (87×5=435, 2dp).
+EQUIVALENT CALCULATIONS: 9×2=18 means: 9×0.2=1.8, 0.9×2=1.8, 90×0.2=18, 0.9×20=18, 9×20=180, 90×20=1800. Scale up/down by powers of 10.
+NEGATIVES: neg×neg=positive. pos×neg=negative. (-7)×2=-14. (-2)×(-5)=10. (-3)×7=-21.
+MULTIPLYING FRACTIONS: top×top, bottom×bottom. 2/3×3/4=6/12=1/2. 3/7×4/5=12/35. 6/7×3/8=9/28. 1¼×2½=5/4×5/2=25/8=3⅛. 3¼×2⅓=13/4×7/3=91/12=7 7/12.
+ALGEBRA MULTIPLICATION: 3×2x=6x. x×x=x². 3x×2y=6xy. 4(x+3)=4x+12. 3(2x-1)=6x-3.
+AREA USING MULTIPLICATION: Rectangle area = length×width. Triangle area = base×height÷2.`},
+
+  divide:{name:"Dividing",context:`Year 7 Maths - Dividing (Non-Calculator exam). Exact topics from revision pack:
+SHORT/LONG DIVISION: 18÷3=6. 24÷2=12. 369÷3=123. 848÷4=212. 738÷6=123. 924÷4=231. 1332÷12=111. 1107÷9=123. 4344÷8=543. Method: bus stop/short division.
+DISTRIBUTIVE LAW FOR DIVISION: 84÷4=(80÷4)+(4÷4)=20+1=21.
+DIVIDING DECIMALS: 4.8÷4=1.2. 0.3+0.6=0.9. Keep decimal point in same relative position. To divide by decimal: multiply both numbers to make whole number first.
+EQUIVALENT CALCULATIONS: If 18÷3=6, then 1.8÷3=0.6, 18÷0.3=60, 180÷3=60. Scale by powers of 10.
+REMAINDERS: 17÷5=3 remainder 2. Express as fraction: 17÷5=3⅖. Or decimal: 3.4.
+DIVIDING FRACTIONS: Flip second fraction and multiply (KFC: Keep, Flip, Change). 2/3÷1/4=2/3×4/1=8/3=2⅔. 3÷8=3/8. 3÷5=3/5=0.6. 25÷4=6.25. 26÷4=6.5. 30÷8=3.75.
+FRACTION OF AMOUNT (uses division): 1/4 of 36=36÷4=9. 3/4 of 36=36÷4×3=27. 1/6 of 23 students each get a slice from 23/6=3⅚ cakes → need 4 cakes.
+NEGATIVES: neg÷neg=positive. pos÷neg=negative. -12÷-3=4. 12÷-3=-4. -20÷5=-4.
+ALGEBRAIC DIVISION: 6x÷2=3x. 12x²÷4x=3x.`}
 };
+
 let currentTopic=null,questions=[],currentQ=0,score=0,answered=false,recentResults=[];
 function goHome(){document.getElementById('topic-screen').style.display='block';document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='none';}
 async function startGame(k){currentTopic=k;questions=[];currentQ=0;score=0;answered=false;recentResults=[];document.getElementById('topic-screen').style.display='none';document.getElementById('end-screen').style.display='none';document.getElementById('game-screen').style.display='block';document.getElementById('game-title').textContent=TOPICS[k].name;updateScoreBadge();updateStreakDots();updateQNumber();await loadQuestion();}
@@ -126,14 +200,14 @@ function updateStreakDots(){const c=document.getElementById('streak-dots');c.inn
 async function loadQuestion(){
   answered=false;['feedback-box','error-box'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('next-btn').style.display='none';document.getElementById('options-grid').innerHTML='';document.getElementById('q-box').innerHTML='<div class="loading-dots"><span></span><span></span><span></span></div>';
   const t=TOPICS[currentTopic];const prev=questions.slice(-25).map(q=>q.question).join(' | ');
-  const prompt=`Friendly quiz master helping 11-year-old Bert (dyslexic) revise Year 7 Maths. Non-calculator exam. SHORT and CLEAR.\n\nContext:\n${t.context}\n\n${prev?`Do NOT repeat: ${prev}`:''}\n\nGenerate ONE multiple choice question with actual numbers to work with. Vary difficulty. 1-2 sentences max 20 words. 4 options (numbers or short phrases) max 8 words each. 1 correct. Include common mistakes as wrong answers. 1-sentence explanation max 20 words.\n\nJSON only: {"question":"...","options":["...","...","...","..."],"correct":0,"explanation":"..."}`;
+  const prompt=`You are a quiz master helping 11-year-old Bert (dyslexic) revise Year 7 Maths. Non-calculator exam. Keep questions SHORT and CLEAR. Vary difficulty — mix easier and harder questions.\n\nExact revision pack content to test:\n${t.context}\n\n${prev?`Do NOT repeat these: ${prev}`:''}\n\nGenerate ONE multiple choice question with actual numbers to calculate. Rules:\n- Question max 20 words, simple language\n- 4 answer options (numbers or short expressions), max 8 words each\n- 1 correct answer; wrong answers reflect common mistakes\n- 1-sentence explanation max 20 words, show the working if helpful\n\nJSON only: {"question":"...","options":["...","...","...","..."],"correct":0,"explanation":"..."}`;
   try{const r=await fetch('https://bert-api-proxy.super-night-6aa0.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:prompt}]})});if(!r.ok)throw 0;const d=await r.json();const q=JSON.parse(d.content[0].text.trim().replace(/```json|```/g,''));questions.push(q);renderQuestion(q);}
   catch(e){document.getElementById('q-box').innerHTML='<span class="q-text">Couldn\'t load — tap Next.</span>';document.getElementById('error-box').style.display='block';document.getElementById('next-btn').style.display='block';}
 }
 function renderQuestion(q){document.getElementById('q-box').innerHTML=`<span class="q-text">${q.question}</span>`;const g=document.getElementById('options-grid');g.innerHTML='';['A','B','C','D'].forEach((l,i)=>{const b=document.createElement('button');b.className='option-btn';b.innerHTML=`<span class="opt-letter">${l}</span><span>${q.options[i]}</span>`;b.onclick=()=>answer(i,q);g.appendChild(b);});}
-function answer(chosen,q){if(answered)return;answered=true;const btns=document.getElementById('options-grid').querySelectorAll('.option-btn');const c=q.correct;const ok=chosen===c;if(ok)score++;recentResults.push(ok);btns.forEach((b,i)=>{b.disabled=true;if(i===c)b.classList.add('correct');else if(i===chosen&&!ok)b.classList.add('wrong');});const fb=document.getElementById('feedback-box');fb.className='feedback-box '+(ok?'correct':'wrong');fb.style.display='block';fb.innerHTML=ok?`<span class="feedback-emoji">🎉</span><strong>Correct!</strong><div class="feedback-explain">${q.explanation}</div>`:`<span class="feedback-emoji">😬</span><strong>Not quite — answer was ${'ABCD'[c]}: ${q.options[c]}</strong><div class="feedback-explain">${q.explanation}</div>`;updateScoreBadge();updateStreakDots();const nb=document.getElementById('next-btn');nb.style.display='block';nb.textContent=currentQ+1>=MAX_Q?'See results 🏆':'Next question →';}
-async function nextQuestion(){currentQ++;if(currentQ>=MAX_Q){showEnd();return;}updateQNumber();await loadQuestion();}
-function showEnd(){document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='block';const tot=currentQ;const pct=tot>0?score/tot:0;let e,t,m,s;if(pct>=0.9){e='🏆';t='Outstanding!';s='⭐⭐⭐';m=`${score}/${tot} — brilliant Maths, Bert!`;}else if(pct>=0.75){e='🎉';t='Brilliant!';s='⭐⭐⭐';m=`${score}/${tot}. Really strong. Review the misses.`;}else if(pct>=0.6){e='💪';t='Good effort!';s='⭐⭐';m=`${score}/${tot}. Solid. Another round will sharpen you up.`;}else{e='📚';t='Keep going!';s='⭐';m=`${score}/${tot}. Maths takes practice — you'll get there!`;}document.getElementById('end-emoji').textContent=e;document.getElementById('end-title').textContent=t;document.getElementById('end-stars').textContent=s;document.getElementById('final-score').textContent=score;document.getElementById('final-total').textContent=tot;document.getElementById('end-msg').textContent=m;}
+function answer(chosen,q){if(answered)return;answered=true;const btns=document.getElementById('options-grid').querySelectorAll('.option-btn');const c=q.correct;const ok=chosen===c;if(ok)score++;recentResults.push(ok);btns.forEach((b,i)=>{b.disabled=true;if(i===c)b.classList.add('correct');else if(i===chosen&&!ok)b.classList.add('wrong');});const fb=document.getElementById('feedback-box');fb.className='feedback-box '+(ok?'correct':'wrong');fb.style.display='block';fb.innerHTML=ok?`<span class="feedback-emoji">🎉</span><strong>Correct!</strong><div class="feedback-explain">${q.explanation}</div>`:`<span class="feedback-emoji">😬</span><strong>Not quite — answer was ${'ABCD'[c]}: ${q.options[c]}</strong><div class="feedback-explain">${q.explanation}</div>`;updateScoreBadge();updateStreakDots();document.getElementById('next-btn').style.display='block';}
+async function nextQuestion(){currentQ++;updateQNumber();await loadQuestion();}
+function showEnd(){document.getElementById('game-screen').style.display='none';document.getElementById('end-screen').style.display='block';const tot=currentQ;const pct=tot>0?score/tot:0;let e,ti,m,s;if(pct>=0.9){e='🏆';ti='Outstanding!';s='⭐⭐⭐';m=`${score}/${tot} — brilliant Maths, Bert!`;}else if(pct>=0.75){e='🎉';ti='Brilliant!';s='⭐⭐⭐';m=`${score}/${tot}. Really strong. Review the misses.`;}else if(pct>=0.6){e='💪';ti='Good effort!';s='⭐⭐';m=`${score}/${tot}. Solid. Another round will sharpen you up.`;}else{e='📚';ti='Keep going!';s='⭐';m=`${score}/${tot}. Maths takes practice — you\'ll get there!`;}document.getElementById('end-emoji').textContent=e;document.getElementById('end-title').textContent=ti;document.getElementById('end-stars').textContent=s;document.getElementById('final-score').textContent=score;document.getElementById('final-total').textContent=tot;document.getElementById('end-msg').textContent=m;}
 function retryGame(){startGame(currentTopic);}
 </script>
 </body>
